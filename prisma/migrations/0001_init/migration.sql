@@ -251,7 +251,16 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  IF OLD.role = 'owner' AND (TG_OP = 'DELETE' OR NEW.role <> 'owner') THEN
+  -- If the parent workspace row is gone, this DELETE is part of the
+  -- ON DELETE CASCADE from `workspaces` (the owner deleting their whole
+  -- workspace), not a member being removed/demoted out from under a
+  -- workspace that still exists — skip the check in that case. Postgres
+  -- performs the parent DELETE before firing the FK's cascade action, and
+  -- that cascade (like any subsequent statement in the same command) sees
+  -- the parent row already gone, so this lookup reliably distinguishes the
+  -- two cases.
+  IF OLD.role = 'owner' AND (TG_OP = 'DELETE' OR NEW.role <> 'owner')
+     AND EXISTS (SELECT 1 FROM workspaces WHERE id = OLD.workspace_id) THEN
     IF NOT EXISTS (
       SELECT 1 FROM workspace_members
       WHERE workspace_id = OLD.workspace_id
