@@ -27,7 +27,7 @@ CREATE TABLE "env_files" (
     "workspace_id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "storage_path" TEXT NOT NULL,
-    "created_by" UUID NOT NULL,
+    "created_by" UUID,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "env_files_pkey" PRIMARY KEY ("id")
@@ -37,10 +37,10 @@ CREATE TABLE "env_files" (
 CREATE TABLE "share_links" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "env_file_id" UUID NOT NULL,
-    "token" TEXT NOT NULL,
+    "token_hash" TEXT NOT NULL,
     "expires_at" TIMESTAMPTZ NOT NULL,
     "revoked" BOOLEAN NOT NULL DEFAULT false,
-    "created_by" UUID NOT NULL,
+    "created_by" UUID,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "share_links_pkey" PRIMARY KEY ("id")
@@ -56,7 +56,7 @@ CREATE INDEX "workspace_members_user_id_idx" ON "workspace_members"("user_id");
 CREATE INDEX "env_files_workspace_id_idx" ON "env_files"("workspace_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "share_links_token_key" ON "share_links"("token");
+CREATE UNIQUE INDEX "share_links_token_hash_key" ON "share_links"("token_hash");
 
 -- CreateIndex
 CREATE INDEX "share_links_env_file_id_idx" ON "share_links"("env_file_id");
@@ -74,10 +74,16 @@ ALTER TABLE "share_links" ADD CONSTRAINT "share_links_env_file_id_fkey" FOREIGN 
 -- ============================================================================
 
 -- Foreign keys into Supabase's own auth.users table.
-ALTER TABLE "workspaces" ADD CONSTRAINT "workspaces_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES auth.users ("id") ON DELETE CASCADE;
+-- owner_id: RESTRICT — a workspace must always have an owner; deleting that
+-- user's account must not silently orphan/cascade-delete the workspace.
+-- Transfer ownership (or delete the workspace) before the account can go.
+ALTER TABLE "workspaces" ADD CONSTRAINT "workspaces_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES auth.users ("id") ON DELETE RESTRICT;
+-- user_id: membership rows are meaningless once the account is gone.
 ALTER TABLE "workspace_members" ADD CONSTRAINT "workspace_members_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES auth.users ("id") ON DELETE CASCADE;
-ALTER TABLE "env_files" ADD CONSTRAINT "env_files_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES auth.users ("id") ON DELETE CASCADE;
-ALTER TABLE "share_links" ADD CONSTRAINT "share_links_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES auth.users ("id") ON DELETE CASCADE;
+-- created_by: attribution only, not ownership — keep the file/link, just
+-- forget who created it (columns are nullable to allow this).
+ALTER TABLE "env_files" ADD CONSTRAINT "env_files_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES auth.users ("id") ON DELETE SET NULL;
+ALTER TABLE "share_links" ADD CONSTRAINT "share_links_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES auth.users ("id") ON DELETE SET NULL;
 
 -- Helper: is the current user a member of this workspace, optionally with a
 -- minimum role? Defined once, reused by every policy below instead of
@@ -103,6 +109,14 @@ AS $$
       )
   );
 $$;
+
+-- SECURITY DEFINER functions run with the privileges of their owner, not the
+-- caller, so PostgreSQL's default PUBLIC EXECUTE grant must be tightened
+-- explicitly: only roles that actually need to call it (via RLS policies
+-- evaluated for logged-in users, and anon for public-context policy checks)
+-- may execute it.
+REVOKE ALL ON FUNCTION is_workspace_member(uuid, workspace_role) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION is_workspace_member(uuid, workspace_role) TO authenticated, anon;
 
 -- Row Level Security: every table is enabled with deny-all as the starting
 -- point; access is granted only through the explicit policies below.
@@ -196,3 +210,77 @@ CREATE POLICY "env_files_bucket_delete_editor" ON storage.objects
     bucket_id = 'env-files'
     AND is_workspace_member((storage.foldername(name))[1]::uuid, 'editor')
   );
+
+CREATE POLICY "env_files_bucket_update_editor" ON storage.objects
+  FOR UPDATE USING (
+    bucket_id = 'env-files'
+    AND is_workspace_member((storage.foldername(name))[1]::uuid, 'editor')
+  );
+
+-- Trigger: auto-membership. INSERT INTO workspaces must be self-sufficient
+-- — the owner is granted membership atomically, so callers never need a
+-- second insert (and never risk forgetting one and locking themselves out).
+-- SECURITY DEFINER is required: at the moment this fires the owner is not
+-- yet a member, so the normal members_insert_owner RLS policy (which
+-- requires being an existing owner) would reject a caller-privileged insert.
+CREATE FUNCTION handle_new_workspace() RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO workspace_members (workspace_id, user_id, role)
+  VALUES (NEW.id, NEW.owner_id, 'owner');
+  RETURN NEW;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION handle_new_workspace() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION handle_new_workspace() TO authenticated, anon;
+
+CREATE TRIGGER workspaces_after_insert_add_owner
+  AFTER INSERT ON workspaces
+  FOR EACH ROW EXECUTE FUNCTION handle_new_workspace();
+
+-- Trigger: protect the last owner. A workspace must always retain at least
+-- one member with role = 'owner' — block any DELETE/UPDATE on
+-- workspace_members that would leave it without one.
+CREATE FUNCTION protect_last_owner() RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF OLD.role = 'owner' AND (TG_OP = 'DELETE' OR NEW.role <> 'owner') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM workspace_members
+      WHERE workspace_id = OLD.workspace_id
+        AND user_id <> OLD.user_id
+        AND role = 'owner'
+    ) THEN
+      RAISE EXCEPTION 'workspace % must keep at least one owner', OLD.workspace_id;
+    END IF;
+  END IF;
+  IF TG_OP = 'DELETE' THEN
+    RETURN OLD;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION protect_last_owner() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION protect_last_owner() TO authenticated, anon;
+
+CREATE TRIGGER workspace_members_protect_last_owner
+  BEFORE DELETE OR UPDATE ON workspace_members
+  FOR EACH ROW EXECUTE FUNCTION protect_last_owner();
+
+-- CHECK: an env_files object's storage_path must live under its own
+-- workspace's folder ("{workspace_id}/..."), since the Storage RLS policies
+-- above derive workspace membership purely from the path prefix.
+ALTER TABLE "env_files" ADD CONSTRAINT "env_files_storage_path_prefix"
+  CHECK (storage_path LIKE workspace_id::text || '/%');
+
+-- CHECK: a share link that already expired at creation makes no sense.
+ALTER TABLE "share_links" ADD CONSTRAINT "share_links_expires_at_after_created_at"
+  CHECK (expires_at > created_at);
