@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "title": "share-env — bezpieczne współdzielenie plików .env",
+    "description": "Przechowuj i udostępniaj pliki .env zespołowi bez wklejania sekretów na Slacku. Szyfrowanie, role w workspace i linki z wygaśnięciem."
+  },
+  "nav": {
+    "links": {
+      "workspaces": "Workspace'y",
+      "pricing": "Cennik",
+      "docs": "Dokumentacja"
+    },
+    "login": "Zaloguj się",
+    "signup": "Zacznij za darmo",
+    "openMenu": "Otwórz menu",
+    "closeMenu": "Zamknij menu"
+  },
+  "hero": {
+    "headlineLine1": "Udostępniaj pliki .env",
+    "headlineLine2": "zespołowi, nie",
+    "headlineLine3": "całemu internetowi",
+    "subtext": "Bezpieczne przechowywanie sekretów zespołu: szyfrowanie, role dostępu i linki z wygaśnięciem zamiast wklejania kluczy API na czacie.",
+    "ctaPrimary": "Zacznij za darmo",
+    "ctaSecondary": "Zobacz jak to działa",
+    "visualAlt": "Abstrakcyjny sejf ze szkła i metalu symbolizujący zaszyfrowane przechowywanie plików .env",
+    "stats": [
+      { "value": "AES-256", "label": "Szyfrowanie at-rest" },
+      { "value": "RLS", "label": "Na każdej tabeli" },
+      { "value": "3 sposoby", "label": "Dostępu do plików" },
+      { "value": "Tokeny", "label": "Z terminem wygaśnięcia" }
+    ]
+  }
+}

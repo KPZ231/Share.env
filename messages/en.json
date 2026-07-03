@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "title": "share-env — secure .env file sharing",
+    "description": "Store and share .env files with your team without pasting secrets in Slack. Encryption, workspace roles, and expiring links."
+  },
+  "nav": {
+    "links": {
+      "workspaces": "Workspaces",
+      "pricing": "Pricing",
+      "docs": "Docs"
+    },
+    "login": "Log in",
+    "signup": "Start for free",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "hero": {
+    "headlineLine1": "Share .env files",
+    "headlineLine2": "with your team,",
+    "headlineLine3": "not the internet",
+    "subtext": "Secure secrets storage for your team: encryption, access roles, and expiring links instead of pasting API keys into chat.",
+    "ctaPrimary": "Start for free",
+    "ctaSecondary": "See how it works",
+    "visualAlt": "Abstract glass and metal vault representing encrypted .env file storage",
+    "stats": [
+      { "value": "AES-256", "label": "Encryption at rest" },
+      { "value": "RLS", "label": "On every table" },
+      { "value": "3 ways", "label": "To access files" },
+      { "value": "Tokens", "label": "With expiry dates" }
+    ]
+  }
+}

@@ -12,16 +12,21 @@ import { NextResponse, type NextRequest } from "next/server";
  */
 const PUBLIC_PATHS = ["/", "/login", "/signup", "/auth/callback"];
 
+// Locale prefix (e.g. /pl, /en) is always present — see i18n/routing.ts — so
+// it must be stripped before matching against the public-path allowlist.
+function stripLocale(pathname: string) {
+  return pathname.replace(/^\/(pl|en)(?=\/|$)/, "") || "/";
+}
+
 function isPublicPath(pathname: string) {
+  const path = stripLocale(pathname);
   return (
-    PUBLIC_PATHS.includes(pathname) ||
-    pathname.startsWith("/share/") // token-based access, not session-based
+    PUBLIC_PATHS.includes(path) ||
+    path.startsWith("/share/") // token-based access, not session-based
   );
 }
 
-export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({ request });
-
+export async function updateSession(request: NextRequest, response: NextResponse) {
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -30,11 +35,10 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
+        // Write onto the response the caller passed in (carries the i18n
+        // routing rewrite/headers) instead of replacing it — replacing it
+        // here would silently drop locale negotiation.
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );
@@ -50,7 +54,8 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user && !isPublicPath(request.nextUrl.pathname)) {
-    const loginUrl = new URL("/login", request.url);
+    const locale = request.nextUrl.pathname.match(/^\/(pl|en)(?=\/|$)/)?.[1] ?? "pl";
+    const loginUrl = new URL(`/${locale}/login`, request.url);
     loginUrl.searchParams.set("redirectTo", request.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
