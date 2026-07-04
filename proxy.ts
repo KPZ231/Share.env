@@ -5,7 +5,7 @@ import { updateSession } from "@/lib/supabase/proxy-session";
 
 const handleI18nRouting = createIntlMiddleware(routing);
 
-// Next.js 16 renamed Middleware to Proxy — same runtime, new file/export name.
+// Next.js 16 renamed Middleware to Proxy  same runtime, new file/export name.
 // Locale routing runs first (produces the response + locale-aware request),
 // then the Supabase session refresh writes its cookies onto that response.
 export async function proxy(request: NextRequest) {

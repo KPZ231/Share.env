@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
         headers: [
           // Env file contents/tokens must never be embedded elsewhere.
           // Security note: 'unsafe-eval' below is a CSP directive string, not
-          // a call to the eval() function. It's gated to development only —
+          // a call to the eval() function. It's gated to development only 
           // React's dev-mode debugging calls eval() to reconstruct callstacks
           // (never in production builds), so production keeps the strict CSP
           // with no 'unsafe-eval', which is what actually matters for XSS risk.

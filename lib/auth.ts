@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 /**
  * Server-side session helpers, shared by Server Components and Server Actions
  * so callers don't hand-roll `supabase.auth.getUser()` boilerplate everywhere.
- * These are convenience/UX checks — RLS policies in supabase/migrations are
+ * These are convenience/UX checks  RLS policies in supabase/migrations are
  * what actually enforce access, per CLAUDE.md.
  */
 

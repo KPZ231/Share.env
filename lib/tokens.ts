@@ -12,7 +12,7 @@ export function generateShareToken(): string {
 
 /**
  * SHA-256 hex digest of a raw share token. The database only ever stores
- * this hash (share_links.token_hash) — never the raw token. To create a
+ * this hash (share_links.token_hash)  never the raw token. To create a
  * share link, hash the raw token before insert; to resolve a link, hash the
  * token from the URL and compare against token_hash.
  */
@@ -20,7 +20,7 @@ export function hashToken(raw: string): string {
   return createHash("sha256").update(raw).digest("hex");
 }
 
-// Minimal self-check — run with `npx tsx lib/tokens.ts`.
+// Minimal self-check  run with `npx tsx lib/tokens.ts`.
 if (process.argv[1]?.replace(/\\/g, "/").endsWith("lib/tokens.ts")) {
   const a = generateShareToken();
   const b = generateShareToken();

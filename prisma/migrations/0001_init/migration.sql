@@ -74,13 +74,13 @@ ALTER TABLE "share_links" ADD CONSTRAINT "share_links_env_file_id_fkey" FOREIGN 
 -- ============================================================================
 
 -- Foreign keys into Supabase's own auth.users table.
--- owner_id: RESTRICT — a workspace must always have an owner; deleting that
+-- owner_id: RESTRICT  a workspace must always have an owner; deleting that
 -- user's account must not silently orphan/cascade-delete the workspace.
 -- Transfer ownership (or delete the workspace) before the account can go.
 ALTER TABLE "workspaces" ADD CONSTRAINT "workspaces_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES auth.users ("id") ON DELETE RESTRICT;
 -- user_id: membership rows are meaningless once the account is gone.
 ALTER TABLE "workspace_members" ADD CONSTRAINT "workspace_members_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES auth.users ("id") ON DELETE CASCADE;
--- created_by: attribution only, not ownership — keep the file/link, just
+-- created_by: attribution only, not ownership  keep the file/link, just
 -- forget who created it (columns are nullable to allow this).
 ALTER TABLE "env_files" ADD CONSTRAINT "env_files_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES auth.users ("id") ON DELETE SET NULL;
 ALTER TABLE "share_links" ADD CONSTRAINT "share_links_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES auth.users ("id") ON DELETE SET NULL;
@@ -166,7 +166,7 @@ CREATE POLICY "env_files_delete_editor" ON "env_files"
   FOR DELETE USING (is_workspace_member(workspace_id, 'editor'));
 
 -- share_links: visible/manageable by members of the owning file's workspace.
--- Anonymous token resolution (no session) is NOT done through this policy —
+-- Anonymous token resolution (no session) is NOT done through this policy 
 -- it goes through lib/supabase/admin.ts, which must independently check
 -- expires_at/revoked before returning the file.
 CREATE POLICY "share_links_select_members" ON "share_links"
@@ -218,7 +218,7 @@ CREATE POLICY "env_files_bucket_update_editor" ON storage.objects
   );
 
 -- Trigger: auto-membership. INSERT INTO workspaces must be self-sufficient
--- — the owner is granted membership atomically, so callers never need a
+--  the owner is granted membership atomically, so callers never need a
 -- second insert (and never risk forgetting one and locking themselves out).
 -- SECURITY DEFINER is required: at the moment this fires the owner is not
 -- yet a member, so the normal members_insert_owner RLS policy (which
@@ -243,7 +243,7 @@ CREATE TRIGGER workspaces_after_insert_add_owner
   FOR EACH ROW EXECUTE FUNCTION handle_new_workspace();
 
 -- Trigger: protect the last owner. A workspace must always retain at least
--- one member with role = 'owner' — block any DELETE/UPDATE on
+-- one member with role = 'owner'  block any DELETE/UPDATE on
 -- workspace_members that would leave it without one.
 CREATE FUNCTION protect_last_owner() RETURNS trigger
 LANGUAGE plpgsql
@@ -254,7 +254,7 @@ BEGIN
   -- If the parent workspace row is gone, this DELETE is part of the
   -- ON DELETE CASCADE from `workspaces` (the owner deleting their whole
   -- workspace), not a member being removed/demoted out from under a
-  -- workspace that still exists — skip the check in that case. Postgres
+  -- workspace that still exists  skip the check in that case. Postgres
   -- performs the parent DELETE before firing the FK's cascade action, and
   -- that cascade (like any subsequent statement in the same command) sees
   -- the parent row already gone, so this lookup reliably distinguishes the

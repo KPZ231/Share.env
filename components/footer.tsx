@@ -1,0 +1,202 @@
+"use client";
+
+import Image from "next/image";
+import { DiscordLogo, GithubLogo } from "@phosphor-icons/react";
+import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
+import { Link } from "@/i18n/navigation";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const PRODUCT_LINKS = [
+  { href: "/docs" as const, key: "docs" },
+  { href: "/status" as const, key: "status" },
+];
+
+const LEGAL_LINKS = [
+  { href: "/privacy" as const, key: "privacy" },
+  { href: "/terms" as const, key: "terms" },
+  { href: "/security" as const, key: "security" },
+];
+
+const SOCIAL_LINKS = [
+  { href: "https://github.com/share-env", key: "github", icon: GithubLogo },
+  { href: "https://discord.gg/share-env", key: "discord", icon: DiscordLogo },
+];
+
+export function Footer() {
+  const t = useTranslations("footer");
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
+
+      mm.add(
+        { reduce: "(prefers-reduced-motion: reduce)", full: "(prefers-reduced-motion: no-preference)" },
+        (context) => {
+          const { reduce } = context.conditions as { reduce: boolean };
+          if (reduce) return; // leave elements in their natural (visible) state
+
+          const tl = gsap.timeline({
+            defaults: { ease: "power3.out", duration: 0.6 },
+            scrollTrigger: {
+              trigger: rootRef.current,
+              start: "top 85%",
+              once: true,
+            },
+          });
+
+          tl.from("[data-footer=illustration]", {
+            y: 24,
+            opacity: 0,
+            scale: 0.94,
+          })
+            .from("[data-footer=heading]", { y: 20, opacity: 0 }, "-=0.45")
+            .from("[data-footer=cta]", { y: 16, opacity: 0 }, "-=0.4")
+            .from(
+              "[data-footer=column]",
+              { y: 16, opacity: 0, stagger: 0.08 },
+              "-=0.35"
+            )
+            .from(
+              "[data-footer=social]",
+              { y: 12, opacity: 0, stagger: 0.06 },
+              "-=0.3"
+            );
+
+          gsap.to("[data-footer=illustration]", {
+            y: -10,
+            duration: 3.2,
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+            delay: 1,
+          });
+        }
+      );
+    }, rootRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={rootRef} className="bg-background">
+      <footer
+        aria-labelledby="footer-heading"
+        className="rounded-t-[32px] bg-[#1f1d3d] px-4 pb-10 pt-16 text-white sm:px-6 lg:px-8 lg:pt-20"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-16">
+            <div className="max-w-xl">
+              <h2
+                id="footer-heading"
+                data-footer="heading"
+                className="text-3xl font-semibold leading-tight tracking-tight md:text-4xl"
+              >
+                {t("heading")}
+              </h2>
+              <p className="mt-4 max-w-md text-lg leading-relaxed text-white/70">
+                {t("subtext")}
+              </p>
+            </div>
+
+            <div
+              data-footer="illustration"
+              className="mx-auto h-40 w-40 shrink-0 will-change-transform sm:h-48 sm:w-48 lg:h-56 lg:w-56"
+            >
+              <Image
+                src="/footer-vault.svg"
+                alt={t("illustrationAlt")}
+                width={224}
+                height={224}
+                className="h-full w-full object-contain"
+              />
+            </div>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-10 border-t border-white/10 pt-10 sm:grid-cols-2 lg:grid-cols-[repeat(2,minmax(0,220px))_auto] lg:items-start lg:gap-8">
+            <nav data-footer="column" aria-label={t("columns.product.title")}>
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-white/50">
+                {t("columns.product.title")}
+              </p>
+              <ul className="mt-4 flex flex-col gap-3">
+                {PRODUCT_LINKS.map((link) => (
+                  <li key={link.key}>
+                    <Link
+                      href={link.href}
+                      className="text-[15px] text-white/70 transition-colors hover:text-white"
+                    >
+                      {t(`columns.product.${link.key}`)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <nav data-footer="column" aria-label={t("columns.legal.title")}>
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-white/50">
+                {t("columns.legal.title")}
+              </p>
+              <ul className="mt-4 flex flex-col gap-3">
+                {LEGAL_LINKS.map((link) => (
+                  <li key={link.key}>
+                    <Link
+                      href={link.href}
+                      className="text-[15px] text-white/70 transition-colors hover:text-white"
+                    >
+                      {t(`columns.legal.${link.key}`)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <div
+              data-footer="cta"
+              className="flex sm:col-span-2 lg:col-span-1 lg:justify-self-end"
+            >
+              <a
+                href="mailto:support@share-env.app"
+                className="w-fit rounded-full bg-[#dceeb1] px-6 py-3 text-center text-[16px] font-medium text-black transition-opacity hover:opacity-90"
+              >
+                {t("contactCta")}
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-10 flex flex-col gap-6 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-1">
+              <p className="text-lg font-semibold tracking-tight">share.env</p>
+              <p className="text-sm text-white/50">
+                &copy; {new Date().getFullYear()} {t("copyright")}
+              </p>
+              <p className="text-sm text-white/50">{t("tagline")}</p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {SOCIAL_LINKS.map((social) => {
+                const SocialIcon = social.icon;
+                return (
+                  <a
+                    key={social.key}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t(`social.${social.key}`)}
+                    data-footer="social"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:bg-white/10"
+                  >
+                    <SocialIcon size={20} weight="bold" />
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

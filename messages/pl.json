@@ -1,7 +1,13 @@
 {
   "meta": {
-    "title": "share-env — bezpieczne współdzielenie plików .env",
-    "description": "Przechowuj i udostępniaj pliki .env zespołowi bez wklejania sekretów na Slacku. Szyfrowanie, role w workspace i linki z wygaśnięciem."
+    "home": {
+      "title": "share-env  bezpieczne współdzielenie plików .env",
+      "description": "Przechowuj i udostępniaj pliki .env zespołowi bez wklejania sekretów na Slacku. Szyfrowanie, role w workspace i linki z wygaśnięciem."
+    },
+    "signup": {
+      "title": "Rejestracja",
+      "description": "Załóż konto share.env i zacznij bezpiecznie udostępniać pliki .env swojemu zespołowi."
+    }
   },
   "nav": {
     "links": {
@@ -28,5 +34,149 @@
       { "value": "3 sposoby", "label": "Dostępu do plików" },
       { "value": "Tokeny", "label": "Z terminem wygaśnięcia" }
     ]
+  },
+  "howItWorks": {
+    "eyebrow": "Jak to działa",
+    "title": "Od pliku .env do zespołu w cztery kroki",
+    "lead": "Koniec wklejania kluczy API i haseł do baz danych na Slacku. Wgraj plik raz, a share.env zajmie się szyfrowaniem, linkami i dostępem za Ciebie.",
+    "steps": [
+      {
+        "title": "Wgraj plik .env",
+        "description": "Przeciągnij plik środowiskowy albo wklej jego zawartość. Trafia do workspace'a zespołu, nie do wątku na czacie."
+      },
+      {
+        "title": "Szyfrowanie at-rest",
+        "description": "Każdy sekret jest szyfrowany w Supabase Storage i chroniony przez Row Level Security, więc dostęp mają wyłącznie autoryzowane zapytania."
+      },
+      {
+        "title": "Wygeneruj link z tokenem",
+        "description": "Stwórz link z tokenem o wysokiej entropii, datą wygaśnięcia i możliwością natychmiastowego odwołania, gdy dostęp ma się skończyć."
+      },
+      {
+        "title": "Dostęp dla zespołu",
+        "description": "Zaproś współpracowników po emailu lub roli w workspace  owner, editor, viewer  a uprawnienia są wymuszane przy każdym zapytaniu."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "Możliwości",
+    "heading": "Bezpieczeństwo sekretów, zaprojektowane dla zespołów",
+    "subheading": "Każdy plik .env trafia do workspace'a zespołu, nie na prywatny dysk jednej osoby  z kontrolą dostępu i historią zmian od pierwszego dnia.",
+    "items": [
+      {
+        "title": "Szyfrowanie plików",
+        "description": "Pliki .env są szyfrowane w spoczynku, a Row Level Security w Postgresie pilnuje, kto w ogóle może je odczytać  na poziomie bazy danych, nie tylko interfejsu.",
+        "tag": "AES-256 · RLS"
+      },
+      {
+        "title": "Linki z wygasaniem",
+        "description": "Udostępnij plik bez zapraszania kogoś do zespołu  link ma zawsze datę wygaśnięcia i można go odwołać natychmiast, w każdej chwili.",
+        "tag": "revoke anytime"
+      },
+      {
+        "title": "Kontrola dostępu per zespół",
+        "description": "Role owner, editor i viewer decydują, kto może edytować sekrety, a kto tylko je podejrzeć  wymuszone przez polityki bazy danych, nie ukryte tylko w UI.",
+        "tag": "owner · editor · viewer"
+      },
+      {
+        "title": "Historia wersji",
+        "description": "Każda zmiana pliku .env zostaje zapisana, więc zawsze wiadomo, kto i kiedy zmienił dany sekret  i można wrócić do poprzedniej wersji.",
+        "tag": "pełny audyt zmian"
+      },
+      {
+        "title": "Integracja z CLI i CI/CD",
+        "description": "Pobieraj aktualne zmienne środowiskowe bezpośrednio w pipeline'ie wdrożeniowym, bez kopiowania sekretów ręcznie między środowiskami.",
+        "tag": "CLI · CI/CD"
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "Opinie",
+    "heading": "Zaufanie devów i CTO, którzy odpowiadają za bezpieczeństwo",
+    "subheading": "Osoby techniczne, które na co dzień decydują, gdzie trafiają sekrety zespołu, o tym, co przekonało je do share.env.",
+    "items": [
+      {
+        "quote": "Wcześniej klucze API krążyły w wątkach na Slacku. Teraz każdy sekret ma właściciela, historię zmian i link, który mogę odwołać jednym kliknięciem  audyt bezpieczeństwa przestał być koszmarem.",
+        "name": "Marta Wójcik",
+        "role": "CTO",
+        "company": "Fintech scale-up, 40 osób"
+      },
+      {
+        "quote": "Największa różnica to RLS na poziomie bazy, a nie tylko w interfejsie. Nawet gdyby ktoś obszedł frontend, nie wyciągnie cudzych zmiennych środowiskowych  to jest poziom, którego oczekuję od narzędzia do sekretów.",
+        "name": "Adam Nowicki",
+        "role": "Staff Engineer",
+        "company": "Platforma SaaS B2B"
+      },
+      {
+        "quote": "Wdrożenie zajęło popołudnie: CLI podpięte pod CI/CD, role owner/editor/viewer dla zespołu i koniec ręcznego kopiowania .env między środowiskami. Prostota bez utraty kontroli.",
+        "name": "Julia Kamińska",
+        "role": "Lead DevOps",
+        "company": "Software house, zespoły klientów"
+      }
+    ]
+  },
+  "signup": {
+    "heading": "Rejestracja już wkrótce",
+    "body": "Pracujemy nad rejestracją i pierwszym workspace'em. Wróć za chwilę  albo napisz do nas, jeśli chcesz wejść do wczesnego dostępu.",
+    "backHome": "Wróć na stronę główną"
+  },
+  "finalCta": {
+    "heading": "Przestań wklejać sekrety na czacie",
+    "subtext": "Załóż workspace, wgraj pierwszy plik .env i udostępnij go zespołowi w mniej niż dwie minuty.",
+    "cta": "Załóż konto"
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "heading": "Pytania o bezpieczeństwo i przechowywanie danych",
+    "contactTitle": "Masz inne pytanie?",
+    "contactText": "Napisz do nas  odpowiadamy na pytania o bezpieczeństwo i wdrożenie zwykle tego samego dnia roboczego.",
+    "contactCta": "Napisz e-mail",
+    "items": [
+      {
+        "question": "Jak dokładnie szyfrowane są pliki .env?",
+        "answer": "Pliki trafiają do Supabase Storage, gdzie są szyfrowane w spoczynku (encryption at rest). Dodatkowo Row Level Security w Postgresie pilnuje, żeby dostęp do rekordów miały wyłącznie zapytania autoryzowane przez Twój workspace  nikt inny nie odczyta treści, nawet mając dostęp do bazy."
+      },
+      {
+        "question": "Jak długo przechowujecie pliki i historię zmian?",
+        "answer": "Pliki i ich historia wersji są przechowywane tak długo, jak workspace pozostaje aktywny. Usunięcie workspace'a lub konkretnego pliku kasuje też powiązane wersje i linki udostępniające  nie trzymamy kopii poza aktywnym zakresem konta."
+      },
+      {
+        "question": "Czy mogę zobaczyć, kto miał dostęp do danego sekretu?",
+        "answer": "Tak. Każda zmiana pliku .env jest zapisywana z informacją, kto i kiedy ją wprowadził, a wygenerowane linki udostępniające można w każdej chwili odwołać, co natychmiast blokuje dalszy dostęp z tego linku."
+      },
+      {
+        "question": "Czy da się to zainstalować lokalnie (self-hosting)?",
+        "answer": "Obecnie share.env działa wyłącznie jako usługa hostowana  self-hosting nie jest wspierany. Cała infrastruktura (baza, auth, storage) opiera się na Supabase i Vercel, co pozwala nam utrzymywać wysoki poziom bezpieczeństwa bez zarządzania własnymi serwerami przez klienta."
+      },
+      {
+        "question": "Co się stanie z moimi sekretami, jeśli usunę konto?",
+        "answer": "Usunięcie konta uruchamia trwałe skasowanie plików, do których byłeś jedynym właścicielem, wraz z historią wersji i aktywnymi linkami udostępniającymi. Pliki należące do workspace'ów z innymi członkami pozostają dostępne dla pozostałych osób z odpowiednią rolą."
+      }
+    ]
+  },
+  "footer": {
+    "heading": "Sekrety zespołu zasługują na coś lepszego niż Slack",
+    "subtext": "Wgraj pierwszy plik .env i zobacz, jak wygląda współdzielenie sekretów z prawdziwą kontrolą dostępu.",
+    "contactCta": "Napisz e-mail",
+    "columns": {
+      "product": {
+        "title": "Produkt",
+        "docs": "Dokumentacja API",
+        "status": "Status usługi"
+      },
+      "legal": {
+        "title": "Prawne",
+        "privacy": "Polityka prywatności",
+        "terms": "Regulamin",
+        "security": "Bezpieczeństwo"
+      }
+    },
+    "social": {
+      "github": "GitHub",
+      "discord": "Discord"
+    },
+    "copyright": "share.env. Wszystkie prawa zastrzeżone.",
+    "tagline": "Zbudowane dla zespołów, które traktują sekrety poważnie.",
+    "illustrationAlt": "Uchylone drzwi sejfu ze szkła i metalu, symbol bezpiecznie przechowywanych sekretów"
   }
 }

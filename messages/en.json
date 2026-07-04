@@ -1,7 +1,13 @@
 {
   "meta": {
-    "title": "share-env — secure .env file sharing",
-    "description": "Store and share .env files with your team without pasting secrets in Slack. Encryption, workspace roles, and expiring links."
+    "home": {
+      "title": "share-env  secure .env file sharing",
+      "description": "Store and share .env files with your team without pasting secrets in Slack. Encryption, workspace roles, and expiring links."
+    },
+    "signup": {
+      "title": "Sign up",
+      "description": "Create a share.env account and start sharing .env files securely with your team."
+    }
   },
   "nav": {
     "links": {
@@ -28,5 +34,149 @@
       { "value": "3 ways", "label": "To access files" },
       { "value": "Tokens", "label": "With expiry dates" }
     ]
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "title": "From .env file to your team in four steps",
+    "lead": "No more pasting API keys and database passwords into Slack. Upload once, and share.env handles encryption, links, and access for you.",
+    "steps": [
+      {
+        "title": "Upload your .env file",
+        "description": "Drag in your environment file or paste its contents. It's stored in your workspace, not in a chat thread."
+      },
+      {
+        "title": "Encrypted at rest",
+        "description": "Every secret is encrypted in Supabase Storage and protected by row-level security, so only authorized requests ever reach it."
+      },
+      {
+        "title": "Generate a share link",
+        "description": "Create a link with a high-entropy token, an expiry date, and revoke it instantly whenever access should end."
+      },
+      {
+        "title": "Team access by role",
+        "description": "Invite teammates by email or workspace role  owner, editor, or viewer  and permissions are enforced on every request."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "Capabilities",
+    "heading": "Secret security, built for teams",
+    "subheading": "Every .env file lives in a team workspace, not on one person's laptop  with access control and version history from day one.",
+    "items": [
+      {
+        "title": "File encryption",
+        "description": "Your .env files are encrypted at rest, and Postgres Row Level Security enforces who can even read them  at the database layer, not just the UI.",
+        "tag": "AES-256 · RLS"
+      },
+      {
+        "title": "Expiring links",
+        "description": "Share a file without inviting someone to the team  every link carries an expiry date and can be revoked instantly, at any time.",
+        "tag": "revoke anytime"
+      },
+      {
+        "title": "Per-team access control",
+        "description": "Owner, editor, and viewer roles decide who can edit secrets and who can only view them  enforced by database policies, not just hidden in the UI.",
+        "tag": "owner · editor · viewer"
+      },
+      {
+        "title": "Version history",
+        "description": "Every change to a .env file is recorded, so you always know who changed which secret and when  and can roll back to a previous version.",
+        "tag": "full change audit"
+      },
+      {
+        "title": "CLI & CI/CD integration",
+        "description": "Pull the current environment variables straight into your deployment pipeline, without copying secrets between environments by hand.",
+        "tag": "CLI · CI/CD"
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "Testimonials",
+    "heading": "Trusted by the devs and CTOs who own security",
+    "subheading": "Technical people who decide where their team's secrets live, on what convinced them to switch to share.env.",
+    "items": [
+      {
+        "quote": "API keys used to float around in Slack threads. Now every secret has an owner, a version history, and a link I can revoke in one click  security audits stopped being a nightmare.",
+        "name": "Marta Wojcik",
+        "role": "CTO",
+        "company": "Fintech scale-up, 40 people"
+      },
+      {
+        "quote": "The real difference is RLS at the database layer, not just the UI. Even if someone bypassed the frontend, they can't pull another team's environment variables  that's the bar I expect from a secrets tool.",
+        "name": "Adam Nowicki",
+        "role": "Staff Engineer",
+        "company": "B2B SaaS platform"
+      },
+      {
+        "quote": "Rollout took an afternoon: CLI wired into CI/CD, owner/editor/viewer roles for the team, and no more copying .env files between environments by hand. Simple without giving up control.",
+        "name": "Julia Kaminska",
+        "role": "Lead DevOps",
+        "company": "Agency, client teams"
+      }
+    ]
+  },
+  "signup": {
+    "heading": "Sign-up is coming soon",
+    "body": "We're building account creation and your first workspace. Check back shortly  or reach out if you'd like early access.",
+    "backHome": "Back to homepage"
+  },
+  "finalCta": {
+    "heading": "Stop pasting secrets into chat",
+    "subtext": "Create a workspace, upload your first .env file, and share it with your team in under two minutes.",
+    "cta": "Create an account"
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "heading": "Questions about security and data retention",
+    "contactTitle": "Still have a question?",
+    "contactText": "Send us a message  we usually reply to security and onboarding questions the same business day.",
+    "contactCta": "Send an email",
+    "items": [
+      {
+        "question": "How exactly are .env files encrypted?",
+        "answer": "Files live in Supabase Storage, where they're encrypted at rest. On top of that, Postgres Row Level Security ensures only requests authorized for your workspace can read the records  nobody else can access the contents, even with direct database access."
+      },
+      {
+        "question": "How long do you keep files and version history?",
+        "answer": "Files and their version history are kept for as long as the workspace stays active. Deleting a workspace or a specific file also removes its stored versions and share links  we don't keep copies outside your account's active scope."
+      },
+      {
+        "question": "Can I see who had access to a given secret?",
+        "answer": "Yes. Every change to a .env file is logged with who made it and when, and any share link can be revoked instantly, immediately blocking further access through that link."
+      },
+      {
+        "question": "Is self-hosting available?",
+        "answer": "Right now share.env only runs as a hosted service  self-hosting isn't supported. The whole stack (database, auth, storage) runs on Supabase and Vercel, which lets us maintain a high security bar without you having to manage your own servers."
+      },
+      {
+        "question": "What happens to my secrets if I delete my account?",
+        "answer": "Deleting your account permanently removes files you solely owned, along with their version history and active share links. Files belonging to workspaces with other members remain accessible to the remaining members with the right role."
+      }
+    ]
+  },
+  "footer": {
+    "heading": "Your team's secrets deserve better than Slack",
+    "subtext": "Upload your first .env file and see what secret sharing looks like with real access control.",
+    "contactCta": "Send an email",
+    "columns": {
+      "product": {
+        "title": "Product",
+        "docs": "API documentation",
+        "status": "Service status"
+      },
+      "legal": {
+        "title": "Legal",
+        "privacy": "Privacy policy",
+        "terms": "Terms of service",
+        "security": "Security"
+      }
+    },
+    "social": {
+      "github": "GitHub",
+      "discord": "Discord"
+    },
+    "copyright": "share.env. All rights reserved.",
+    "tagline": "Built for teams who take secrets seriously.",
+    "illustrationAlt": "A glass and metal vault door left ajar, representing securely stored secrets"
   }
 }

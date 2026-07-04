@@ -1,18 +1,40 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { List, X } from "@phosphor-icons/react";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 
 const NAV_LINK_HREFS = ["/workspaces", "/pricing", "/docs"] as const;
+
+function LocaleSwitcher({ className }: { className?: string }) {
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  return (
+    <select
+      aria-label="Language"
+      value={locale}
+      onChange={(e) => router.replace(pathname, { locale: e.target.value })}
+      className={className}
+    >
+      {routing.locales.map((l) => (
+        <option key={l} value={l}>
+          {l.toUpperCase()}
+        </option>
+      ))}
+    </select>
+  );
+}
 
 export function Navbar() {
   const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-hairline bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-hairline bg-background/95 backdrop-blur py-4">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="text-lg font-semibold tracking-tight text-foreground">
           share-env
@@ -31,6 +53,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <LocaleSwitcher className="rounded-full border border-hairline bg-transparent px-3 py-2 text-[16px] text-foreground/70" />
           <Link
             href="/login"
             className="rounded-full px-3 py-2 text-[16px] font-medium text-foreground hover:bg-surface-soft"
@@ -71,6 +94,7 @@ export function Navbar() {
             ))}
           </nav>
           <div className="mt-3 flex flex-col gap-2 border-t border-hairline pt-3">
+            <LocaleSwitcher className="rounded-full border border-hairline bg-transparent px-3 py-3 text-center text-[16px] text-foreground" />
             <Link
               href="/login"
               onClick={() => setOpen(false)}

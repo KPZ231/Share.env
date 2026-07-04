@@ -1,11 +1,11 @@
 // schema.prisma is the source of truth for table shapes. Row Level Security
 // policies, the is_workspace_member() helper, and Storage bucket policies
-// cannot be expressed here — they live as raw SQL appended to
+// cannot be expressed here  they live as raw SQL appended to
 // prisma/migrations/0001_init/migration.sql. Never let the two drift: any
 // model change here needs a matching RLS review in that migration.
 //
 // IMPORTANT: Prisma Client connects via DATABASE_URL, a direct Postgres
-// connection with no Supabase session — it does NOT run as auth.uid() and is
+// connection with no Supabase session  it does NOT run as auth.uid() and is
 // NOT subject to RLS the way supabase-js is. Use Prisma Client only for
 // trusted/server-side operations (equivalent trust level to
 // lib/supabase/admin.ts). User-facing reads/writes that must be scoped to the

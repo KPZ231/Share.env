@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
-import { routing } from "@/i18n/routing";
-import { Hero } from "./hero";
+import { buildMetadata } from "@/lib/metadata";
+import { Hero } from "../../components/hero";
+import { HowItWorks } from "../../components/how-it-works";
+import { Features } from "../../components/features";
+import { Testimonials } from "../../components/testimonials";
+import { Faq } from "../../components/faq";
+import { FinalCta } from "../../components/final-cta";
 
 export async function generateMetadata({
   params,
@@ -9,25 +13,18 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "meta" });
-
-  return {
-    title: t("title"),
-    description: t("description"),
-    openGraph: {
-      title: t("title"),
-      description: t("description"),
-      locale,
-      type: "website",
-    },
-    alternates: {
-      languages: Object.fromEntries(
-        routing.locales.map((l) => [l, `/${l}`])
-      ),
-    },
-  };
+  return buildMetadata({ locale, namespace: "meta.home" });
 }
 
 export default function Home() {
-  return <Hero />;
+  return (
+    <>
+      <Hero />
+      <HowItWorks />
+      <Features />
+      <Testimonials />
+      <Faq />
+      <FinalCta />
+    </>
+  );
 }

@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { Navbar } from "./navbar";
+import { Navbar } from "../../components/navbar";
+import { Footer } from "../../components/footer";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -17,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "share-env",
-  description: "Bezpieczne przechowywanie i współdzielenie plików .env",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  title: { template: "%s  share-env", default: "share-env" },
 };
 
 export default async function RootLayout({
@@ -41,7 +42,8 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>
           <Navbar />
-          {children}
+          <main className="flex-1">{children}</main>
+          <Footer />
         </NextIntlClientProvider>
       </body>
     </html>

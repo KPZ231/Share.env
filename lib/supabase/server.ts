@@ -3,12 +3,12 @@ import { cookies } from "next/headers";
 
 /**
  * Supabase client for Server Components, Server Actions, and Route Handlers.
- * Uses the anon key + the caller's session cookies — every query goes through
+ * Uses the anon key + the caller's session cookies  every query goes through
  * RLS as the signed-in user. Never use this for cross-user/admin operations,
  * see lib/supabase/admin.ts for that.
  *
  * Server Components can't write cookies (Next.js restriction), so the
- * try/catch below is expected there — session refresh still happens in
+ * try/catch below is expected there  session refresh still happens in
  * proxy.ts on every request.
  */
 export async function createClient() {
@@ -28,7 +28,7 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // Called from a Server Component — safe to ignore, proxy.ts refreshes the session.
+            // Called from a Server Component  safe to ignore, proxy.ts refreshes the session.
           }
         },
       },
