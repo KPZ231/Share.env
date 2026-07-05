@@ -19,6 +19,6 @@ export async function getUser() {
 /** Use in Server Actions / pages that must not run without a session. */
 export async function requireUser() {
   const user = await getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/signin");
   return user;
 }
