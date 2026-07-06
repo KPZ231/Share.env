@@ -76,6 +76,7 @@ export async function signUpAction(values: SignUpValues): Promise<SignUpResult> 
   // result to say "email already registered." Any real error is generic too
   // -- never echo Supabase's raw error text to the client.
   if (error) {
+    // ponytail: Supabase rate-limits auth endpoints natively; add Upstash/Arcjet if abuse appears.
     if (error.status === 429) {
       return { ok: false, error: "Too many attempts, try again later." };
     }
@@ -85,8 +86,16 @@ export async function signUpAction(values: SignUpValues): Promise<SignUpResult> 
   return { ok: true };
 }
 
-/** Local-dev fallback when NEXT_PUBLIC_SITE_URL isn't configured. */
+/**
+ * Local-dev fallback when NEXT_PUBLIC_SITE_URL isn't configured.
+ * The Host header is client-controlled, so in production we must never trust
+ * it as a redirect base  fail loudly instead of risking a spoofed
+ * emailRedirectTo (phishing/ATO vector).
+ */
 async function fallbackOrigin(): Promise<string> {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("NEXT_PUBLIC_SITE_URL must be set in production.");
+  }
   const h = await headers();
   const host = h.get("host") ?? "localhost:3000";
   const protocol = host.startsWith("localhost") ? "http" : "https";

@@ -57,6 +57,7 @@ export async function signInAction(values: SignInValues): Promise<SignInResult> 
   // user, and unconfirmed email all normalize to the same generic message.
   // Supabase's raw error text differs across these cases  never echo it.
   if (error) {
+    // ponytail: Supabase rate-limits auth endpoints natively; add Upstash/Arcjet if abuse appears.
     if (error.status === 429) {
       return { ok: false, error: "Too many attempts, try again later." };
     }
@@ -70,10 +71,11 @@ export async function signInAction(values: SignInValues): Promise<SignInResult> 
   // creation somehow didn't happen at signup time.
   try {
     await ensureDefaultWorkspace(supabase);
-  } catch {
+  } catch (err) {
     // Swallow: session is valid, workspace bootstrap can be retried on next
-    // signin (ensureDefaultWorkspace is idempotent). Never log details that
-    // could include user/session info.
+    // signin (ensureDefaultWorkspace is idempotent). Log the error only
+    // never the user's email/password/session data  for observability.
+    console.error("ensureDefaultWorkspace failed:", err);
   }
 
   return { ok: true };
