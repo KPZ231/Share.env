@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { Link } from "@/i18n/navigation";
@@ -23,11 +22,8 @@ export function FinalCta() {
           const { reduce } = context.conditions as { reduce: boolean };
           if (reduce) return; // leave elements in their natural (visible) state
 
-          gsap.from("[data-cta=card]", {
-            y: 32,
-            opacity: 0,
-            duration: 0.7,
-            ease: "power3.out",
+          const tl = gsap.timeline({
+            defaults: { ease: "power3.out" },
             scrollTrigger: {
               trigger: rootRef.current,
               start: "top 75%",
@@ -35,9 +31,17 @@ export function FinalCta() {
             },
           });
 
-          gsap.to("[data-cta=mascot]", {
-            y: -14,
-            duration: 2.8,
+          tl.from("[data-cta=card]", { y: 32, opacity: 0, duration: 0.7 })
+            .from("[data-cta=text]", { y: 16, opacity: 0, duration: 0.5 }, "-=0.4")
+            .from(
+              "[data-cta=button]",
+              { y: 16, opacity: 0, scale: 0.95, duration: 0.5, ease: "back.out(1.7)" },
+              "-=0.35"
+            );
+
+          gsap.to("[data-cta=glow]", {
+            opacity: 0.6,
+            duration: 2.4,
             ease: "sine.inOut",
             repeat: -1,
             yoyo: true,
@@ -54,56 +58,30 @@ export function FinalCta() {
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           data-cta="card"
-          className="relative flex flex-col items-center gap-8 overflow-hidden rounded-[24px] bg-[#dceeb1] px-6 py-14 text-center sm:px-10 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:px-16 lg:py-16 lg:text-left"
+          className="relative flex flex-col items-center gap-8 overflow-hidden rounded-lg border border-hairline-strong bg-surface-soft px-6 py-14 text-center sm:px-10 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:px-16 lg:py-16 lg:text-left"
         >
-          <svg
+          <div
+            data-cta="glow"
             aria-hidden
-            viewBox="0 0 800 400"
-            preserveAspectRatio="none"
-            className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
-          >
-            <path
-              d="M-50 260 C 120 200, 220 320, 400 260 S 680 200, 850 270 V 450 H -50 Z"
-              fill="#c8e6cd"
-            />
-            <path
-              d="M-50 320 C 150 280, 260 380, 420 330 S 700 280, 850 340 V 450 H -50 Z"
-              fill="#ffffff"
-              fillOpacity="0.5"
-            />
-          </svg>
-
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_140%_140%_at_15%_20%,var(--accent-glow),transparent_70%)]"
+          />
           <div
             data-cta="text"
             className="relative z-10 flex max-w-xl flex-col gap-3"
           >
-            <h2 className="text-3xl font-semibold tracking-tight text-black md:text-4xl">
+            <h2 className="font-display text-3xl font-normal tracking-tight text-foreground md:text-4xl">
               {t("heading")}
             </h2>
-            <p className="text-lg leading-relaxed text-black/70">
+            <p className="text-lg leading-relaxed text-body">
               {t("subtext")}
             </p>
           </div>
 
           <div className="relative z-10 flex flex-wrap items-center justify-center gap-6">
-            <div
-              data-cta="mascot"
-              className="relative h-28 w-28 shrink-0 will-change-transform sm:h-36 sm:w-36"
-              aria-hidden
-            >
-              <Image
-                src="/cta-mascot.png"
-                alt=""
-                fill
-                sizes="144px"
-                className="object-contain"
-              />
-            </div>
-
             <Link
               href="/signup"
               data-cta="button"
-              className="w-fit shrink-0 rounded-full bg-black px-8 py-4 text-base font-medium text-white transition-opacity hover:opacity-90"
+              className="w-fit shrink-0 rounded-md bg-foreground px-8 py-3 text-base font-medium text-black transition-opacity hover:opacity-90"
             >
               {t("cta")}
             </Link>

@@ -4,21 +4,283 @@
       "title": "share-env  secure .env file sharing",
       "description": "Store and share .env files with your team without pasting secrets in Slack. Encryption, workspace roles, and expiring links."
     },
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Your workspace overview: environments, members, and active share links."
+    },
+    "newEnvironment": {
+      "title": "New environment",
+      "description": "Upload a .env file or add variables by hand to create a new environment."
+    },
+    "environments": {
+      "title": "Environments",
+      "description": "All environments in your workspace."
+    },
     "signup": {
       "title": "Sign up",
       "description": "Create a share.env account and start sharing .env files securely with your team."
+    },
+    "signin": {
+      "title": "Log in",
+      "description": "Log in to your share.env account to access your team's workspaces."
+    },
+    "verify2fa": {
+      "title": "Verify it's you",
+      "description": "Confirm your identity with a passkey or authenticator app."
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "Manage your avatar, bio, integrations, data export, and privacy settings."
+    },
+    "features": {
+      "title": "Features",
+      "description": "Encryption at rest, expiring share links, role-based access, and version history for every .env file your team stores."
+    },
+    "pricing": {
+      "title": "Pricing",
+      "description": "Free for up to 3 environments. $2 per environment per month after that, billed monthly."
+    },
+    "useCases": {
+      "title": "Use cases",
+      "description": "Why teams switch to share.env, and how onboarding, key rotation, and offboarding actually work day to day."
     }
+  },
+  "featuresPage": {
+    "eyebrow": "Product",
+    "title": "Everything you need to keep secrets safe",
+    "description": "Encryption, access control, and audit history built into every workspace, not bolted on afterwards.",
+    "tag": "AES-256 at rest"
+  },
+  "securityDeepDive": {
+    "heading": "Security enforced at the database, not the UI",
+    "subheading": "Every table in share.env has Row Level Security turned on. A hidden button in the interface is not a permission boundary. A policy is.",
+    "items": [
+      {
+        "title": "Row Level Security on every table",
+        "description": "Postgres policies decide who can read or write a row before your application code ever runs, so a bug in the UI can't leak another team's secrets."
+      },
+      {
+        "title": "AES-256 encryption at rest",
+        "description": "File contents are encrypted in Supabase Storage. Nobody, including us, reads a .env file outside of an authorized request."
+      },
+      {
+        "title": "High-entropy share tokens",
+        "description": "Links are generated with cryptographically secure tokens, always carry an expiry date, and can be revoked the moment access should end."
+      },
+      {
+        "title": "Full audit trail",
+        "description": "Every change to a file is recorded with who made it and when, so security reviews take minutes instead of days."
+      }
+    ]
+  },
+  "comparison": {
+    "heading": "Stop pasting secrets into chat",
+    "subheading": "The way most teams share environment variables today creates a permanent, unencrypted, unrevokable copy of your secrets.",
+    "beforeLabel": "Slack, email, or a shared doc",
+    "afterLabel": "share.env",
+    "before": [
+      "API keys sit in searchable chat history forever",
+      "Anyone in the channel can read them, no access control",
+      "No way to know who copied a secret or when",
+      "Rotating a leaked key means guessing who still has it"
+    ],
+    "after": [
+      "Files live encrypted in a workspace, never in a chat log",
+      "Owner, editor, and viewer roles enforced by the database",
+      "Every access and change is recorded with a timestamp",
+      "Revoke a link or a member's access in a single click"
+    ]
+  },
+  "integrations": {
+    "heading": "Fits into the pipeline you already have",
+    "subheading": "Pull the current environment straight into local development or a CI/CD run, without anyone copying secrets by hand.",
+    "items": [
+      "Official CLI for local development and scripts",
+      "Drop-in step for GitHub Actions, GitLab CI, and Vercel",
+      "Scoped tokens per project, never your personal login",
+      "Every pull is logged like any other file access"
+    ]
+  },
+  "useCasesPage": {
+    "eyebrow": "Use cases",
+    "title": "The moments your secrets actually change hands",
+    "description": "Onboarding, key rotation, and offboarding are where .env files leak. Here's why teams switch, and how each moment actually works.",
+    "tag": "Built for real workflows"
+  },
+  "valueStats": {
+    "items": [
+      { "value": "< 2 min", "label": "To onboard a new engineer" },
+      { "value": "1 click", "label": "To revoke a leaked link" },
+      { "value": "0", "label": "Secrets left in chat history" },
+      { "value": "100%", "label": "Of access changes logged" }
+    ]
+  },
+  "useCasePersonas": {
+    "heading": "Built for how your team actually works",
+    "subheading": "The right fit depends on how many people touch your secrets and how often that list changes.",
+    "items": [
+      {
+        "title": "Startup teams",
+        "description": "A handful of engineers ship fast and the .env file changes every week. You need everyone on the same values without a Slack thread.",
+        "payoff": "New hires get access in minutes, and nobody re-pastes a stale API key into their local setup again."
+      },
+      {
+        "title": "Agencies with client work",
+        "description": "Each client gets a separate workspace with its own secrets, so a contractor rolling off one project never sees another client's keys.",
+        "payoff": "Revoke a contractor's access the day the contract ends, without rotating every key by hand."
+      },
+      {
+        "title": "Platform and DevOps teams",
+        "description": "Dozens of services, multiple environments, and a compliance review that asks who touched production secrets last quarter.",
+        "payoff": "The audit trail already exists. Export it instead of reconstructing it from memory."
+      }
+    ]
+  },
+  "usageScenarios": {
+    "heading": "How the day-to-day actually looks",
+    "subheading": "Three moments where secrets usually leak, and what happens instead when they run through share.env.",
+    "items": [
+      {
+        "title": "Onboarding a new engineer",
+        "result": "The new hire is unblocked the same day, and their access disappears automatically if they never accept the invite.",
+        "steps": [
+          "Invite them to the workspace by email with a role: viewer to start, editor once they're ramped",
+          "They accept the invite and sign in, no shared password to hand off",
+          "They pull the current .env for their project with the CLI or copy it from the workspace"
+        ]
+      },
+      {
+        "title": "Rotating a leaked key",
+        "result": "The exposure window is minutes, not the days it takes to track down every place a pasted key ended up.",
+        "steps": [
+          "Revoke every active share link for the affected file immediately",
+          "Update the value in the workspace; the change is versioned automatically",
+          "Teammates and CI pull the new value on their next run, no manual re-share needed"
+        ]
+      },
+      {
+        "title": "Offboarding a contractor",
+        "result": "Access ends the moment you remove them, not whenever someone remembers to rotate the shared keys.",
+        "steps": [
+          "Remove their membership from the workspace or workspaces they had access to",
+          "Any link they generated is revoked along with their access",
+          "Check the audit log to confirm exactly what they touched while they had access"
+        ]
+      }
+    ]
   },
   "nav": {
     "links": {
-      "workspaces": "Workspaces",
+      "features": "Features",
+      "use-cases": "Use cases",
       "pricing": "Pricing",
       "docs": "Docs"
     },
     "login": "Log in",
     "signup": "Start for free",
+    "logout": "Log out",
+    "account": "Account menu",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
+  },
+  "profile": {
+    "heading": "Profile",
+    "subheading": "Manage how you appear to teammates and what share.env keeps about you.",
+    "errors": {
+      "generic": "Something went wrong. Please try again."
+    },
+    "avatar": {
+      "change": "Change photo",
+      "remove": "Remove",
+      "hint": "PNG, JPG, or WebP. Up to 4 MB.",
+      "success": "Avatar updated.",
+      "removed": "Avatar removed.",
+      "errors": {
+        "type": "Please choose a PNG, JPG, or WebP image.",
+        "size": "That image is larger than 4 MB.",
+        "generic": "Upload failed. Please try again."
+      }
+    },
+    "basics": {
+      "title": "Basic info",
+      "displayName": "Display name",
+      "bio": "Bio",
+      "bioPlaceholder": "A short line about what you're working on.",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Profile saved."
+    },
+    "integrations": {
+      "title": "Integrations",
+      "subtitle": "Search what share.env could connect to and tell us what you'd use.",
+      "searchPlaceholder": "Search integrations…",
+      "empty": "No integrations match \"{query}\".",
+      "notify": "Notify me",
+      "notifying": "Notifying",
+      "disclaimer": "None of these are connected yet — marking interest just tells us what to build next."
+    },
+    "github": {
+      "title": "GitHub",
+      "subtitle": "Connect your GitHub account to link repositories and preview commits from your environments.",
+      "notConnected": "Not connected",
+      "connectedAs": "Connected as {login}",
+      "connect": "Connect with GitHub",
+      "disconnect": "Disconnect",
+      "disconnected": "GitHub account disconnected."
+    },
+    "twoFactor": {
+      "title": "Two-factor verification",
+      "subtitle": "Used when unlocking a password-protected environment.",
+      "passkeys": {
+        "title": "Passkeys",
+        "hint": "Windows Hello, Touch ID, or a security key.",
+        "defaultLabel": "Passkey",
+        "labelPlaceholder": "Name this device (optional)",
+        "add": "Add passkey",
+        "remove": "Remove",
+        "enrolled": "Passkey added.",
+        "removed": "Passkey removed."
+      },
+      "totp": {
+        "title": "Authenticator app",
+        "hint": "Google Authenticator, Authy, or similar.",
+        "add": "Set up",
+        "remove": "Remove",
+        "scanHint": "Scan this QR code with your authenticator app.",
+        "qrAlt": "QR code for authenticator app setup",
+        "manualEntryHint": "Or enter this key manually, then confirm with the 6-digit code it generates.",
+        "codeLabel": "6-digit code",
+        "confirm": "Confirm",
+        "enrolled": "Authenticator app enrolled.",
+        "removed": "Authenticator app removed."
+      },
+      "errors": {
+        "generic": "Something went wrong. Please try again.",
+        "passkeyFailed": "Passkey registration failed or was cancelled."
+      }
+    },
+    "privacy": {
+      "title": "Privacy & data",
+      "productEmails": "Product emails",
+      "productEmailsHint": "Security notices, share-link expiry, and account activity.",
+      "marketing": "Marketing emails",
+      "marketingHint": "Occasional product updates and tips. Off by default.",
+      "export": "Export your data",
+      "exportHint": "Download a JSON copy of your profile and workspace memberships.",
+      "exportAction": "Download"
+    },
+    "danger": {
+      "title": "Danger zone",
+      "deleteAccount": "Delete account",
+      "deleteAccountHint": "Permanently deletes your account and profile. This cannot be undone.",
+      "deleteAction": "Delete account",
+      "confirmPrompt": "Type your email ({email}) to confirm account deletion.",
+      "confirmAction": "Permanently delete",
+      "deleting": "Deleting…",
+      "cancel": "Cancel"
+    }
   },
   "hero": {
     "headlineLine1": "Share .env files",
@@ -90,6 +352,66 @@
       }
     ]
   },
+  "pricing": {
+    "heading": "Simple pricing, pay for what you use",
+    "subheading": "Every team starts free. Only pay when you add environments beyond the first three.",
+    "perEnvironment": "per environment / month",
+    "free": {
+      "name": "Free",
+      "period": "/ month",
+      "description": "For individuals and small teams getting started.",
+      "features": [
+        "Up to 3 environments",
+        "Unlimited team members",
+        "AES-256 encryption at rest",
+        "Expiring share links"
+      ],
+      "cta": "Start for free"
+    },
+    "payg": {
+      "name": "Pay as you go",
+      "description": "For teams that outgrow the free tier. The first 3 environments always stay free.",
+      "features": [
+        "First 3 environments free",
+        "Billed monthly per environment above that",
+        "Same encryption and access control",
+        "Cancel anytime"
+      ],
+      "cta": "Get started",
+      "badge": "Most teams"
+    }
+  },
+  "pricingCalculator": {
+    "heading": "How much will you actually pay?",
+    "subheading": "Drag the slider to match your team's environments and watch the bill update instantly.",
+    "label": "Environments",
+    "environmentCount": "{count} environments",
+    "breakdown": "First {free} are free. {paid} additional environments billed monthly.",
+    "breakdownFree": "You're within the free tier. Nothing to pay.",
+    "totalLabel": "Estimated bill",
+    "perMonth": "per month"
+  },
+  "pricingFaq": {
+    "heading": "Billing questions",
+    "items": [
+      {
+        "question": "What counts as an environment?",
+        "answer": "Any distinct .env file you upload to a workspace, for example production, staging, or a per-branch preview file. Re-uploading the same file doesn't create a second one."
+      },
+      {
+        "question": "Do the first 3 environments ever expire?",
+        "answer": "No. The free tier is permanent for up to 3 environments, not a trial. You're only billed once you add a 4th."
+      },
+      {
+        "question": "Can I remove an environment to lower my bill?",
+        "answer": "Yes. Deleting an environment removes it from that month's count immediately, and the next invoice reflects the change."
+      },
+      {
+        "question": "Is there a limit on team members or storage?",
+        "answer": "No. Team members are unlimited on every plan; pricing scales only with the number of environments you store."
+      }
+    ]
+  },
   "testimonials": {
     "eyebrow": "Testimonials",
     "heading": "Trusted by the devs and CTOs who own security",
@@ -116,9 +438,106 @@
     ]
   },
   "signup": {
-    "heading": "Sign-up is coming soon",
-    "body": "We're building account creation and your first workspace. Check back shortly  or reach out if you'd like early access.",
-    "backHome": "Back to homepage"
+    "eyebrow": "Get started",
+    "heading": "Create your account",
+    "subtext": "Store and share .env files with your team in minutes.",
+    "divider": "or",
+    "fields": {
+      "name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password"
+    },
+    "placeholders": {
+      "name": "Ada Lovelace",
+      "email": "you@company.com",
+      "password": "Create a password",
+      "confirmPassword": "Repeat your password"
+    },
+    "password": {
+      "rules": {
+        "length": "At least 12 characters",
+        "upper": "One uppercase letter",
+        "lower": "One lowercase letter",
+        "number": "One number",
+        "special": "One special character"
+      }
+    },
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "terms": "I agree to the <link>Privacy policy</link>",
+    "submit": "Sign up",
+    "submitting": "Creating account…",
+    "hasAccount": "Already have an account?",
+    "logIn": "Log in",
+    "oauth": {
+      "comingSoon": "{provider} sign-up isn't connected yet"
+    },
+    "success": "Account created  check your inbox to verify your email.",
+    "errors": {
+      "name": "Enter your full name.",
+      "email": "Enter a valid email address.",
+      "password": "Your password doesn't meet the requirements yet.",
+      "confirmPassword": "Passwords don't match.",
+      "terms": "You need to accept the privacy policy to continue.",
+      "generic": "Something went wrong. Please try again.",
+      "locked": "Too many attempts. Try again in {seconds}s.",
+      "tooManyAttempts": "Too many attempts. Please wait 30 seconds before trying again."
+    },
+    "panel": {
+      "heading": "Your team's secrets, finally organized",
+      "body": "Encrypted storage, expiring links, and role-based access  built for teams who take .env files seriously."
+    }
+  },
+  "signin": {
+    "eyebrow": "Welcome back",
+    "heading": "Log in to your account",
+    "subtext": "Access your team's workspaces and shared .env files.",
+    "divider": "or",
+    "fields": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "placeholders": {
+      "email": "you@company.com",
+      "password": "Enter your password"
+    },
+    "forgot": "Forgot?",
+    "remember": "Remember me on this device",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "submit": "Log in",
+    "submitting": "Logging in…",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "oauth": {
+      "comingSoon": "{provider} login isn't connected yet"
+    },
+    "success": "Logged in  redirecting to your workspace.",
+    "errors": {
+      "email": "Enter a valid email address.",
+      "password": "Enter your password.",
+      "generic": "Something went wrong. Please try again.",
+      "locked": "Too many attempts. Try again in {seconds}s.",
+      "tooManyAttempts": "Too many attempts. Please wait 30 seconds before trying again."
+    },
+    "panel": {
+      "heading": "Pick up right where your team left off",
+      "body": "Encrypted storage, expiring links, and role-based access  built for teams who take .env files seriously."
+    }
+  },
+  "verify2fa": {
+    "heading": "Verify it's you",
+    "subheading": "Your account has two-factor verification enabled. Confirm with a passkey or your authenticator app.",
+    "usePasskey": "Use a passkey",
+    "orUseTotp": "Or enter a code from your authenticator app",
+    "totpLabel": "6-digit code",
+    "submit": "Verify",
+    "useDifferentAccount": "Use a different account",
+    "noMethods": "Two-factor verification is enabled but no method is set up on this account. Contact support.",
+    "errors": {
+      "passkeyFailed": "Passkey verification failed or was cancelled."
+    }
   },
   "finalCta": {
     "heading": "Stop pasting secrets into chat",
@@ -153,6 +572,151 @@
         "answer": "Deleting your account permanently removes files you solely owned, along with their version history and active share links. Files belonging to workspaces with other members remain accessible to the remaining members with the right role."
       }
     ]
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Overview",
+      "workspaceSwitcher": "Switch workspace",
+      "profile": "Profile",
+      "signOut": "Sign out"
+    },
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "profile": "Profile"
+    },
+    "sidebar": {
+      "overview": "Overview",
+      "environments": "Environments",
+      "members": "Members",
+      "shareLinks": "Share links",
+      "settings": "Settings",
+      "profile": "Profile",
+      "comingSoon": "Soon"
+    },
+    "heading": "Overview",
+    "roles": {
+      "owner": "Owner",
+      "editor": "Editor",
+      "viewer": "Viewer"
+    },
+    "environments": {
+      "title": "Environments",
+      "usage": "{used} of {limit} used",
+      "empty": "No environments yet. Upload your first .env file to get started.",
+      "recentTitle": "Recently added"
+    },
+    "quickActions": {
+      "title": "Quick actions",
+      "newEnvironment": "New environment",
+      "inviteMember": "Invite member",
+      "createShareLink": "Create share link",
+      "manageWorkspace": "Manage workspace",
+      "comingSoon": "Coming soon"
+    },
+    "stats": {
+      "environments": "Environments",
+      "members": "Members",
+      "activeShareLinks": "Active share links"
+    }
+  },
+  "environments": {
+    "list": {
+      "breadcrumb": "Environments",
+      "heading": "Environments",
+      "empty": "No environments yet. Upload your first .env file to get started.",
+      "newEnvironment": "New environment"
+    },
+    "github": {
+      "title": "GitHub",
+      "connectHint": "Link a repository to see its recent commits alongside this environment.",
+      "connect": "Connect with GitHub",
+      "connectedAs": "Connected as {login} · Disconnect",
+      "pickHint": "Link a repository to preview its recent commits here.",
+      "chooseRepo": "Choose repository",
+      "loadingRepos": "Loading repositories…",
+      "noRepos": "No repositories found.",
+      "noRepoLinked": "No repository linked yet.",
+      "unlink": "Unlink repository",
+      "loadingCommits": "Loading commits…",
+      "noCommits": "No commits found."
+    },
+    "detail": {
+      "readOnlyNotice": "You have view-only access to this environment.",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "success": "Environment updated.",
+      "replaceHint": "Drag a .env file here to replace all variables, or click to choose one",
+      "unlockHeading": "This environment is protected",
+      "unlockSubheading": "Enter the password to view or edit it.",
+      "passwordLabel": "Password",
+      "unlockSubmit": "Unlock",
+      "twoFactorHeading": "Verify it's you",
+      "twoFactorSubheading": "Confirm with a passkey or your authenticator app.",
+      "noTwoFactorEnrolled": "You don't have a passkey or authenticator app set up yet.",
+      "goToProfile": "Set one up in your profile",
+      "usePasskey": "Use a passkey",
+      "orUseTotp": "Or enter a code from your authenticator app",
+      "totpLabel": "6-digit code",
+      "errors": {
+        "passkeyFailed": "Passkey verification failed or was cancelled."
+      },
+      "protection": {
+        "protectedTitle": "Password protected",
+        "protectedHint": "Members must enter a password and a second factor to view this environment.",
+        "unprotectedTitle": "Not password protected",
+        "unprotectedHint": "Any workspace member can view this environment without extra verification.",
+        "manage": "Manage protection",
+        "protect": "Protect with password",
+        "currentPasswordLabel": "Current password",
+        "ownerOverrideHint": "As the workspace owner, you can remove protection without the current password.",
+        "removeSubmit": "Remove protection",
+        "newPasswordLabel": "New password",
+        "confirmPasswordLabel": "Confirm password",
+        "twoFactorNotice": "Setting a password also requires a second factor (passkey or authenticator app) to unlock  make sure you have one set up in your profile first.",
+        "setSubmit": "Protect environment",
+        "setSuccess": "Password protection enabled.",
+        "removeSuccess": "Password protection removed.",
+        "errors": {
+          "tooShort": "Password must be at least 8 characters.",
+          "mismatch": "Passwords don't match."
+        }
+      }
+    },
+    "new": {
+      "breadcrumb": "New environment",
+      "heading": "New environment",
+      "subheading": "Upload a .env file or add variables by hand.",
+      "nameLabel": "Environment name",
+      "namePlaceholder": "e.g. Production",
+      "modeUpload": "Upload .env",
+      "modeManual": "Enter manually",
+      "dropHint": "Drag a .env file here, or click to choose one",
+      "dropActive": "Drop to import",
+      "manualHint": "Enter to add a row · Tab to move between fields · Ctrl/Cmd+Enter to save · paste a .env to bulk-fill",
+      "keyPlaceholder": "KEY",
+      "valuePlaceholder": "value",
+      "addRow": "Add variable",
+      "removeRow": "Remove",
+      "show": "Show",
+      "hide": "Hide",
+      "submit": "Create environment",
+      "submitting": "Creating…",
+      "cancel": "Cancel",
+      "roleBlocked": "You don't have permission to create environments in this workspace.",
+      "limitReached": "You've reached the environment limit on the free plan.",
+      "errors": {
+        "nameRequired": "Give the environment a name.",
+        "emptyPairs": "Add at least one variable.",
+        "invalidKey": "Invalid variable name: {key}",
+        "duplicateKey": "Duplicate variable name: {key}",
+        "valueTooLarge": "Value too large for {key}.",
+        "fileType": "Please choose a .env or plain text file.",
+        "fileSize": "File is too large.",
+        "generic": "Something went wrong. Please try again."
+      },
+      "success": "Environment created.",
+      "bulkImported": "{count} variables imported."
+    }
   },
   "footer": {
     "heading": "Your team's secrets deserve better than Slack",

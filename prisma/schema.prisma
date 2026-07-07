@@ -62,12 +62,97 @@ model EnvFile {
   storagePath String   @map("storage_path") // path in the "env-files" Storage bucket
   createdBy   String?  @map("created_by") @db.Uuid // nullable: ON DELETE SET NULL when the creator's account is removed
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  // scrypt hash ("salt:hash" hex) of the environment's reveal password, null
+  // when unprotected. Never the plaintext. Presence of a hash means a member
+  // must pass password + 2FA (see WebauthnCredential/TotpCredential) before
+  // the app returns decoded pairs  see lib/env-lock.ts.
+  passwordHash String? @map("password_hash")
+  // Optional linked GitHub repo (owner/name), shown as a commit scaffold in
+  // the creator/detail sidebar. Each viewer fetches commits with their own
+  // connected GitHub token (GithubConnection)  linking a repo here doesn't
+  // grant anyone access to it beyond what their own GitHub account already has.
+  githubOwner String? @map("github_owner")
+  githubRepo  String? @map("github_repo")
 
   workspace  Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   shareLinks ShareLink[]
 
-  @@index([workspaceId])
+  @@index([workspaceId, createdAt])
   @@map("env_files")
+}
+
+// Profile is 1:1 with auth.users (id is the Supabase auth user id, not a
+// separate identity)  every signed-in user gets exactly one row, created
+// lazily on first visit to /profile via lib/profile.ts.
+model Profile {
+  userId               String   @id @map("user_id") @db.Uuid
+  displayName          String?  @map("display_name")
+  bio                  String?
+  avatarPath           String?  @map("avatar_path") // path in the "avatars" Storage bucket, not a public URL
+  marketingConsent     Boolean  @default(false) @map("marketing_consent")
+  productEmailsConsent Boolean  @default(true) @map("product_emails_consent")
+  // Integration slugs (from lib/integrations.ts's static catalog) the user has
+  // asked to be notified about. No OAuth is wired up yet  see IntegrationsSearch.
+  interestedIntegrations String[] @default([]) @map("interested_integrations")
+  // Kept in sync by the profiles_set_updated_at DB trigger, not Prisma's
+  // client-side @updatedAt  every write to this table goes through
+  // supabase-js, not Prisma Client, so the trigger is the only thing that
+  // actually runs on every insert/update.
+  updatedAt            DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("profiles")
+}
+
+// One TOTP enrollment per user, account-wide (not tied to a workspace or
+// environment)  used as one of the two selectable 2FA methods when
+// unlocking a password-protected environment (see lib/totp.ts). The secret
+// is AES-256-GCM encrypted at rest with a server-only key (lib/totp-crypto.ts)
+// since, unlike other row data, this is a standing bearer credential.
+model TotpCredential {
+  userId    String   @id @map("user_id") @db.Uuid
+  secretEnc String   @map("secret_enc") // base64 ciphertext
+  secretIv  String   @map("secret_iv") // base64 96-bit GCM nonce
+  secretTag String   @map("secret_tag") // base64 GCM auth tag
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("totp_credentials")
+}
+
+// WebAuthn passkeys/platform authenticators (Windows Hello, Touch ID, etc.)
+// enrolled by a user  a user may register several. The other selectable
+// 2FA method for unlocking a password-protected environment (lib/webauthn.ts).
+// Public keys aren't secret, so no app-level encryption is needed here
+// (unlike TotpCredential).
+model WebauthnCredential {
+  id          String   @id @map("credential_id") // base64url WebAuthn credential ID
+  userId      String   @map("user_id") @db.Uuid
+  publicKey   String   @map("public_key") // base64-encoded COSE public key bytes
+  counter     Int      @default(0) // replay-protection counter, bumped on every successful auth
+  transports  String[] @default([])
+  deviceLabel String?  @map("device_label")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId])
+  @@map("webauthn_credentials")
+}
+
+// One GitHub OAuth connection per user, account-wide (not tied to a
+// workspace or environment)  linking a repo to an environment (EnvFile.githubOwner/githubRepo)
+// just remembers which repo, it does not copy access: every viewer fetches
+// commits with their own token, so GitHub's own repo permissions still apply.
+model GithubConnection {
+  userId          String   @id @map("user_id") @db.Uuid
+  githubUserId    Int      @map("github_user_id")
+  githubLogin     String   @map("github_login")
+  githubAvatarUrl String?  @map("github_avatar_url")
+  // AES-256-GCM ciphertext (lib/totp-crypto.ts's encryptSecret)  never the
+  // raw access token, same trust level as TotpCredential's secret.
+  accessTokenEnc String @map("access_token_enc")
+  accessTokenIv  String @map("access_token_iv")
+  accessTokenTag String @map("access_token_tag")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("github_connections")
 }
 
 model ShareLink {

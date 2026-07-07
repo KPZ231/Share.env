@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { DiscordLogo, GithubLogo } from "@phosphor-icons/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
@@ -49,12 +48,7 @@ export function Footer() {
             },
           });
 
-          tl.from("[data-footer=illustration]", {
-            y: 24,
-            opacity: 0,
-            scale: 0.94,
-          })
-            .from("[data-footer=heading]", { y: 20, opacity: 0 }, "-=0.45")
+          tl.from("[data-footer=heading]", { y: 20, opacity: 0 })
             .from("[data-footer=cta]", { y: 16, opacity: 0 }, "-=0.4")
             .from(
               "[data-footer=column]",
@@ -66,15 +60,6 @@ export function Footer() {
               { y: 12, opacity: 0, stagger: 0.06 },
               "-=0.3"
             );
-
-          gsap.to("[data-footer=illustration]", {
-            y: -10,
-            duration: 3.2,
-            ease: "sine.inOut",
-            repeat: -1,
-            yoyo: true,
-            delay: 1,
-          });
         }
       );
     }, rootRef);
@@ -86,40 +71,25 @@ export function Footer() {
     <div ref={rootRef} className="bg-background">
       <footer
         aria-labelledby="footer-heading"
-        className="rounded-t-[32px] bg-[#1f1d3d] px-4 pb-10 pt-16 text-white sm:px-6 lg:px-8 lg:pt-20"
+        className="border-t border-hairline bg-background px-4 pb-10 pt-16 text-foreground sm:px-6 lg:px-8 lg:pt-20"
       >
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-16">
-            <div className="max-w-xl">
-              <h2
-                id="footer-heading"
-                data-footer="heading"
-                className="text-3xl font-semibold leading-tight tracking-tight md:text-4xl"
-              >
-                {t("heading")}
-              </h2>
-              <p className="mt-4 max-w-md text-lg leading-relaxed text-white/70">
-                {t("subtext")}
-              </p>
-            </div>
-
-            <div
-              data-footer="illustration"
-              className="mx-auto h-40 w-40 shrink-0 will-change-transform sm:h-48 sm:w-48 lg:h-56 lg:w-56"
+          <div className="max-w-xl">
+            <h2
+              id="footer-heading"
+              data-footer="heading"
+              className="font-display text-3xl font-normal leading-tight tracking-tight md:text-4xl"
             >
-              <Image
-                src="/footer-vault.svg"
-                alt={t("illustrationAlt")}
-                width={224}
-                height={224}
-                className="h-full w-full object-contain"
-              />
-            </div>
+              {t("heading")}
+            </h2>
+            <p className="mt-4 max-w-md text-lg leading-relaxed text-body">
+              {t("subtext")}
+            </p>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-10 border-t border-white/10 pt-10 sm:grid-cols-2 lg:grid-cols-[repeat(2,minmax(0,220px))_auto] lg:items-start lg:gap-8">
+          <div className="mt-12 grid grid-cols-1 gap-10 border-t border-hairline pt-10 sm:grid-cols-2 lg:grid-cols-[repeat(2,minmax(0,220px))_auto] lg:items-start lg:gap-8">
             <nav data-footer="column" aria-label={t("columns.product.title")}>
-              <p className="font-mono text-xs uppercase tracking-[0.14em] text-white/50">
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-mute">
                 {t("columns.product.title")}
               </p>
               <ul className="mt-4 flex flex-col gap-3">
@@ -127,7 +97,7 @@ export function Footer() {
                   <li key={link.key}>
                     <Link
                       href={link.href}
-                      className="text-[15px] text-white/70 transition-colors hover:text-white"
+                      className="text-[15px] text-body transition-colors hover:text-foreground"
                     >
                       {t(`columns.product.${link.key}`)}
                     </Link>
@@ -137,7 +107,7 @@ export function Footer() {
             </nav>
 
             <nav data-footer="column" aria-label={t("columns.legal.title")}>
-              <p className="font-mono text-xs uppercase tracking-[0.14em] text-white/50">
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-mute">
                 {t("columns.legal.title")}
               </p>
               <ul className="mt-4 flex flex-col gap-3">
@@ -145,7 +115,7 @@ export function Footer() {
                   <li key={link.key}>
                     <Link
                       href={link.href}
-                      className="text-[15px] text-white/70 transition-colors hover:text-white"
+                      className="text-[15px] text-body transition-colors hover:text-foreground"
                     >
                       {t(`columns.legal.${link.key}`)}
                     </Link>
@@ -160,20 +130,20 @@ export function Footer() {
             >
               <a
                 href="mailto:support@share-env.app"
-                className="w-fit rounded-full bg-[#dceeb1] px-6 py-3 text-center text-[16px] font-medium text-black transition-opacity hover:opacity-90"
+                className="w-fit rounded-md bg-foreground px-6 py-2.5 text-center text-[14px] font-medium text-black transition-opacity hover:opacity-90"
               >
                 {t("contactCta")}
               </a>
             </div>
           </div>
 
-          <div className="mt-10 flex flex-col gap-6 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-10 flex flex-col gap-6 border-t border-hairline pt-8 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-col gap-1">
               <p className="text-lg font-semibold tracking-tight">share.env</p>
-              <p className="text-sm text-white/50">
+              <p className="text-sm text-mute">
                 &copy; {new Date().getFullYear()} {t("copyright")}
               </p>
-              <p className="text-sm text-white/50">{t("tagline")}</p>
+              <p className="text-sm text-mute">{t("tagline")}</p>
             </div>
 
             <div className="flex items-center gap-3">
@@ -187,7 +157,7 @@ export function Footer() {
                     rel="noopener noreferrer"
                     aria-label={t(`social.${social.key}`)}
                     data-footer="social"
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:bg-white/10"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline-strong text-foreground transition-colors hover:bg-surface-elevated"
                   >
                     <SocialIcon size={20} weight="bold" />
                   </a>

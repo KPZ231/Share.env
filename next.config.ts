@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value:
               process.env.NODE_ENV === "development"
-                ? "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.supabase.co; frame-ancestors 'none';"
+                ? "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:8400; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.supabase.co http://localhost:8400; frame-ancestors 'none';"
                 : "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.supabase.co; frame-ancestors 'none';",
           },
           { key: "X-Content-Type-Options", value: "nosniff" },

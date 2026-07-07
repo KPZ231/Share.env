@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { ACCOUNT_2FA_COOKIE, verifyAccountTwoFactorToken } from "@/lib/env-lock";
 
 /**
  * Refreshes the Supabase session cookie on every request and redirects
@@ -7,10 +8,22 @@ import { NextResponse, type NextRequest } from "next/server";
  * check only (see Next.js auth guide)  RLS is the real authorization
  * boundary, this just avoids rendering protected pages for logged-out users.
  *
- * Routes considered public: /, /login, /signup, /auth/callback, and any
+ * Also gates account-level sign-in 2FA: if the signed-in user has any 2FA
+ * method enrolled (app_metadata.has2fa, kept in sync by
+ * lib/two-factor.ts's syncHasTwoFactorMetadata via the service-role admin
+ * client) and hasn't verified it on this device/cookie, every protected
+ * route bounces to /verify-2fa first. This deliberately reads app_metadata,
+ * not user_metadata  the latter is writable by the user's own session
+ * (supabase.auth.updateUser()), so trusting it here would let anyone flip
+ * their own has2fa flag off from the browser console.
+ * Next.js 16's Proxy runs on the Node.js runtime (not Edge), so the
+ * node:crypto-based token check in lib/env-lock.ts works here.
+ *
+ * Routes considered public: /, /signin, /signup, /privacy, /auth/callback, and any
  * public share-link resolver under /share. Everything else requires a session.
  */
-const PUBLIC_PATHS = ["/", "/login", "/signup", "/auth/callback"];
+const PUBLIC_PATHS = ["/", "/signin", "/signup", "/privacy", "/auth/callback"];
+const VERIFY_2FA_PATH = "/verify-2fa";
 
 // Locale prefix (e.g. /pl, /en) is always present  see i18n/routing.ts  so
 // it must be stripped before matching against the public-path allowlist.
@@ -53,11 +66,31 @@ export async function updateSession(request: NextRequest, response: NextResponse
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user && !isPublicPath(request.nextUrl.pathname)) {
-    const locale = request.nextUrl.pathname.match(/^\/(pl|en)(?=\/|$)/)?.[1] ?? "pl";
-    const loginUrl = new URL(`/${locale}/login`, request.url);
-    loginUrl.searchParams.set("redirectTo", request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
+  const locale = request.nextUrl.pathname.match(/^\/(pl|en)(?=\/|$)/)?.[1] ?? "pl";
+
+  if (!user) {
+    if (!isPublicPath(request.nextUrl.pathname)) {
+      const loginUrl = new URL(`/${locale}/signin`, request.url);
+      loginUrl.searchParams.set("redirectTo", request.nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    return response;
+  }
+
+  // /verify-2fa itself must stay reachable for a signed-in-but-not-yet-2FA-verified
+  // user  it does its own has2fa check and redirects onward once passed.
+  if (stripLocale(request.nextUrl.pathname) === VERIFY_2FA_PATH) {
+    return response;
+  }
+
+  if (!isPublicPath(request.nextUrl.pathname) && user.app_metadata?.has2fa === true) {
+    const token = request.cookies.get(ACCOUNT_2FA_COOKIE)?.value;
+    const verified = !!token && verifyAccountTwoFactorToken(token, user.id);
+    if (!verified) {
+      const verifyUrl = new URL(`/${locale}/verify-2fa`, request.url);
+      verifyUrl.searchParams.set("redirectTo", request.nextUrl.pathname);
+      return NextResponse.redirect(verifyUrl);
+    }
   }
 
   return response;

@@ -9,6 +9,15 @@ const handleI18nRouting = createIntlMiddleware(routing);
 // Locale routing runs first (produces the response + locale-aware request),
 // then the Supabase session refresh writes its cookies onto that response.
 export async function proxy(request: NextRequest) {
+  // ponytail: geo > accept-language for first visit. Vercel sets x-vercel-ip-country;
+  // absent locally, so PL/EN split just falls back to next-intl's Accept-Language default.
+  if (!request.cookies.has("NEXT_LOCALE")) {
+    const country = request.headers.get("x-vercel-ip-country");
+    if (country) {
+      request.cookies.set("NEXT_LOCALE", country === "PL" ? "pl" : "en");
+    }
+  }
+
   const response = handleI18nRouting(request);
   return updateSession(request, response);
 }

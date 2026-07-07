@@ -34,11 +34,17 @@ export function Testimonials() {
             },
           });
 
-          tl.from("[data-testimonial=header]", { y: 20, opacity: 0 }).from(
-            "[data-testimonial=card]",
-            { y: 28, opacity: 0, stagger: 0.12 },
-            "-=0.3"
-          );
+          tl.from("[data-testimonial=header]", { y: 20, opacity: 0 })
+            .from(
+              "[data-testimonial=card]",
+              { y: 28, scale: 0.97, opacity: 0, stagger: 0.12 },
+              "-=0.3"
+            )
+            .from(
+              "[data-testimonial=quote]",
+              { scale: 0.5, opacity: 0, stagger: 0.12, duration: 0.4, ease: "back.out(1.7)" },
+              "-=0.5"
+            );
         }
       );
     }, rootRef);
@@ -53,17 +59,13 @@ export function Testimonials() {
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
       >
         <div data-testimonial="header" className="max-w-2xl">
-          <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.03em] text-foreground/60">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#c5b0f4]" />
-            {t("eyebrow")}
-          </p>
           <h2
             id="testimonials-heading"
-            className="mt-3 text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
+            className="font-display mt-3 text-3xl font-normal tracking-tight text-foreground md:text-4xl"
           >
             {t("heading")}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-foreground/70">
+          <p className="mt-4 text-lg leading-relaxed text-body">
             {t("subheading")}
           </p>
         </div>
@@ -73,9 +75,15 @@ export function Testimonials() {
             <figure
               key={item.name}
               data-testimonial="card"
-              className="flex flex-col gap-5 rounded-[24px] border border-hairline bg-surface-soft p-6 will-change-transform lg:p-8"
+              className="flex flex-col gap-5 rounded-lg border border-hairline-strong bg-surface-soft p-6 will-change-transform lg:p-8"
             >
-              <Quotes size={28} weight="fill" className="text-[#c5b0f4]" aria-hidden />
+              <Quotes
+                data-testimonial="quote"
+                size={28}
+                weight="fill"
+                className="text-accent"
+                aria-hidden
+              />
 
               <blockquote className="flex-1 text-base leading-relaxed text-foreground">
                 {item.quote}
@@ -85,8 +93,8 @@ export function Testimonials() {
                 <cite className="text-sm font-semibold not-italic text-foreground">
                   {item.name}
                 </cite>
-                <span className="text-sm text-foreground/60">
-                  {item.role} · {item.company}
+                <span className="text-sm text-mute">
+                  {item.role} - {item.company}
                 </span>
               </figcaption>
             </figure>

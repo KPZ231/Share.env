@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
+import { Toaster } from "sonner";
 import { routing } from "@/i18n/routing";
-import { Navbar } from "../../components/navbar";
-import { Footer } from "../../components/footer";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -15,6 +14,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const displaySerif = Newsreader({
+  variable: "--font-display",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -37,13 +42,12 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${displaySerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          {children}
+          <Toaster position="top-right" richColors closeButton />
         </NextIntlClientProvider>
       </body>
     </html>

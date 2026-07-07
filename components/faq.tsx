@@ -37,6 +37,11 @@ export function Faq() {
           tl.from("[data-faq=header]", { y: 20, opacity: 0 })
             .from("[data-faq=contact]", { y: 20, opacity: 0 }, "-=0.4")
             .from(
+              "[data-faq=icon]",
+              { scale: 0.5, opacity: 0, duration: 0.4, ease: "back.out(1.7)" },
+              "-=0.3"
+            )
+            .from(
               "[data-faq=item]",
               { y: 24, opacity: 0, stagger: 0.08 },
               "-=0.4"
@@ -56,16 +61,9 @@ export function Faq() {
       >
         <div className="lg:sticky lg:top-24 lg:self-start">
           <div data-faq="header" className="flex flex-col gap-4">
-            <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.03em] text-foreground/60">
-              <span
-                aria-hidden
-                className="h-1.5 w-1.5 rounded-full bg-[#f3c9b6]"
-              />
-              {t("eyebrow")}
-            </p>
             <h2
               id="faq-heading"
-              className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
+              className="font-display text-3xl font-normal tracking-tight text-foreground md:text-4xl"
             >
               {t("heading")}
             </h2>
@@ -73,25 +71,26 @@ export function Faq() {
 
           <div
             data-faq="contact"
-            className="mt-8 flex flex-col gap-4 rounded-[20px] border border-hairline bg-surface-soft p-6"
+            className="mt-8 flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-soft p-6"
           >
             <span
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f3c9b6]"
+              data-faq="icon"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-accent/15"
               aria-hidden
             >
-              <EnvelopeSimple size={20} weight="bold" className="text-black" />
+              <EnvelopeSimple size={20} weight="bold" className="text-accent" />
             </span>
             <div className="flex flex-col gap-1">
               <h3 className="text-lg font-semibold text-foreground">
                 {t("contactTitle")}
               </h3>
-              <p className="text-sm leading-relaxed text-foreground/70">
+              <p className="text-sm leading-relaxed text-body">
                 {t("contactText")}
               </p>
             </div>
             <a
               href="mailto:support@share-env.app"
-              className="mt-1 w-fit rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+              className="mt-1 w-fit rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-black transition-opacity hover:opacity-90"
             >
               {t("contactCta")}
             </a>
@@ -104,18 +103,18 @@ export function Faq() {
               key={item.question}
               data-faq="item"
               open={index === 0}
-              className="group rounded-[16px] border border-hairline bg-surface-soft px-6 py-4 open:pb-5"
+              className="group rounded-lg border border-hairline-strong bg-surface-soft px-6 py-4 open:pb-5"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-lg font-medium text-foreground marker:content-none">
                 {item.question}
                 <span
                   aria-hidden
-                  className="shrink-0 text-2xl leading-none text-foreground/50 transition-transform group-open:rotate-45"
+                  className="shrink-0 text-2xl leading-none text-mute transition-transform group-open:rotate-45"
                 >
                   +
                 </span>
               </summary>
-              <p className="mt-3 text-base leading-relaxed text-foreground/70">
+              <p className="mt-3 text-base leading-relaxed text-body">
                 {item.answer}
               </p>
             </details>

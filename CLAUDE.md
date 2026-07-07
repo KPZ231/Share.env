@@ -33,7 +33,7 @@ Minimal App Router structure, no custom code yet beyond the `create-next-app` sc
 
 ## Design tokens
 
-`figma-DESIGN.md` holds a design-system spec extracted from Figma (color palette, typography scale, etc. as YAML frontmatter). Treat it as the source of truth for colors/type/spacing when implementing UI to match the intended design  don't invent new values that duplicate what's already defined there.
+`DESIGN-resend.md` holds a design-system spec extracted from Figma (color palette, typography scale, etc. as YAML frontmatter). Treat it as the source of truth for colors/type/spacing when implementing UI to match the intended design  don't invent new values that duplicate what's already defined there.
 
 ## Kontekst aplikacji
 

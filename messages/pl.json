@@ -4,21 +4,283 @@
       "title": "share-env  bezpieczne współdzielenie plików .env",
       "description": "Przechowuj i udostępniaj pliki .env zespołowi bez wklejania sekretów na Slacku. Szyfrowanie, role w workspace i linki z wygaśnięciem."
     },
+    "dashboard": {
+      "title": "Panel",
+      "description": "Przegląd Twojego workspace'a: środowiska, członkowie i aktywne linki udostępniania."
+    },
+    "newEnvironment": {
+      "title": "Nowe środowisko",
+      "description": "Prześlij plik .env lub dodaj zmienne ręcznie, aby utworzyć nowe środowisko."
+    },
+    "environments": {
+      "title": "Środowiska",
+      "description": "Wszystkie środowiska w Twoim workspace'ie."
+    },
     "signup": {
       "title": "Rejestracja",
       "description": "Załóż konto share.env i zacznij bezpiecznie udostępniać pliki .env swojemu zespołowi."
+    },
+    "signin": {
+      "title": "Logowanie",
+      "description": "Zaloguj się do konta share.env, aby uzyskać dostęp do workspace'ów zespołu."
+    },
+    "verify2fa": {
+      "title": "Potwierdź, że to Ty",
+      "description": "Potwierdź swoją tożsamość kluczem dostępu lub aplikacją uwierzytelniającą."
+    },
+    "profile": {
+      "title": "Profil",
+      "description": "Zarządzaj awatarem, opisem, integracjami, eksportem danych i ustawieniami prywatności."
+    },
+    "features": {
+      "title": "Funkcje",
+      "description": "Szyfrowanie danych, linki z wygaśnięciem, dostęp oparty na rolach i historia wersji dla każdego pliku .env zespołu."
+    },
+    "pricing": {
+      "title": "Cennik",
+      "description": "Za darmo do 3 środowisk. Powyżej tego 2 dolary za środowisko miesięcznie, rozliczane co miesiąc."
+    },
+    "useCases": {
+      "title": "Zastosowania",
+      "description": "Dlaczego zespoły przechodzą na share.env oraz jak w praktyce wygląda onboarding, rotacja kluczy i offboarding."
     }
+  },
+  "featuresPage": {
+    "eyebrow": "Produkt",
+    "title": "Wszystko, czego potrzebujesz do ochrony sekretów",
+    "description": "Szyfrowanie, kontrola dostępu i historia zmian wbudowane w każdy workspace, a nie dodane później.",
+    "tag": "AES-256 w spoczynku"
+  },
+  "securityDeepDive": {
+    "heading": "Bezpieczeństwo egzekwowane w bazie danych, nie w interfejsie",
+    "subheading": "Każda tabela w share.env ma włączone Row Level Security. Ukryty przycisk w interfejsie to nie jest granica uprawnień. Polityka w bazie danych - tak.",
+    "items": [
+      {
+        "title": "Row Level Security na każdej tabeli",
+        "description": "Polityki Postgresa decydują, kto może odczytać lub zapisać wiersz, zanim jeszcze uruchomi się kod aplikacji, więc błąd w interfejsie nie ujawni sekretów innego zespołu."
+      },
+      {
+        "title": "Szyfrowanie AES-256 w spoczynku",
+        "description": "Zawartość plików jest szyfrowana w Supabase Storage. Nikt, łącznie z nami, nie odczytuje pliku .env poza autoryzowanym żądaniem."
+      },
+      {
+        "title": "Tokeny linków o wysokiej entropii",
+        "description": "Linki są generowane kryptograficznie bezpiecznymi tokenami, zawsze mają datę wygaśnięcia i można je odwołać w chwili, gdy dostęp powinien się skończyć."
+      },
+      {
+        "title": "Pełna historia zmian",
+        "description": "Każda zmiana pliku jest rejestrowana razem z tym, kto ją wprowadził i kiedy, dzięki czemu audyt bezpieczeństwa zajmuje minuty, a nie dni."
+      }
+    ]
+  },
+  "comparison": {
+    "heading": "Przestań wklejać sekrety na czacie",
+    "subheading": "Sposób, w jaki większość zespołów dzieli się zmiennymi środowiskowymi dzisiaj, tworzy trwałą, nieszyfrowaną i nieodwoływalną kopię twoich sekretów.",
+    "beforeLabel": "Slack, e-mail albo współdzielony dokument",
+    "afterLabel": "share.env",
+    "before": [
+      "Klucze API zostają na zawsze w historii czatu",
+      "Każdy w kanale może je odczytać, bez kontroli dostępu",
+      "Brak informacji, kto skopiował sekret i kiedy",
+      "Rotacja wyciekniętego klucza to zgadywanie, kto go jeszcze ma"
+    ],
+    "after": [
+      "Pliki żyją zaszyfrowane w workspace, nigdy w logu czatu",
+      "Role owner, editor i viewer egzekwowane przez bazę danych",
+      "Każdy dostęp i zmiana są zapisywane ze znacznikiem czasu",
+      "Odwołaj link albo dostęp członka zespołu jednym kliknięciem"
+    ]
+  },
+  "integrations": {
+    "heading": "Pasuje do pipeline'u, który już masz",
+    "subheading": "Pobierz aktualne środowisko prosto do developmentu lokalnego albo do CI/CD, bez ręcznego kopiowania sekretów.",
+    "items": [
+      "Oficjalny CLI do developmentu lokalnego i skryptów",
+      "Gotowy krok dla GitHub Actions, GitLab CI i Vercel",
+      "Tokeny ograniczone do projektu, nigdy twoje osobiste logowanie",
+      "Każde pobranie jest logowane jak każdy inny dostęp do pliku"
+    ]
+  },
+  "useCasesPage": {
+    "eyebrow": "Zastosowania",
+    "title": "Momenty, w których twoje sekrety naprawdę zmieniają ręce",
+    "description": "Onboarding, rotacja kluczy i offboarding to miejsca, w których pliki .env wyciekają. Oto dlaczego zespoły się przenoszą i jak wygląda każdy z tych momentów.",
+    "tag": "Zaprojektowane pod realne workflow"
+  },
+  "valueStats": {
+    "items": [
+      { "value": "< 2 min", "label": "Na wdrożenie nowego inżyniera" },
+      { "value": "1 klik", "label": "Do odwołania wyciekniętego linku" },
+      { "value": "0", "label": "Sekretów zostawionych w historii czatu" },
+      { "value": "100%", "label": "Zmian dostępu zapisanych w logu" }
+    ]
+  },
+  "useCasePersonas": {
+    "heading": "Zaprojektowane pod to, jak naprawdę pracuje twój zespół",
+    "subheading": "Dopasowanie zależy od tego, ile osób dotyka twoich sekretów i jak często ta lista się zmienia.",
+    "items": [
+      {
+        "title": "Zespoły startupowe",
+        "description": "Garstka inżynierów wysyła kod szybko, a plik .env zmienia się co tydzień. Potrzebujesz, żeby wszyscy mieli te same wartości bez wątku na Slacku.",
+        "payoff": "Nowa osoba dostaje dostęp w kilka minut i nikt więcej nie wkleja przestarzałego klucza API do lokalnego setupu."
+      },
+      {
+        "title": "Agencje pracujące dla klientów",
+        "description": "Każdy klient dostaje osobny workspace z własnymi sekretami, więc kontraktor schodzący z jednego projektu nigdy nie widzi kluczy innego klienta.",
+        "payoff": "Odwołaj dostęp kontraktora w dniu zakończenia umowy, bez ręcznej rotacji każdego klucza."
+      },
+      {
+        "title": "Zespoły platformowe i DevOps",
+        "description": "Dziesiątki usług, wiele środowisk i przegląd zgodności, który pyta, kto ostatnio dotykał sekretów produkcyjnych w zeszłym kwartale.",
+        "payoff": "Historia zmian już istnieje. Wyeksportuj ją, zamiast odtwarzać z pamięci."
+      }
+    ]
+  },
+  "usageScenarios": {
+    "heading": "Jak to wygląda na co dzień",
+    "subheading": "Trzy momenty, w których sekrety zwykle wyciekają, i co dzieje się zamiast tego, gdy przechodzą przez share.env.",
+    "items": [
+      {
+        "title": "Wdrażanie nowego inżyniera",
+        "result": "Nowa osoba jest odblokowana tego samego dnia, a jej dostęp znika automatycznie, jeśli nigdy nie zaakceptuje zaproszenia.",
+        "steps": [
+          "Zaproś ją do workspace'a przez email z rolą: viewer na start, editor po wdrożeniu",
+          "Akceptuje zaproszenie i loguje się, bez przekazywania współdzielonego hasła",
+          "Pobiera aktualny plik .env dla swojego projektu przez CLI albo kopiuje go z workspace'a"
+        ]
+      },
+      {
+        "title": "Rotacja wyciekniętego klucza",
+        "result": "Okno ekspozycji to minuty, a nie dni potrzebne na namierzenie każdego miejsca, w którym wklejony klucz się znalazł.",
+        "steps": [
+          "Natychmiast odwołaj każdy aktywny link udostępniający dla dotkniętego pliku",
+          "Zaktualizuj wartość w workspace; zmiana jest automatycznie wersjonowana",
+          "Zespół i CI pobierają nową wartość przy następnym uruchomieniu, bez ręcznego udostępniania"
+        ]
+      },
+      {
+        "title": "Offboarding kontraktora",
+        "result": "Dostęp kończy się w momencie usunięcia go z zespołu, a nie wtedy, gdy ktoś przypomni sobie o rotacji współdzielonych kluczy.",
+        "steps": [
+          "Usuń jego członkostwo z workspace'a albo workspace'ów, do których miał dostęp",
+          "Każdy link, który wygenerował, zostaje odwołany razem z jego dostępem",
+          "Sprawdź log audytu, żeby potwierdzić dokładnie, czego dotykał, mając dostęp"
+        ]
+      }
+    ]
   },
   "nav": {
     "links": {
-      "workspaces": "Workspace'y",
+      "features": "Funkcje",
+      "use-cases": "Zastosowania",
       "pricing": "Cennik",
       "docs": "Dokumentacja"
     },
     "login": "Zaloguj się",
     "signup": "Zacznij za darmo",
+    "logout": "Wyloguj się",
+    "account": "Menu konta",
+    "dashboard": "Panel",
+    "profile": "Profil",
     "openMenu": "Otwórz menu",
     "closeMenu": "Zamknij menu"
+  },
+  "profile": {
+    "heading": "Profil",
+    "subheading": "Zarządzaj tym, jak widzą Cię współpracownicy i co share.env o Tobie przechowuje.",
+    "errors": {
+      "generic": "Coś poszło nie tak. Spróbuj ponownie."
+    },
+    "avatar": {
+      "change": "Zmień zdjęcie",
+      "remove": "Usuń",
+      "hint": "PNG, JPG lub WebP. Maksymalnie 4 MB.",
+      "success": "Awatar zaktualizowany.",
+      "removed": "Awatar usunięty.",
+      "errors": {
+        "type": "Wybierz obraz w formacie PNG, JPG lub WebP.",
+        "size": "Ten obraz jest większy niż 4 MB.",
+        "generic": "Przesyłanie nie powiodło się. Spróbuj ponownie."
+      }
+    },
+    "basics": {
+      "title": "Podstawowe informacje",
+      "displayName": "Wyświetlana nazwa",
+      "bio": "Opis",
+      "bioPlaceholder": "Krótkie zdanie o tym, nad czym pracujesz.",
+      "save": "Zapisz zmiany",
+      "saving": "Zapisywanie…",
+      "saved": "Profil zapisany."
+    },
+    "integrations": {
+      "title": "Integracje",
+      "subtitle": "Sprawdź, z czym mógłby połączyć się share.env, i daj nam znać, co chciałbyś wykorzystać.",
+      "searchPlaceholder": "Szukaj integracji…",
+      "empty": "Brak integracji pasujących do \"{query}\".",
+      "notify": "Powiadom mnie",
+      "notifying": "Powiadamiam",
+      "disclaimer": "Żadna z nich nie jest jeszcze podłączona  zaznaczenie zainteresowania mówi nam tylko, co budować dalej."
+    },
+    "github": {
+      "title": "GitHub",
+      "subtitle": "Połącz konto GitHub, aby powiązać repozytoria i podglądać commity ze swoich środowisk.",
+      "notConnected": "Nie połączono",
+      "connectedAs": "Połączono jako {login}",
+      "connect": "Połącz z GitHub",
+      "disconnect": "Rozłącz",
+      "disconnected": "Konto GitHub zostało rozłączone."
+    },
+    "twoFactor": {
+      "title": "Weryfikacja dwuskładnikowa",
+      "subtitle": "Używana przy odblokowywaniu środowiska chronionego hasłem.",
+      "passkeys": {
+        "title": "Klucze dostępu",
+        "hint": "Windows Hello, Touch ID lub klucz bezpieczeństwa.",
+        "defaultLabel": "Klucz dostępu",
+        "labelPlaceholder": "Nazwij to urządzenie (opcjonalnie)",
+        "add": "Dodaj klucz dostępu",
+        "remove": "Usuń",
+        "enrolled": "Klucz dostępu został dodany.",
+        "removed": "Klucz dostępu został usunięty."
+      },
+      "totp": {
+        "title": "Aplikacja uwierzytelniająca",
+        "hint": "Google Authenticator, Authy lub podobna.",
+        "add": "Skonfiguruj",
+        "remove": "Usuń",
+        "scanHint": "Zeskanuj ten kod QR w swojej aplikacji uwierzytelniającej.",
+        "qrAlt": "Kod QR do konfiguracji aplikacji uwierzytelniającej",
+        "manualEntryHint": "Albo wpisz ten klucz ręcznie, a następnie potwierdź wygenerowanym 6-cyfrowym kodem.",
+        "codeLabel": "6-cyfrowy kod",
+        "confirm": "Potwierdź",
+        "enrolled": "Aplikacja uwierzytelniająca została skonfigurowana.",
+        "removed": "Aplikacja uwierzytelniająca została usunięta."
+      },
+      "errors": {
+        "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+        "passkeyFailed": "Rejestracja klucza dostępu nie powiodła się lub została anulowana."
+      }
+    },
+    "privacy": {
+      "title": "Prywatność i dane",
+      "productEmails": "E-maile produktowe",
+      "productEmailsHint": "Powiadomienia bezpieczeństwa, wygasające linki i aktywność konta.",
+      "marketing": "E-maile marketingowe",
+      "marketingHint": "Okazjonalne aktualizacje produktu i wskazówki. Domyślnie wyłączone.",
+      "export": "Eksportuj swoje dane",
+      "exportHint": "Pobierz kopię JSON swojego profilu i przynależności do workspace'ów.",
+      "exportAction": "Pobierz"
+    },
+    "danger": {
+      "title": "Strefa zagrożenia",
+      "deleteAccount": "Usuń konto",
+      "deleteAccountHint": "Trwale usuwa Twoje konto i profil. Tej operacji nie można cofnąć.",
+      "deleteAction": "Usuń konto",
+      "confirmPrompt": "Wpisz swój e-mail ({email}), aby potwierdzić usunięcie konta.",
+      "confirmAction": "Usuń trwale",
+      "deleting": "Usuwanie…",
+      "cancel": "Anuluj"
+    }
   },
   "hero": {
     "headlineLine1": "Udostępniaj pliki .env",
@@ -90,6 +352,66 @@
       }
     ]
   },
+  "pricing": {
+    "heading": "Prosty cennik, płacisz za to, czego używasz",
+    "subheading": "Każdy zespół zaczyna za darmo. Płacisz dopiero, gdy dodasz środowiska powyżej pierwszych trzech.",
+    "perEnvironment": "za środowisko / miesiąc",
+    "free": {
+      "name": "Free",
+      "period": "/ miesiąc",
+      "description": "Dla pojedynczych osób i małych zespołów na start.",
+      "features": [
+        "Do 3 środowisk",
+        "Nielimitowana liczba członków zespołu",
+        "Szyfrowanie AES-256 w spoczynku",
+        "Linki z wygaśnięciem"
+      ],
+      "cta": "Zacznij za darmo"
+    },
+    "payg": {
+      "name": "Pay as you go",
+      "description": "Dla zespołów, które wyrastają z darmowego planu. Pierwsze 3 środowiska zawsze zostają darmowe.",
+      "features": [
+        "Pierwsze 3 środowiska za darmo",
+        "Rozliczane miesięcznie za każde kolejne środowisko",
+        "To samo szyfrowanie i kontrola dostępu",
+        "Anuluj w każdej chwili"
+      ],
+      "cta": "Zacznij teraz",
+      "badge": "Wybór większości zespołów"
+    }
+  },
+  "pricingCalculator": {
+    "heading": "Ile naprawdę zapłacisz?",
+    "subheading": "Przesuń suwak, dopasuj liczbę środowisk zespołu i zobacz rachunek na żywo.",
+    "label": "Środowiska",
+    "environmentCount": "{count} środowisk",
+    "breakdown": "Pierwsze {free} są darmowe. {paid} dodatkowych środowisk rozliczanych co miesiąc.",
+    "breakdownFree": "Mieścisz się w darmowym planie. Nie płacisz nic.",
+    "totalLabel": "Szacowany rachunek",
+    "perMonth": "miesięcznie"
+  },
+  "pricingFaq": {
+    "heading": "Pytania o rozliczenia",
+    "items": [
+      {
+        "question": "Co liczy się jako środowisko?",
+        "answer": "Każdy odrębny plik .env wgrany do workspace'a, na przykład production, staging albo plik podglądu dla konkretnego brancha. Ponowne wgranie tego samego pliku nie tworzy drugiego środowiska."
+      },
+      {
+        "question": "Czy pierwsze 3 środowiska kiedyś wygasają?",
+        "answer": "Nie. Darmowy plan dla 3 środowisk jest stały, nie jest to okres próbny. Opłata pojawia się dopiero przy czwartym środowisku."
+      },
+      {
+        "question": "Czy mogę usunąć środowisko, żeby obniżyć rachunek?",
+        "answer": "Tak. Usunięcie środowiska od razu zmniejsza liczbę liczoną w danym miesiącu, a kolejna faktura odzwierciedla tę zmianę."
+      },
+      {
+        "question": "Czy jest limit członków zespołu albo miejsca na dysku?",
+        "answer": "Nie. Liczba członków zespołu jest nielimitowana w każdym planie; cena zależy wyłącznie od liczby przechowywanych środowisk."
+      }
+    ]
+  },
   "testimonials": {
     "eyebrow": "Opinie",
     "heading": "Zaufanie devów i CTO, którzy odpowiadają za bezpieczeństwo",
@@ -116,9 +438,106 @@
     ]
   },
   "signup": {
-    "heading": "Rejestracja już wkrótce",
-    "body": "Pracujemy nad rejestracją i pierwszym workspace'em. Wróć za chwilę  albo napisz do nas, jeśli chcesz wejść do wczesnego dostępu.",
-    "backHome": "Wróć na stronę główną"
+    "eyebrow": "Zacznij tutaj",
+    "heading": "Załóż konto",
+    "subtext": "Przechowuj i udostępniaj pliki .env zespołowi w kilka minut.",
+    "divider": "lub",
+    "fields": {
+      "name": "Imię i nazwisko",
+      "email": "Email",
+      "password": "Hasło",
+      "confirmPassword": "Powtórz hasło"
+    },
+    "placeholders": {
+      "name": "Jan Kowalski",
+      "email": "ty@firma.com",
+      "password": "Utwórz hasło",
+      "confirmPassword": "Powtórz hasło"
+    },
+    "password": {
+      "rules": {
+        "length": "Minimum 12 znaków",
+        "upper": "Jedna wielka litera",
+        "lower": "Jedna mała litera",
+        "number": "Jedna cyfra",
+        "special": "Jeden znak specjalny"
+      }
+    },
+    "showPassword": "Pokaż hasło",
+    "hidePassword": "Ukryj hasło",
+    "terms": "Akceptuję <link>politykę prywatności</link>",
+    "submit": "Zarejestruj się",
+    "submitting": "Tworzenie konta…",
+    "hasAccount": "Masz już konto?",
+    "logIn": "Zaloguj się",
+    "oauth": {
+      "comingSoon": "Rejestracja przez {provider} nie jest jeszcze podpięta"
+    },
+    "success": "Konto utworzone  sprawdź skrzynkę, aby potwierdzić email.",
+    "errors": {
+      "name": "Podaj imię i nazwisko.",
+      "email": "Podaj poprawny adres email.",
+      "password": "Hasło nie spełnia jeszcze wymagań.",
+      "confirmPassword": "Hasła się nie zgadzają.",
+      "terms": "Musisz zaakceptować politykę prywatności, aby kontynuować.",
+      "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+      "locked": "Za dużo prób. Spróbuj ponownie za {seconds}s.",
+      "tooManyAttempts": "Za dużo prób. Odczekaj 30 sekund przed kolejną próbą."
+    },
+    "panel": {
+      "heading": "Sekrety zespołu, w końcu poukładane",
+      "body": "Szyfrowane przechowywanie, linki z wygaśnięciem i role dostępu  dla zespołów, które traktują pliki .env poważnie."
+    }
+  },
+  "signin": {
+    "eyebrow": "Witaj ponownie",
+    "heading": "Zaloguj się do konta",
+    "subtext": "Uzyskaj dostęp do workspace'ów zespołu i udostępnionych plików .env.",
+    "divider": "lub",
+    "fields": {
+      "email": "Email",
+      "password": "Hasło"
+    },
+    "placeholders": {
+      "email": "ty@firma.com",
+      "password": "Wpisz hasło"
+    },
+    "forgot": "Zapomniałeś?",
+    "remember": "Zapamiętaj mnie na tym urządzeniu",
+    "showPassword": "Pokaż hasło",
+    "hidePassword": "Ukryj hasło",
+    "submit": "Zaloguj się",
+    "submitting": "Logowanie…",
+    "noAccount": "Nie masz konta?",
+    "signUp": "Zarejestruj się",
+    "oauth": {
+      "comingSoon": "Logowanie przez {provider} nie jest jeszcze podpięte"
+    },
+    "success": "Zalogowano  przekierowanie do workspace'a.",
+    "errors": {
+      "email": "Podaj poprawny adres email.",
+      "password": "Podaj hasło.",
+      "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+      "locked": "Za dużo prób. Spróbuj ponownie za {seconds}s.",
+      "tooManyAttempts": "Za dużo prób. Odczekaj 30 sekund przed kolejną próbą."
+    },
+    "panel": {
+      "heading": "Wróć dokładnie tam, gdzie skończył zespół",
+      "body": "Szyfrowane przechowywanie, linki z wygaśnięciem i role dostępu  dla zespołów, które traktują pliki .env poważnie."
+    }
+  },
+  "verify2fa": {
+    "heading": "Potwierdź, że to Ty",
+    "subheading": "Twoje konto ma włączoną weryfikację dwuskładnikową. Potwierdź kluczem dostępu lub aplikacją uwierzytelniającą.",
+    "usePasskey": "Użyj klucza dostępu",
+    "orUseTotp": "Lub wpisz kod z aplikacji uwierzytelniającej",
+    "totpLabel": "6-cyfrowy kod",
+    "submit": "Zweryfikuj",
+    "useDifferentAccount": "Użyj innego konta",
+    "noMethods": "Weryfikacja dwuskładnikowa jest włączona, ale to konto nie ma skonfigurowanej żadnej metody. Skontaktuj się z pomocą techniczną.",
+    "errors": {
+      "passkeyFailed": "Weryfikacja kluczem dostępu nie powiodła się lub została anulowana."
+    }
   },
   "finalCta": {
     "heading": "Przestań wklejać sekrety na czacie",
@@ -153,6 +572,151 @@
         "answer": "Usunięcie konta uruchamia trwałe skasowanie plików, do których byłeś jedynym właścicielem, wraz z historią wersji i aktywnymi linkami udostępniającymi. Pliki należące do workspace'ów z innymi członkami pozostają dostępne dla pozostałych osób z odpowiednią rolą."
       }
     ]
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Przegląd",
+      "workspaceSwitcher": "Zmień workspace",
+      "profile": "Profil",
+      "signOut": "Wyloguj się"
+    },
+    "breadcrumbs": {
+      "dashboard": "Dashboard",
+      "profile": "Profil"
+    },
+    "sidebar": {
+      "overview": "Przegląd",
+      "environments": "Środowiska",
+      "members": "Członkowie",
+      "shareLinks": "Linki udostępniania",
+      "settings": "Ustawienia",
+      "profile": "Profil",
+      "comingSoon": "Wkrótce"
+    },
+    "heading": "Przegląd",
+    "roles": {
+      "owner": "Właściciel",
+      "editor": "Edytor",
+      "viewer": "Przeglądający"
+    },
+    "environments": {
+      "title": "Środowiska",
+      "usage": "Wykorzystano {used} z {limit}",
+      "empty": "Brak środowisk. Prześlij swój pierwszy plik .env, aby zacząć.",
+      "recentTitle": "Ostatnio dodane"
+    },
+    "quickActions": {
+      "title": "Szybkie akcje",
+      "newEnvironment": "Nowe środowisko",
+      "inviteMember": "Zaproś członka",
+      "createShareLink": "Utwórz link udostępniania",
+      "manageWorkspace": "Zarządzaj workspace'em",
+      "comingSoon": "Wkrótce"
+    },
+    "stats": {
+      "environments": "Środowiska",
+      "members": "Członkowie",
+      "activeShareLinks": "Aktywne linki"
+    }
+  },
+  "environments": {
+    "list": {
+      "breadcrumb": "Środowiska",
+      "heading": "Środowiska",
+      "empty": "Brak środowisk. Prześlij swój pierwszy plik .env, aby zacząć.",
+      "newEnvironment": "Nowe środowisko"
+    },
+    "github": {
+      "title": "GitHub",
+      "connectHint": "Połącz repozytorium, aby zobaczyć jego ostatnie commity obok tego środowiska.",
+      "connect": "Połącz z GitHub",
+      "connectedAs": "Połączono jako {login} · Rozłącz",
+      "pickHint": "Połącz repozytorium, aby zobaczyć tu jego ostatnie commity.",
+      "chooseRepo": "Wybierz repozytorium",
+      "loadingRepos": "Ładowanie repozytoriów…",
+      "noRepos": "Nie znaleziono repozytoriów.",
+      "noRepoLinked": "Nie połączono jeszcze repozytorium.",
+      "unlink": "Odłącz repozytorium",
+      "loadingCommits": "Ładowanie commitów…",
+      "noCommits": "Nie znaleziono commitów."
+    },
+    "detail": {
+      "readOnlyNotice": "Masz dostęp tylko do podglądu tego środowiska.",
+      "save": "Zapisz zmiany",
+      "saving": "Zapisywanie…",
+      "success": "Środowisko zostało zaktualizowane.",
+      "replaceHint": "Przeciągnij tu plik .env, aby zastąpić wszystkie zmienne, albo kliknij, aby go wybrać",
+      "unlockHeading": "To środowisko jest chronione",
+      "unlockSubheading": "Wpisz hasło, aby je przeglądać lub edytować.",
+      "passwordLabel": "Hasło",
+      "unlockSubmit": "Odblokuj",
+      "twoFactorHeading": "Potwierdź, że to Ty",
+      "twoFactorSubheading": "Potwierdź kluczem dostępu lub kodem z aplikacji uwierzytelniającej.",
+      "noTwoFactorEnrolled": "Nie masz jeszcze skonfigurowanego klucza dostępu ani aplikacji uwierzytelniającej.",
+      "goToProfile": "Skonfiguruj w swoim profilu",
+      "usePasskey": "Użyj klucza dostępu",
+      "orUseTotp": "Lub wpisz kod z aplikacji uwierzytelniającej",
+      "totpLabel": "6-cyfrowy kod",
+      "errors": {
+        "passkeyFailed": "Weryfikacja kluczem dostępu nie powiodła się lub została anulowana."
+      },
+      "protection": {
+        "protectedTitle": "Chronione hasłem",
+        "protectedHint": "Członkowie muszą wpisać hasło i drugi składnik, aby zobaczyć to środowisko.",
+        "unprotectedTitle": "Nie chronione hasłem",
+        "unprotectedHint": "Każdy członek workspace'a może zobaczyć to środowisko bez dodatkowej weryfikacji.",
+        "manage": "Zarządzaj ochroną",
+        "protect": "Chroń hasłem",
+        "currentPasswordLabel": "Obecne hasło",
+        "ownerOverrideHint": "Jako właściciel workspace'a możesz usunąć ochronę bez podawania obecnego hasła.",
+        "removeSubmit": "Usuń ochronę",
+        "newPasswordLabel": "Nowe hasło",
+        "confirmPasswordLabel": "Potwierdź hasło",
+        "twoFactorNotice": "Ustawienie hasła wymaga też drugiego składnika (klucza dostępu lub aplikacji uwierzytelniającej) do odblokowania  upewnij się, że masz go skonfigurowanego w profilu.",
+        "setSubmit": "Chroń środowisko",
+        "setSuccess": "Ochrona hasłem została włączona.",
+        "removeSuccess": "Ochrona hasłem została usunięta.",
+        "errors": {
+          "tooShort": "Hasło musi mieć co najmniej 8 znaków.",
+          "mismatch": "Hasła nie są takie same."
+        }
+      }
+    },
+    "new": {
+      "breadcrumb": "Nowe środowisko",
+      "heading": "Nowe środowisko",
+      "subheading": "Prześlij plik .env lub dodaj zmienne ręcznie.",
+      "nameLabel": "Nazwa środowiska",
+      "namePlaceholder": "np. Produkcja",
+      "modeUpload": "Prześlij .env",
+      "modeManual": "Wpisz ręcznie",
+      "dropHint": "Przeciągnij tu plik .env albo kliknij, aby go wybrać",
+      "dropActive": "Upuść, aby zaimportować",
+      "manualHint": "Enter dodaje wiersz · Tab przechodzi między polami · Ctrl/Cmd+Enter zapisuje · wklej .env, aby wypełnić wszystko naraz",
+      "keyPlaceholder": "KLUCZ",
+      "valuePlaceholder": "wartość",
+      "addRow": "Dodaj zmienną",
+      "removeRow": "Usuń",
+      "show": "Pokaż",
+      "hide": "Ukryj",
+      "submit": "Utwórz środowisko",
+      "submitting": "Tworzenie…",
+      "cancel": "Anuluj",
+      "roleBlocked": "Nie masz uprawnień do tworzenia środowisk w tym workspace'ie.",
+      "limitReached": "Osiągnięto limit środowisk w darmowym planie.",
+      "errors": {
+        "nameRequired": "Podaj nazwę środowiska.",
+        "emptyPairs": "Dodaj co najmniej jedną zmienną.",
+        "invalidKey": "Nieprawidłowa nazwa zmiennej: {key}",
+        "duplicateKey": "Zduplikowana nazwa zmiennej: {key}",
+        "valueTooLarge": "Zbyt duża wartość dla {key}.",
+        "fileType": "Wybierz plik .env lub zwykły plik tekstowy.",
+        "fileSize": "Plik jest za duży.",
+        "generic": "Coś poszło nie tak. Spróbuj ponownie."
+      },
+      "success": "Środowisko zostało utworzone.",
+      "bulkImported": "Zaimportowano {count} zmiennych."
+    }
   },
   "footer": {
     "heading": "Sekrety zespołu zasługują na coś lepszego niż Slack",

@@ -7,7 +7,7 @@ import { gsap } from "gsap";
 import { toast } from "sonner";
 import { Link, useRouter } from "@/i18n/navigation";
 import { isEmailValid } from "@/lib/password";
-import { signInAction } from "@/app/[locale]/signin/actions";
+import { signInAction } from "@/app/[locale]/(marketing)/signin/actions";
 import { createClient } from "@/lib/supabase/client";
 
 const MAX_ATTEMPTS = 5;
@@ -24,7 +24,7 @@ export function SigninForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
-  const [company, setCompany] = useState(""); // honeypot, kept empty by humans
+  const [company, setCompany] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
@@ -32,21 +32,27 @@ export function SigninForm() {
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
 
   useEffect(() => {
+    let safety: ReturnType<typeof setTimeout> | undefined;
+
     const ctx = gsap.context(() => {
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduced) return;
 
-      gsap
+      const tl = gsap
         .timeline({ defaults: { ease: "power3.out", duration: 0.6 } })
         .from("[data-signin=eyebrow]", { y: 16, opacity: 0 })
         .from("[data-signin=heading]", { y: 20, opacity: 0 }, "-=0.4")
         .from("[data-signin=subtext]", { y: 16, opacity: 0 }, "-=0.4")
         .from("[data-signin=oauth]", { y: 14, opacity: 0, stagger: 0.08 }, "-=0.35")
-        .from("[data-signin=field]", { y: 14, opacity: 0, stagger: 0.06 }, "-=0.3")
-        .from("[data-signin=submit]", { y: 14, opacity: 0 }, "-=0.3");
+        .from("[data-signin=field]", { y: 14, opacity: 0, stagger: 0.06 }, "-=0.3");
+
+      safety = setTimeout(() => tl.progress(1), 2000);
     }, rootRef);
 
-    return () => ctx.revert();
+    return () => {
+      clearTimeout(safety);
+      ctx.revert();
+    };
   }, []);
 
   function validate(): FieldErrors {
@@ -65,7 +71,6 @@ export function SigninForm() {
       return;
     }
 
-    // Honeypot: bots fill every field, humans never see or touch this one.
     if (company.trim().length > 0) {
       toast.error(t("errors.generic"));
       return;
@@ -161,7 +166,6 @@ export function SigninForm() {
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-        {/* Honeypot: hidden from sighted users and screen readers, catches naive bots. */}
         <input
           type="text"
           name="company"
@@ -236,7 +240,6 @@ export function SigninForm() {
 
         <button
           type="submit"
-          data-signin="submit"
           disabled={submitting}
           className="mt-1 rounded-full bg-foreground px-6 py-3 text-[15px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
         >

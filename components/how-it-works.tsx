@@ -49,6 +49,11 @@ export function HowItWorks() {
               "-=0.3"
             )
             .from(
+              "[data-hiw=icon]",
+              { scale: 0.5, opacity: 0, stagger: 0.12, duration: 0.5, ease: "back.out(1.7)" },
+              "-=0.6"
+            )
+            .from(
               "[data-hiw=connector]",
               { scaleX: 0, transformOrigin: "left" },
               "-=0.5"
@@ -61,26 +66,27 @@ export function HowItWorks() {
   }, []);
 
   return (
-    <div ref={rootRef} className="bg-background py-16 lg:py-24 w-full ">
+    <div ref={rootRef} className="relative w-full overflow-hidden bg-background py-16 lg:py-24">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_120%_100%_at_80%_0%,var(--accent-glow),transparent_70%)]"
+      />
       <section
         id="how-it-works"
         aria-labelledby="hiw-heading"
-        className="mx-auto px-4 sm:px-6 lg:px-8 bg-[#dceeb1] "
+        className="relative mx-auto px-4 sm:px-6 lg:px-8"
       >
         <div
-          className=" mx-auto max-w-7xl px-6 py-12 text-black sm:px-10 lg:px-16 lg:py-20"
+          className="mx-auto max-w-7xl py-12 text-foreground lg:py-20"
         >
           <div data-hiw="header" className="max-w-2xl">
-            <p className="font-mono text-xs uppercase tracking-[0.14em] text-black/60">
-              {t("eyebrow")}
-            </p>
             <h2
               id="hiw-heading"
-              className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl"
+              className="font-display text-3xl font-normal tracking-tight md:text-4xl"
             >
               {t("title")}
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-black/70">
+            <p className="mt-4 text-lg leading-relaxed text-body">
               {t("lead")}
             </p>
           </div>
@@ -93,31 +99,32 @@ export function HowItWorks() {
                 <li
                   key={step.title}
                   data-hiw="step"
-                  className="relative flex flex-col gap-4 rounded-[16px] bg-white/70 p-6"
+                  className="relative flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-soft p-6"
                 >
                   {index < steps.length - 1 && (
                     <span
                       aria-hidden
                       data-hiw="connector"
-                      className="pointer-events-none absolute right-[-1.5rem] top-1/2 z-10 hidden h-px w-6 -translate-y-1/2 bg-black/30 lg:block"
+                      className="pointer-events-none absolute right-[-1.5rem] top-1/2 z-10 hidden h-px w-6 -translate-y-1/2 bg-hairline-strong lg:block"
                     />
                   )}
 
                   <div className="flex items-center gap-3">
                     <span
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-white"
+                      data-hiw="icon"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent/15"
                       aria-hidden
                     >
-                      <StepIcon size={20} weight="bold" className="text-black" />
+                      <StepIcon size={20} weight="bold" className="text-accent" />
                     </span>
-                    <span className="font-mono text-xs text-black/50">
+                    <span className="font-mono text-xs text-mute">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
 
                   <div className="flex flex-col gap-2">
                     <h3 className="text-lg font-semibold">{step.title}</h3>
-                    <p className="text-sm leading-relaxed text-black/70">
+                    <p className="text-sm leading-relaxed text-body">
                       {step.description}
                     </p>
                   </div>

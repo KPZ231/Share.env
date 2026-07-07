@@ -1,15 +1,20 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { Link } from "@/i18n/navigation";
 import { gsap } from "gsap";
 
+const ENV_LINES = [
+  { key: "DATABASE_URL", value: "postgres://prod-cluster-3.internal:5432/app", masked: true },
+  { key: "STRIPE_SECRET_KEY", value: "sk_live_REDACTED_EXAMPLE_VALUE", masked: true },
+  { key: "JWT_SIGNING_SECRET", value: "7c1a9e4f2b8d3c6a0e5f2b7d1a4f8c3e9d6b", masked: true },
+  { key: "SENTRY_DSN", value: "https://a1b2c3d4@o123456.ingest.sentry.io/42", masked: false },
+];
+
 export function Hero() {
   const t = useTranslations("hero");
   const rootRef = useRef<HTMLDivElement>(null);
-  const tiltRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -22,92 +27,34 @@ export function Hero() {
           if (reduce) return; // leave elements in their natural (visible) state
 
           const tl = gsap.timeline({ defaults: { ease: "power3.out", duration: 0.7 } });
-          tl.from(
-            "[data-hero=headline-word]",
-            { y: 32, opacity: 0, rotate: 3, stagger: 0.03, duration: 0.6 }
-          )
-            .from("[data-hero=subtext]", { y: 16, opacity: 0 }, "-=0.35")
-            .from("[data-hero=cta]", { y: 16, opacity: 0, stagger: 0.08 }, "-=0.4")
+          tl.from("[data-hero=headline-word]", { y: 24, opacity: 0, stagger: 0.03, duration: 0.5 })
+            .from("[data-hero=subtext]", { y: 14, opacity: 0 }, "-=0.35")
+            .from("[data-hero=cta]", { y: 14, opacity: 0, stagger: 0.08 }, "-=0.4")
+            .from("[data-hero=visual]", { opacity: 0, y: 16 }, "-=0.6")
             .from(
-              "[data-hero=visual]",
-              { clipPath: "inset(8%)", opacity: 0, scale: 0.96 },
-              "-=0.7"
+              "[data-hero=mask]",
+              { scaleX: 0, transformOrigin: "left", duration: 0.4, stagger: 0.1, ease: "power2.inOut" },
+              "-=0.1"
             )
-            .from(
-              "[data-hero=chip]",
-              { y: 12, opacity: 0, rotate: 0, stagger: 0.12 },
-              "-=0.4"
-            )
-            .from(
-              "[data-hero=stats]",
-              { y: 24, opacity: 0 },
-              "-=0.5"
-            );
-
-          gsap.to("[data-hero-chip='1']", {
-            y: -10,
-            duration: 2.6,
-            ease: "sine.inOut",
-            repeat: -1,
-            yoyo: true,
-          });
-          gsap.to("[data-hero-chip='2']", {
-            y: 12,
-            duration: 3.1,
-            ease: "sine.inOut",
-            repeat: -1,
-            yoyo: true,
-            delay: 0.3,
-          });
+            .from("[data-hero=stats]", { y: 20, opacity: 0 }, "-=0.4");
         }
       );
-
-      const el = tiltRef.current;
-      if (!el) return;
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduced) return;
-
-      const rotateX = gsap.quickTo(el, "rotationX", { duration: 0.6, ease: "power3.out" });
-      const rotateY = gsap.quickTo(el, "rotationY", { duration: 0.6, ease: "power3.out" });
-      const scale = gsap.quickTo(el, "scale", { duration: 0.6, ease: "power3.out" });
-
-      const onMove = (e: PointerEvent) => {
-        const rect = el.getBoundingClientRect();
-        const px = (e.clientX - rect.left) / rect.width - 0.5;
-        const py = (e.clientY - rect.top) / rect.height - 0.5;
-        rotateY(px * 16);
-        rotateX(-py * 16);
-        scale(1.03);
-      };
-      const onLeave = () => {
-        rotateX(0);
-        rotateY(0);
-        scale(1);
-      };
-
-      el.addEventListener("pointermove", onMove);
-      el.addEventListener("pointerleave", onLeave);
-      return () => {
-        el.removeEventListener("pointermove", onMove);
-        el.removeEventListener("pointerleave", onLeave);
-      };
     }, rootRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <div ref={rootRef} className="bg-background py-6 lg:py-10">
+    <div ref={rootRef} className="relative overflow-hidden bg-background">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(ellipse_120%_100%_at_20%_0%,var(--accent-glow),transparent_70%)]"
+      />
       <section aria-label={t("headlineLine1")} className="relative">
-        {/* Background bleeds to the viewport edge; inner content stays
-            centered at max-w-7xl so headline/CTA don't stretch on wide screens. */}
-        <div
-          data-hero="visual"
-          className="relative overflow-hidden bg-surface-soft"
-        >
-          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:py-16">
+        <div data-hero="visual" className="relative">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:py-28">
             <div className="flex flex-col items-start justify-center gap-6">
-              <h1 className="max-w-xl text-4xl font-semibold leading-[1.1] tracking-tight text-foreground md:text-5xl lg:text-6xl">
+              <h1 className="max-w-xl font-display text-5xl font-normal leading-none tracking-tight text-foreground md:text-6xl lg:text-7xl">
                 {[t("headlineLine1"), t("headlineLine2"), t("headlineLine3")].map(
                   (line, lineIndex) => (
                     <span key={lineIndex} className="block overflow-hidden pb-1">
@@ -115,7 +62,7 @@ export function Hero() {
                         <span
                           key={wordIndex}
                           data-hero="headline-word"
-                          className="mr-[0.28em] inline-block will-change-transform"
+                          className="mr-[0.24em] inline-block will-change-transform"
                         >
                           {word}
                         </span>
@@ -125,10 +72,7 @@ export function Hero() {
                 )}
               </h1>
 
-              <p
-                data-hero="subtext"
-                className="max-w-md text-lg leading-relaxed text-foreground/70"
-              >
+              <p data-hero="subtext" className="max-w-md text-lg leading-relaxed text-body">
                 {t("subtext")}
               </p>
 
@@ -136,50 +80,59 @@ export function Hero() {
                 <Link
                   href="/signup"
                   data-hero="cta"
-                  className="rounded-full bg-foreground px-6 py-3 text-center text-[16px] font-medium text-background transition-opacity hover:opacity-90"
+                  className="rounded-md bg-foreground px-6 py-2.5 text-center text-[14px] font-medium text-black transition-opacity hover:opacity-90"
                 >
                   {t("ctaPrimary")}
                 </Link>
                 <Link
                   href="#how-it-works"
                   data-hero="cta"
-                  className="rounded-full bg-background px-6 py-3 text-center text-[16px] font-medium text-foreground shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-opacity hover:opacity-90"
+                  className="rounded-md border border-hairline-strong px-6 py-2.5 text-center text-[14px] font-medium text-foreground transition-colors hover:bg-surface-elevated"
                 >
                   {t("ctaSecondary")}
                 </Link>
               </div>
             </div>
 
-            <div className="relative min-h-[280px] lg:min-h-0" style={{ perspective: "1200px" }}>
-              <div
-                ref={tiltRef}
-                className="relative h-full min-h-[280px] overflow-hidden rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,0.06)] lg:min-h-0"
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <Image
-                  src="/hero-vault.png"
-                  alt={t("visualAlt")}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 40vw, 90vw"
-                  className="object-cover"
-                />
-              </div>
+            <div className="relative flex min-h-[280px] items-center lg:min-h-0">
+              <div className="w-full overflow-hidden rounded-lg border border-hairline-strong bg-surface-deep">
+                <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+                  </div>
+                  <span className="font-mono text-[11px] text-white/40">.env · production</span>
+                  <span
+                    aria-hidden
+                    className="rounded-full bg-accent/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-accent"
+                  >
+                    revoke in 6h
+                  </span>
+                </div>
 
-              <div
-                data-hero="chip"
-                data-hero-chip="1"
-                className="absolute -left-4 top-6 z-10 -rotate-6 rounded-[6px] bg-[#dceeb1] px-3 py-2 font-mono text-xs uppercase tracking-[0.03em] text-black shadow-[0_4px_16px_rgba(0,0,0,0.12)] will-change-transform"
-              >
-                .env · encrypted
-              </div>
+                <div className="flex flex-col gap-1 px-5 py-6 font-mono text-[13px] leading-relaxed sm:text-[14px]">
+                  {ENV_LINES.map((line) => (
+                    <div key={line.key} className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-[#7ee787]">{line.key}</span>
+                      <span className="text-white/30">=</span>
+                      {line.masked ? (
+                        <span
+                          data-hero="mask"
+                          aria-label="hidden value"
+                          className="inline-block h-[14px] w-40 rounded-[3px] bg-[#2a2d33]"
+                        />
+                      ) : (
+                        <span className="text-white/60">{line.value}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
 
-              <div
-                data-hero="chip"
-                data-hero-chip="2"
-                className="absolute -right-3 bottom-8 z-10 rotate-3 rounded-[6px] bg-[#c5b0f4] px-3 py-2 font-mono text-xs uppercase tracking-[0.03em] text-black shadow-[0_4px_16px_rgba(0,0,0,0.12)] will-change-transform"
-              >
-                owner · editor · viewer
+                <div className="flex items-center justify-between border-t border-white/10 px-5 py-3 font-mono text-[11px] text-white/40">
+                  <span>owner · editor · viewer</span>
+                  <span>AES-256 at rest</span>
+                </div>
               </div>
             </div>
           </div>
@@ -188,14 +141,12 @@ export function Hero() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <dl
             data-hero="stats"
-            className="relative z-10 -mt-8 grid grid-cols-2 gap-x-8 gap-y-5 rounded-2xl bg-background p-6 shadow-[0_8px_30px_rgba(0,0,0,0.08)] sm:grid-cols-4 lg:w-fit lg:p-8"
+            className="relative z-10 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-hairline pt-8 sm:grid-cols-4"
           >
             {t.raw("stats").map((stat: { value: string; label: string }) => (
               <div key={stat.label} className="flex flex-col">
-                <dt className="text-lg font-semibold text-foreground">
-                  {stat.value}
-                </dt>
-                <dd className="text-sm text-foreground/60">{stat.label}</dd>
+                <dt className="font-mono text-2xl font-medium text-foreground">{stat.value}</dt>
+                <dd className="text-sm text-mute">{stat.label}</dd>
               </div>
             ))}
           </dl>
