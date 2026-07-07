@@ -193,12 +193,16 @@ export function SignupForm() {
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
         <input
           type="text"
-          name="company"
+          name="hp_field_a1b2"
+          id="hp_field_a1b2"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
           tabIndex={-1}
           autoComplete="off"
           aria-hidden="true"
+          // ponytail: name intentionally not "company"/"organization" -- those
+          // match browser autofill profile data even through aria-hidden/off-screen
+          // CSS, which silently fills the honeypot and blocks real signups.
           className="absolute -left-[9999px] h-0 w-0 opacity-0"
         />
 
