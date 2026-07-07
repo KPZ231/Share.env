@@ -15,11 +15,15 @@ import {
   verifyPassword,
   signPasswordStepToken,
   verifyPasswordStepToken,
+  signTwoFactorStepToken,
+  verifyTwoFactorStepToken,
   signUnlockToken,
   unlockCookieName,
   passwordStepCookieName,
+  twoFactorStepCookieName,
   UNLOCK_COOKIE_MAX_AGE_SECONDS,
   PASSWORD_STEP_COOKIE_MAX_AGE_SECONDS,
+  TWO_FACTOR_STEP_COOKIE_MAX_AGE_SECONDS,
 } from "@/lib/env-lock";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
@@ -86,6 +90,7 @@ async function requirePasswordStep(envFileId: string, userId: string): Promise<b
 async function grantUnlock(envFileId: string, userId: string) {
   const cookieStore = await cookies();
   cookieStore.delete(passwordStepCookieName(envFileId));
+  cookieStore.delete(twoFactorStepCookieName(envFileId));
   cookieStore.set(unlockCookieName(envFileId), signUnlockToken(envFileId, userId), {
     httpOnly: true,
     secure: true,
@@ -95,8 +100,85 @@ async function grantUnlock(envFileId: string, userId: string) {
   });
 }
 
-/** Step 2 (TOTP option): consumes the password-step token, verifies the code, issues the real unlock cookie. */
-export async function verifyEnvironmentTotpAction(envFileId: string, code: string): Promise<ActionResult> {
+async function grantTwoFactorStep(envFileId: string, userId: string) {
+  const cookieStore = await cookies();
+  cookieStore.delete(passwordStepCookieName(envFileId));
+  cookieStore.set(twoFactorStepCookieName(envFileId), signTwoFactorStepToken(envFileId, userId), {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: TWO_FACTOR_STEP_COOKIE_MAX_AGE_SECONDS,
+    path: "/",
+  });
+}
+
+export type TwoFactorStepResult =
+  | { ok: true; requiresAccessKey: false }
+  | { ok: true; requiresAccessKey: true }
+  | { ok: false; error: string };
+
+/**
+ * Completes step 2 (TOTP or passkey): for protection_level = password_2fa
+ * this grants the real unlock; for password_2fa_key it instead issues the
+ * 2FA-step token consumed by the Access Key step (verifyEnvironmentAccessKeyAction).
+ */
+async function finishTwoFactorStep(envFileId: string, userId: string): Promise<TwoFactorStepResult> {
+  const supabase = await createClient();
+  const { data: envFile } = await supabase
+    .from("env_files")
+    .select("protection_level")
+    .eq("id", envFileId)
+    .maybeSingle();
+
+  if (envFile?.protection_level === "password_2fa_key") {
+    await grantTwoFactorStep(envFileId, userId);
+    revalidatePath(`/environments/${envFileId}`);
+    return { ok: true, requiresAccessKey: true };
+  }
+
+  await grantUnlock(envFileId, userId);
+  revalidatePath(`/environments/${envFileId}`);
+  return { ok: true, requiresAccessKey: false };
+}
+
+async function requireTwoFactorStep(envFileId: string, userId: string): Promise<boolean> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(twoFactorStepCookieName(envFileId))?.value;
+  return !!token && verifyTwoFactorStepToken(token, envFileId, userId);
+}
+
+/** Step 3: the workspace-issued Access Key, for protection_level = password_2fa_key only. */
+export async function verifyEnvironmentAccessKeyAction(envFileId: string, accessKey: string): Promise<ActionResult> {
+  const user = await requireUser();
+  if (!(await requireTwoFactorStep(envFileId, user.id))) {
+    return { ok: false, error: "Sesja weryfikacji wygasła. Zacznij od hasła ponownie." };
+  }
+
+  const supabase = await createClient();
+  const { data: envFile } = await supabase.from("env_files").select("workspace_id").eq("id", envFileId).maybeSingle();
+  if (!envFile) return { ok: false, error: "Nie znaleziono środowiska." };
+
+  const { data: member } = await supabase
+    .from("workspace_members")
+    .select("access_key_hash")
+    .eq("workspace_id", envFile.workspace_id)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!member?.access_key_hash) {
+    return { ok: false, error: "Nie masz jeszcze wygenerowanego klucza zabezpieczeń. Poproś ownera o jego wygenerowanie." };
+  }
+  if (!verifyPassword(accessKey, member.access_key_hash)) {
+    return { ok: false, error: "Nieprawidłowy klucz zabezpieczeń." };
+  }
+
+  await grantUnlock(envFileId, user.id);
+  revalidatePath(`/environments/${envFileId}`);
+  return { ok: true };
+}
+
+/** Step 2 (TOTP option): consumes the password-step token, verifies the code, issues the next-step cookie. */
+export async function verifyEnvironmentTotpAction(envFileId: string, code: string): Promise<TwoFactorStepResult> {
   const user = await requireUser();
   if (!(await requirePasswordStep(envFileId, user.id))) {
     return { ok: false, error: "Sesja weryfikacji wygasła. Wpisz hasło ponownie." };
@@ -117,9 +199,7 @@ export async function verifyEnvironmentTotpAction(envFileId: string, code: strin
   });
   if (!verifyTotpCode(secret, code)) return { ok: false, error: "Nieprawidłowy kod." };
 
-  await grantUnlock(envFileId, user.id);
-  revalidatePath(`/environments/${envFileId}`);
-  return { ok: true };
+  return finishTwoFactorStep(envFileId, user.id);
 }
 
 /** Step 2 (passkey option), part A: issue a WebAuthn authentication challenge. */
@@ -148,11 +228,11 @@ export async function startEnvironmentPasskeyAuthAction(
   return { ok: true, options };
 }
 
-/** Step 2 (passkey option), part B: verify the ceremony response and issue the real unlock cookie. */
+/** Step 2 (passkey option), part B: verify the ceremony response and issue the next-step cookie. */
 export async function finishEnvironmentPasskeyAuthAction(
   envFileId: string,
   response: AuthenticationResponseJSON
-): Promise<ActionResult> {
+): Promise<TwoFactorStepResult> {
   const user = await requireUser();
   if (!(await requirePasswordStep(envFileId, user.id))) {
     return { ok: false, error: "Sesja weryfikacji wygasła. Wpisz hasło ponownie." };
@@ -194,12 +274,16 @@ export async function finishEnvironmentPasskeyAuthAction(
     .update({ counter: verification.authenticationInfo.newCounter })
     .eq("credential_id", credentialRow.credential_id);
 
-  await grantUnlock(envFileId, user.id);
-  revalidatePath(`/environments/${envFileId}`);
-  return { ok: true };
+  return finishTwoFactorStep(envFileId, user.id);
 }
 
-export async function setEnvironmentPasswordAction(envFileId: string, password: string): Promise<ActionResult> {
+export type ProtectionLevel = "password_2fa" | "password_2fa_key";
+
+export async function setEnvironmentPasswordAction(
+  envFileId: string,
+  password: string,
+  protectionLevel: ProtectionLevel = "password_2fa"
+): Promise<ActionResult> {
   const user = await requireUser();
   const supabase = await createClient();
 
@@ -225,7 +309,7 @@ export async function setEnvironmentPasswordAction(envFileId: string, password: 
 
   const { error } = await supabase
     .from("env_files")
-    .update({ password_hash: hashPassword(password) })
+    .update({ password_hash: hashPassword(password), protection_level: protectionLevel })
     .eq("id", envFileId);
   if (error) return { ok: false, error: "Nie udało się ustawić hasła." };
 
@@ -265,7 +349,10 @@ export async function removeEnvironmentPasswordAction(
     }
   }
 
-  const { error } = await supabase.from("env_files").update({ password_hash: null }).eq("id", envFileId);
+  const { error } = await supabase
+    .from("env_files")
+    .update({ password_hash: null, protection_level: "none" })
+    .eq("id", envFileId);
   if (error) return { ok: false, error: "Nie udało się usunąć ochrony." };
 
   revalidatePath(`/environments/${envFileId}`);

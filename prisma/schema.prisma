@@ -29,24 +29,56 @@ enum WorkspaceRole {
   @@map("workspace_role")
 }
 
-model Workspace {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String
-  ownerId   String    @map("owner_id") @db.Uuid
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+// Three protection tiers for an EnvFile, from least to most restrictive.
+// none: anyone with workspace access reads it directly. password_2fa:
+// today's existing gate (password + TOTP/passkey). password_2fa_key adds a
+// third factor  the workspace-issued Access Key on WorkspaceMember  on top
+// of password_2fa, see lib/env-lock.ts's key-step token.
+enum ProtectionLevel {
+  none
+  password_2fa
+  password_2fa_key
 
-  members  WorkspaceMember[]
-  envFiles EnvFile[]
+  @@map("protection_level")
+}
+
+// email: a specific person is invited by address (single-use, consumed on
+// accept). link: a shareable join link anyone with it can use until it's
+// revoked or expires (multi-use).
+enum InvitationKind {
+  email
+  link
+
+  @@map("invitation_kind")
+}
+
+model Workspace {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  ownerId   String   @map("owner_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  members     WorkspaceMember[]
+  envFiles    EnvFile[]
+  invitations Invitation[]
 
   @@index([ownerId])
   @@map("workspaces")
 }
 
 model WorkspaceMember {
-  workspaceId String        @map("workspace_id") @db.Uuid
-  userId      String        @map("user_id") @db.Uuid
-  role        WorkspaceRole @default(viewer)
-  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  workspaceId        String        @map("workspace_id") @db.Uuid
+  userId             String        @map("user_id") @db.Uuid
+  role               WorkspaceRole @default(viewer)
+  createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  // scrypt hash ("salt:hash" hex, same format as EnvFile.passwordHash) of this
+  // member's workspace-issued Access Key ("Klucz Zabezpieczeń"), the third
+  // factor required by ProtectionLevel.password_2fa_key. Null until the owner
+  // generates one. The raw key is shown to the owner exactly once (on
+  // generate/regenerate) and never stored  if a member loses it, only the
+  // owner can issue a new one (see regenerateAccessKeyAction).
+  accessKeyHash      String?       @map("access_key_hash")
+  accessKeyUpdatedAt DateTime?     @map("access_key_updated_at") @db.Timestamptz
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
@@ -56,41 +88,91 @@ model WorkspaceMember {
 }
 
 model EnvFile {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  workspaceId String   @map("workspace_id") @db.Uuid
-  name        String
-  storagePath String   @map("storage_path") // path in the "env-files" Storage bucket
-  createdBy   String?  @map("created_by") @db.Uuid // nullable: ON DELETE SET NULL when the creator's account is removed
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workspaceId     String          @map("workspace_id") @db.Uuid
+  name            String
+  storagePath     String          @map("storage_path") // path in the "env-files" Storage bucket
+  createdBy       String?         @map("created_by") @db.Uuid // nullable: ON DELETE SET NULL when the creator's account is removed
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz
   // scrypt hash ("salt:hash" hex) of the environment's reveal password, null
   // when unprotected. Never the plaintext. Presence of a hash means a member
   // must pass password + 2FA (see WebauthnCredential/TotpCredential) before
   // the app returns decoded pairs  see lib/env-lock.ts.
-  passwordHash String? @map("password_hash")
+  passwordHash    String?         @map("password_hash")
+  // Tier this file is protected at (see ProtectionLevel). password_2fa and
+  // password_2fa_key both require passwordHash to be set; password_2fa_key
+  // additionally requires the reader's WorkspaceMember.accessKeyHash.
+  protectionLevel ProtectionLevel @default(none) @map("protection_level")
   // Optional linked GitHub repo (owner/name), shown as a commit scaffold in
   // the creator/detail sidebar. Each viewer fetches commits with their own
   // connected GitHub token (GithubConnection)  linking a repo here doesn't
   // grant anyone access to it beyond what their own GitHub account already has.
-  githubOwner String? @map("github_owner")
-  githubRepo  String? @map("github_repo")
+  githubOwner     String?         @map("github_owner")
+  githubRepo      String?         @map("github_repo")
 
-  workspace  Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace  Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   shareLinks ShareLink[]
+  hiddenFor  EnvFileHiddenMember[]
 
   @@index([workspaceId, createdAt])
   @@map("env_files")
+}
+
+// Per-member visibility exceptions: absence of a row means visible (the
+// default), a row means this env file is hidden from this member. Owners are
+// never subject to this  see is_workspace_member('owner') bypass in the
+// env_files/Storage RLS policies.
+model EnvFileHiddenMember {
+  envFileId   String   @map("env_file_id") @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  envFile EnvFile @relation(fields: [envFileId], references: [id], onDelete: Cascade)
+
+  @@id([envFileId, userId])
+  @@index([workspaceId, userId])
+  @@map("env_file_hidden_members")
+}
+
+// A pending or resolved invite to join a workspace. kind = email is
+// single-use (acceptedAt is set on accept, then it's dead); kind = link is
+// reusable by anyone holding the token until revoked/expired.
+model Invitation {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workspaceId String         @map("workspace_id") @db.Uuid
+  kind        InvitationKind
+  email       String? // required for kind=email, null for kind=link
+  role        WorkspaceRole  @default(viewer)
+  // SHA-256 hex digest of the raw invite token (lib/tokens.ts hashToken()),
+  // same pattern as ShareLink.tokenHash  the raw token is never stored.
+  tokenHash   String         @unique @map("token_hash")
+  expiresAt   DateTime       @map("expires_at") @db.Timestamptz
+  revoked     Boolean        @default(false)
+  acceptedAt  DateTime?      @map("accepted_at") @db.Timestamptz
+  invitedBy   String?        @map("invited_by") @db.Uuid // nullable: ON DELETE SET NULL when the inviter's account is removed
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([email])
+  @@map("invitations")
 }
 
 // Profile is 1:1 with auth.users (id is the Supabase auth user id, not a
 // separate identity)  every signed-in user gets exactly one row, created
 // lazily on first visit to /profile via lib/profile.ts.
 model Profile {
-  userId               String   @id @map("user_id") @db.Uuid
-  displayName          String?  @map("display_name")
-  bio                  String?
-  avatarPath           String?  @map("avatar_path") // path in the "avatars" Storage bucket, not a public URL
-  marketingConsent     Boolean  @default(false) @map("marketing_consent")
-  productEmailsConsent Boolean  @default(true) @map("product_emails_consent")
+  userId                 String   @id @map("user_id") @db.Uuid
+  displayName            String?  @map("display_name")
+  bio                    String?
+  avatarPath             String?  @map("avatar_path") // path in the "avatars" Storage bucket, not a public URL
+  marketingConsent       Boolean  @default(false) @map("marketing_consent")
+  productEmailsConsent   Boolean  @default(true) @map("product_emails_consent")
+  // ponytail: manual flag, no billing/Stripe wired yet. Flip by hand until a
+  // real subscription flow exists to set it.
+  isPremium              Boolean  @default(false) @map("is_premium")
   // Integration slugs (from lib/integrations.ts's static catalog) the user has
   // asked to be notified about. No OAuth is wired up yet  see IntegrationsSearch.
   interestedIntegrations String[] @default([]) @map("interested_integrations")
@@ -98,7 +180,7 @@ model Profile {
   // client-side @updatedAt  every write to this table goes through
   // supabase-js, not Prisma Client, so the trigger is the only thing that
   // actually runs on every insert/update.
-  updatedAt            DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  updatedAt              DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
   @@map("profiles")
 }
@@ -147,10 +229,10 @@ model GithubConnection {
   githubAvatarUrl String?  @map("github_avatar_url")
   // AES-256-GCM ciphertext (lib/totp-crypto.ts's encryptSecret)  never the
   // raw access token, same trust level as TotpCredential's secret.
-  accessTokenEnc String @map("access_token_enc")
-  accessTokenIv  String @map("access_token_iv")
-  accessTokenTag String @map("access_token_tag")
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  accessTokenEnc  String   @map("access_token_enc")
+  accessTokenIv   String   @map("access_token_iv")
+  accessTokenTag  String   @map("access_token_tag")
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("github_connections")
 }

@@ -1,37 +1,16 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import { List, SignOut, SquaresFour, UserCircle, X } from "@phosphor-icons/react";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { signOutAction } from "@/lib/auth-actions";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const NAV_LINK_HREFS = ["/features", "/use-cases", "/pricing", "/docs"] as const;
 
 type Account = { email: string; name: string | null };
-
-function LocaleSwitcher({ className }: { className?: string }) {
-  const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  return (
-    <select
-      aria-label="Language"
-      value={locale}
-      onChange={(e) => router.replace(pathname, { locale: e.target.value })}
-      className={className}
-    >
-      {routing.locales.map((l) => (
-        <option key={l} value={l}>
-          {l.toUpperCase()}
-        </option>
-      ))}
-    </select>
-  );
-}
 
 function getInitials({ email, name }: Account): string {
   if (name) {
@@ -155,7 +134,7 @@ export function NavbarClient({ account }: { account: Account | null }) {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          <LocaleSwitcher className="rounded-md border border-hairline-strong bg-transparent px-3 py-2 text-[14px] text-body" />
+          <LocaleSwitcher className="w-[7.5rem]" />
           {account ? (
             <AccountMenu account={account} />
           ) : (
@@ -202,7 +181,7 @@ export function NavbarClient({ account }: { account: Account | null }) {
             ))}
           </nav>
           <div className="mt-3 flex flex-col gap-2 border-t border-hairline pt-3">
-            <LocaleSwitcher className="rounded-md border border-hairline-strong bg-transparent px-3 py-3 text-center text-[15px] text-body" />
+            <LocaleSwitcher className="w-full" />
             {account ? (
               <>
                 <div className="truncate rounded-md px-3 py-2 text-center text-[13px] text-mute">

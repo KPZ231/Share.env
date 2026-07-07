@@ -12,19 +12,43 @@ import {
   verifyEnvironmentTotpAction,
   startEnvironmentPasskeyAuthAction,
   finishEnvironmentPasskeyAuthAction,
+  verifyEnvironmentAccessKeyAction,
 } from "@/app/[locale]/(app)/environments/[id]/lock-actions";
 
 export function EnvironmentUnlockGate({ envFileId }: { envFileId: string }) {
   const t = useTranslations("environments.detail");
   const router = useRouter();
-  const [step, setStep] = useState<"password" | "twoFactor">("password");
+  const [step, setStep] = useState<"password" | "twoFactor" | "accessKey">("password");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
+  const [accessKey, setAccessKey] = useState("");
   const [hasTotp, setHasTotp] = useState(false);
   const [hasPasskeys, setHasPasskeys] = useState(false);
   const [isPending, startTransition] = useTransition();
   const passwordId = useId();
   const codeId = useId();
+  const accessKeyId = useId();
+
+  function afterTwoFactorStep(result: { ok: true; requiresAccessKey: boolean } | { ok: false; error: string }) {
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    if (result.requiresAccessKey) setStep("accessKey");
+    else router.refresh();
+  }
+
+  function submitAccessKey() {
+    if (!accessKey) return;
+    startTransition(async () => {
+      const result = await verifyEnvironmentAccessKeyAction(envFileId, accessKey);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      router.refresh();
+    });
+  }
 
   function submitPassword() {
     if (!password) return;
@@ -43,12 +67,7 @@ export function EnvironmentUnlockGate({ envFileId }: { envFileId: string }) {
   function submitTotp() {
     if (!code) return;
     startTransition(async () => {
-      const result = await verifyEnvironmentTotpAction(envFileId, code);
-      if (!result.ok) {
-        toast.error(result.error);
-        return;
-      }
-      router.refresh();
+      afterTwoFactorStep(await verifyEnvironmentTotpAction(envFileId, code));
     });
   }
 
@@ -61,12 +80,7 @@ export function EnvironmentUnlockGate({ envFileId }: { envFileId: string }) {
       }
       try {
         const response = await startAuthentication({ optionsJSON: started.options });
-        const finished = await finishEnvironmentPasskeyAuthAction(envFileId, response);
-        if (!finished.ok) {
-          toast.error(finished.error);
-          return;
-        }
-        router.refresh();
+        afterTwoFactorStep(await finishEnvironmentPasskeyAuthAction(envFileId, response));
       } catch {
         toast.error(t("errors.passkeyFailed"));
       }
@@ -105,6 +119,38 @@ export function EnvironmentUnlockGate({ envFileId }: { envFileId: string }) {
             type="button"
             onClick={submitPassword}
             disabled={isPending || !password}
+            className="flex items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-[15px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+          >
+            {isPending && <Spinner className="size-4" />}
+            {t("unlockSubmit")}
+          </button>
+        </div>
+      ) : step === "accessKey" ? (
+        <div className="flex w-full max-w-sm flex-col gap-4">
+          <div>
+            <h2 className="font-display text-xl font-normal tracking-tight text-foreground">
+              {t("accessKeyHeading")}
+            </h2>
+            <p className="mt-1 text-sm text-body">{t("accessKeySubheading")}</p>
+          </div>
+          <div className="flex flex-col gap-1.5 text-left">
+            <label htmlFor={accessKeyId} className="font-mono text-xs uppercase tracking-[0.1em] text-mute">
+              {t("accessKeyLabel")}
+            </label>
+            <input
+              id={accessKeyId}
+              type="text"
+              value={accessKey}
+              onChange={(e) => setAccessKey(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && submitAccessKey()}
+              autoFocus
+              className="rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={submitAccessKey}
+            disabled={isPending || !accessKey}
             className="flex items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-[15px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             {isPending && <Spinner className="size-4" />}

@@ -1,4 +1,5 @@
 export const FREE_ENVIRONMENT_LIMIT = 3;
+export const FREE_WORKSPACE_LIMIT = 2;
 export const PRICE_PER_ENV_USD = 2;
 
 const CURRENCY_BY_LOCALE: Record<string, { code: string; rate: number }> = {

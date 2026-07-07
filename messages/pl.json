@@ -12,6 +12,10 @@
       "title": "Nowe środowisko",
       "description": "Prześlij plik .env lub dodaj zmienne ręcznie, aby utworzyć nowe środowisko."
     },
+    "onboarding": {
+      "title": "Witaj w share.env",
+      "description": "Utwórz swój pierwszy workspace, aby zacząć bezpiecznie udostępniać pliki .env zespołowi."
+    },
     "environments": {
       "title": "Środowiska",
       "description": "Wszystkie środowiska w Twoim workspace'ie."
@@ -526,6 +530,20 @@
       "body": "Szyfrowane przechowywanie, linki z wygaśnięciem i role dostępu  dla zespołów, które traktują pliki .env poważnie."
     }
   },
+  "onboarding": {
+    "heading": "Utwórz swój workspace",
+    "subheading": "Workspace to miejsce, w którym Ty i Twój zespół przechowujecie i udostępniacie pliki .env.",
+    "nameLabel": "Nazwa workspace'a",
+    "namePlaceholder": "np. Zespół produktu",
+    "submit": "Utwórz workspace",
+    "submitting": "Tworzenie...",
+    "planNoteFree": "Plan darmowy: do {limit} workspace'ów na konto.",
+    "planNotePremium": "Plan premium: bez limitu workspace'ów.",
+    "errors": {
+      "nameRequired": "Podaj nazwę workspace'a (min. 2 znaki).",
+      "generic": "Coś poszło nie tak. Spróbuj ponownie."
+    }
+  },
   "verify2fa": {
     "heading": "Potwierdź, że to Ty",
     "subheading": "Twoje konto ma włączoną weryfikację dwuskładnikową. Potwierdź kluczem dostępu lub aplikacją uwierzytelniającą.",
@@ -657,6 +675,9 @@
       "usePasskey": "Użyj klucza dostępu",
       "orUseTotp": "Lub wpisz kod z aplikacji uwierzytelniającej",
       "totpLabel": "6-cyfrowy kod",
+      "accessKeyHeading": "Klucz zabezpieczeń",
+      "accessKeySubheading": "Wpisz klucz zabezpieczeń wygenerowany przez ownera workspace'a.",
+      "accessKeyLabel": "Klucz zabezpieczeń",
       "errors": {
         "passkeyFailed": "Weryfikacja kluczem dostępu nie powiodła się lub została anulowana."
       },
@@ -717,6 +738,71 @@
       "success": "Środowisko zostało utworzone.",
       "bulkImported": "Zaimportowano {count} zmiennych."
     }
+  },
+  "members": {
+    "breadcrumb": "Członkowie",
+    "heading": "Członkowie",
+    "subheading": "{count, plural, one {# członek} few {# członków} other {# członków}} w tym workspace'ie.",
+    "table": {
+      "member": "Członek",
+      "role": "Rola",
+      "accessKey": "Klucz zabezpieczeń",
+      "since": "Dołączył(a)"
+    },
+    "unnamed": "Bez nazwy",
+    "you": "(Ty)",
+    "save": "Zapisz",
+    "remove": "Usuń",
+    "removeConfirm": "Usunąć tego członka z workspace'a?",
+    "accessKey": {
+      "none": "Brak wygenerowanego klucza",
+      "set": "Ustawiony {date}",
+      "generate": "Wygeneruj klucz",
+      "regenerate": "Wygeneruj ponownie",
+      "modalTitle": "Klucz zabezpieczeń wygenerowany",
+      "modalHint": "Przekaż ten klucz członkowi teraz  nie będzie już nigdzie widoczny.",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano",
+      "close": "Zamknij"
+    },
+    "visibility": {
+      "toggle": "Widoczność środowisk",
+      "hint": "Odznacz środowisko, aby ukryć je przed tym członkiem.",
+      "empty": "Brak środowisk w tym workspace'ie."
+    },
+    "invite": {
+      "heading": "Zaproś współpracownika",
+      "emailLabel": "Adres e-mail",
+      "emailPlaceholder": "osoba@firma.pl",
+      "roleLabel": "Rola",
+      "sendEmail": "Wyślij zaproszenie",
+      "orDivider": "lub",
+      "createLink": "Utwórz link zapraszający",
+      "linkCreated": "Link zapraszający utworzony",
+      "linkHint": "Każdy z tym linkiem może dołączyć do workspace'a jako {role}.",
+      "pendingHeading": "Oczekujące zaproszenia",
+      "pendingEmpty": "Brak oczekujących zaproszeń.",
+      "expiresAt": "wygasa {date}",
+      "revoke": "Odwołaj"
+    },
+    "errors": {
+      "lastOwner": "Workspace musi mieć co najmniej jednego ownera."
+    }
+  },
+  "invitations": {
+    "heading": "Zaproszenie do workspace'a",
+    "subheading": "Zostałeś zaproszony do dołączenia do „{workspace}” jako {role}.",
+    "accept": "Dołącz do workspace'a",
+    "signInFirst": "Zaloguj się lub załóż konto, aby dołączyć.",
+    "invalid": "To zaproszenie jest nieprawidłowe, wygasło lub zostało odwołane.",
+    "wrongEmail": "To zaproszenie zostało wysłane na inny adres e-mail.",
+    "success": "Dołączono do workspace'a.",
+    "goToDashboard": "Przejdź do panelu"
+  },
+  "publicProfile": {
+    "notFound": "Nie znaleziono profilu lub nie masz do niego dostępu.",
+    "memberSince": "W workspace'ie od {date}",
+    "noBio": "Ten użytkownik nie dodał jeszcze opisu."
   },
   "footer": {
     "heading": "Sekrety zespołu zasługują na coś lepszego niż Slack",

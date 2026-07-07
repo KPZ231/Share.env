@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
-import { ensureDefaultWorkspace } from "@/lib/workspace";
 import { sanitizeRedirectTo } from "@/lib/redirect";
 
 export async function GET(
@@ -36,7 +35,24 @@ export async function GET(
     return NextResponse.redirect(failureUrl);
   }
 
-  await ensureDefaultWorkspace(supabase);
+  // First sign-in ever (no workspace membership yet)  send to onboarding to
+  // create the first workspace instead of silently auto-provisioning one.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: membership, error: membershipError } = await supabase
+    .from("workspace_members")
+    .select("workspace_id")
+    .eq("user_id", user!.id)
+    .limit(1)
+    .maybeSingle();
+  if (membershipError) throw membershipError;
+
+  if (!membership) {
+    const onboardingUrl = new URL(`/${locale}/onboarding`, origin);
+    onboardingUrl.searchParams.set("next", redirectTo);
+    return NextResponse.redirect(onboardingUrl);
+  }
 
   return NextResponse.redirect(new URL(redirectTo, origin));
 }

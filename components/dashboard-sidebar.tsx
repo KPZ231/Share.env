@@ -14,7 +14,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 const NAV_ITEMS = [
   { key: "overview", href: "/dashboard", icon: SquaresFour },
   { key: "environments", href: "/environments", icon: FolderSimple },
-  { key: "members", href: null, icon: UsersThree },
+  { key: "members", href: "/members", icon: UsersThree },
   { key: "shareLinks", href: null, icon: LinkSimple },
   { key: "settings", href: null, icon: Gear },
   { key: "profile", href: "/profile", icon: UserCircle },

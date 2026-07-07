@@ -1,33 +1,13 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
-import { SignOut, UserCircle } from "@phosphor-icons/react";
+import { CaretDown, SignOut, Stack, UserCircle } from "@phosphor-icons/react";
 import { Link, useRouter } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 import { signOutAction } from "@/lib/auth-actions";
 import { setActiveWorkspaceAction } from "@/lib/auth-actions";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import type { UserWorkspace } from "@/lib/dashboard";
-
-function LocaleSwitcher({ className }: { className?: string }) {
-  const locale = useLocale();
-  const router = useRouter();
-
-  return (
-    <select
-      aria-label="Language"
-      value={locale}
-      onChange={(e) => router.replace("/dashboard", { locale: e.target.value })}
-      className={className}
-    >
-      {routing.locales.map((l) => (
-        <option key={l} value={l}>
-          {l.toUpperCase()}
-        </option>
-      ))}
-    </select>
-  );
-}
 
 function WorkspaceSwitcher({ workspaces, activeId }: { workspaces: UserWorkspace[]; activeId: string }) {
   const t = useTranslations("dashboard.nav");
@@ -35,25 +15,32 @@ function WorkspaceSwitcher({ workspaces, activeId }: { workspaces: UserWorkspace
   const [pending, startTransition] = useTransition();
 
   return (
-    <select
-      aria-label={t("workspaceSwitcher")}
-      value={activeId}
-      disabled={pending}
-      onChange={(e) => {
-        const workspaceId = e.target.value;
-        startTransition(async () => {
-          const result = await setActiveWorkspaceAction(workspaceId);
-          if (result.ok) router.refresh();
-        });
-      }}
-      className="rounded-md border border-hairline-strong bg-surface-soft px-3 py-2 text-[14px] font-medium text-foreground disabled:opacity-50"
-    >
-      {workspaces.map((w) => (
-        <option key={w.id} value={w.id}>
-          {w.name}
-        </option>
-      ))}
-    </select>
+    <div className="group relative inline-flex max-w-[11rem] items-center">
+      <Stack
+        size={15}
+        className="pointer-events-none absolute left-2.5 text-mute transition-colors group-focus-within:text-foreground group-hover:text-foreground"
+      />
+      <select
+        aria-label={t("workspaceSwitcher")}
+        value={activeId}
+        disabled={pending}
+        onChange={(e) => {
+          const workspaceId = e.target.value;
+          startTransition(async () => {
+            const result = await setActiveWorkspaceAction(workspaceId);
+            if (result.ok) router.refresh();
+          });
+        }}
+        className="w-full appearance-none truncate rounded-md border border-hairline-strong bg-surface-soft py-2 pl-8 pr-7 text-[13px] font-medium text-foreground transition-colors hover:border-foreground/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
+      >
+        {workspaces.map((w) => (
+          <option key={w.id} value={w.id} className="bg-surface-elevated text-foreground">
+            {w.name}
+          </option>
+        ))}
+      </select>
+      <CaretDown size={11} weight="bold" className="pointer-events-none absolute right-2.5 text-mute" />
+    </div>
   );
 }
 
@@ -70,7 +57,9 @@ export function DashboardNavClient({
   return (
     <div className="flex items-center gap-3">
       <WorkspaceSwitcher workspaces={workspaces} activeId={activeId} />
-      <LocaleSwitcher className="hidden rounded-md border border-hairline-strong bg-transparent px-3 py-2 text-[14px] text-body sm:block" />
+      <span className="hidden sm:block">
+        <LocaleSwitcher className="w-[7.5rem]" />
+      </span>
       <Link
         href="/profile"
         className="flex items-center gap-2 rounded-md px-3 py-2 text-[14px] font-medium text-body transition-colors hover:text-foreground"

@@ -73,6 +73,22 @@ export function verifyPasswordStepToken(token: string, envFileId: string, userId
   return verify("pwstep", token, envFileId, userId);
 }
 
+/**
+ * Issued once the 2FA step succeeds for a password_2fa_key file, consumed by
+ * the Access Key step. Cannot unlock on its own  mirrors the password-step
+ * pattern one factor further.
+ */
+export function signTwoFactorStepToken(envFileId: string, userId: string): string {
+  return sign("2fastep", envFileId, userId, PASSWORD_STEP_TTL_MS);
+}
+export function verifyTwoFactorStepToken(token: string, envFileId: string, userId: string): boolean {
+  return verify("2fastep", token, envFileId, userId);
+}
+export const TWO_FACTOR_STEP_COOKIE_MAX_AGE_SECONDS = PASSWORD_STEP_TTL_MS / 1000;
+export function twoFactorStepCookieName(envFileId: string) {
+  return `env_2fastep_${envFileId}`;
+}
+
 export const UNLOCK_COOKIE_MAX_AGE_SECONDS = UNLOCK_TTL_MS / 1000;
 export const PASSWORD_STEP_COOKIE_MAX_AGE_SECONDS = PASSWORD_STEP_TTL_MS / 1000;
 export function unlockCookieName(envFileId: string) {
@@ -132,6 +148,13 @@ if (process.argv[1]?.replace(/\\/g, "/").endsWith("lib/env-lock.ts")) {
   console.assert(verifyAccountTwoFactorToken(accountToken, userId), "freshly signed account 2FA token must verify");
   console.assert(!verifyAccountTwoFactorToken(accountToken, "other-user"), "account token must not verify for another user");
   console.assert(!verifyUnlockToken(accountToken, envId, userId), "an account token must not verify as an env unlock token");
+
+  const twoFaStepToken = signTwoFactorStepToken(envId, userId);
+  console.assert(verifyTwoFactorStepToken(twoFaStepToken, envId, userId), "freshly signed 2FA-step token must verify");
+  console.assert(
+    !verifyUnlockToken(twoFaStepToken, envId, userId),
+    "a 2FA-step token must not verify as an unlock token"
+  );
 
   const githubState = signGithubOAuthState(userId);
   console.assert(verifyGithubOAuthState(githubState, userId), "freshly signed github oauth state must verify");
