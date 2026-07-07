@@ -5,7 +5,6 @@ import { cookies } from "next/headers";
 import { unstable_cache } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
-import { ensureDefaultWorkspace } from "@/lib/workspace";
 import { prisma } from "@/lib/prisma";
 import { FREE_ENVIRONMENT_LIMIT } from "@/lib/billing";
 
@@ -60,13 +59,13 @@ export const getUserWorkspaces = cache(async (): Promise<UserWorkspace[]> => {
 /**
  * Resolves which workspace the dashboard should show: the `active_workspace`
  * cookie if it's still a workspace the user belongs to, otherwise the newest
- * one. Always ensures the user has at least one workspace first, so a brand
- * new sign-in never hits an empty list.
+ * one. Returns null for a zero-workspace user instead of auto-provisioning
+ * one -- the onboarding flow (app/[locale]/onboarding) is the only place a
+ * first workspace gets created; the (app) layout redirects there when this
+ * returns null.
  */
 export async function resolveActiveWorkspace(): Promise<UserWorkspace | null> {
   await requireUser();
-  const supabase = await createClient();
-  await ensureDefaultWorkspace(supabase);
 
   const workspaces = await getUserWorkspaces();
   if (workspaces.length === 0) return null;
@@ -97,12 +96,15 @@ export async function getWorkspaceOverview(workspaceId: string): Promise<Workspa
 
   const membership = await prisma.workspaceMember.findUnique({
     where: { workspaceId_userId: { workspaceId, userId: user.id } },
-    select: { workspaceId: true },
+    select: { workspaceId: true, role: true },
   });
   if (!membership) {
     throw new Error("Not a member of this workspace");
   }
+  const isOwner = membership.role === "owner";
 
+  // recentEnvFiles must respect per-member hiding, so the cache key includes the
+  // viewer (owner bypasses hiding, so all owners share one cache entry).
   const overview = await unstable_cache(
     async () => {
       const now = new Date();
@@ -119,7 +121,7 @@ export async function getWorkspaceOverview(workspaceId: string): Promise<Workspa
             },
           }),
           prisma.envFile.findMany({
-            where: { workspaceId },
+            where: isOwner ? { workspaceId } : { workspaceId, hiddenFor: { none: { userId: user.id } } },
             orderBy: { createdAt: "desc" },
             take: 5,
             select: { id: true, name: true, createdAt: true },
@@ -128,7 +130,7 @@ export async function getWorkspaceOverview(workspaceId: string): Promise<Workspa
 
       return { environmentCount, memberCount, activeShareLinkCount, recentEnvFiles };
     },
-    [workspaceId],
+    [workspaceId, isOwner ? "owner" : user.id],
     { tags: [`ws:${workspaceId}`], revalidate: 60 }
   )();
 
@@ -150,14 +152,19 @@ export async function getWorkspaceEnvFiles(
 
   const membership = await prisma.workspaceMember.findUnique({
     where: { workspaceId_userId: { workspaceId, userId: user.id } },
-    select: { workspaceId: true },
+    select: { workspaceId: true, role: true },
   });
   if (!membership) {
     throw new Error("Not a member of this workspace");
   }
 
+  // Owners bypass hiding (mirrors the env_files/storage RLS policies); everyone
+  // else must not see files the owner explicitly hid from them.
   return prisma.envFile.findMany({
-    where: { workspaceId },
+    where:
+      membership.role === "owner"
+        ? { workspaceId }
+        : { workspaceId, hiddenFor: { none: { userId: user.id } } },
     orderBy: { createdAt: "desc" },
     take: ENVIRONMENTS_PAGE_SIZE,
     select: { id: true, name: true, createdAt: true },

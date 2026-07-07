@@ -323,6 +323,35 @@ export async function setEnvironmentPasswordAction(
   return { ok: true };
 }
 
+/** Switches between the two protected tiers (password_2fa <-> password_2fa_key) without touching the password. */
+export async function setEnvironmentProtectionLevelAction(
+  envFileId: string,
+  protectionLevel: ProtectionLevel
+): Promise<ActionResult> {
+  await requireUser();
+  const supabase = await createClient();
+
+  const { data: envFile } = await supabase
+    .from("env_files")
+    .select("id, workspace_id, password_hash")
+    .eq("id", envFileId)
+    .maybeSingle();
+  if (!envFile) return { ok: false, error: "Nie znaleziono środowiska." };
+  if (!envFile.password_hash) return { ok: false, error: "To środowisko nie jest jeszcze chronione hasłem." };
+
+  const roleCheck = await requireEditorRole(envFile.workspace_id);
+  if (!roleCheck.ok) return roleCheck;
+
+  const { error } = await supabase
+    .from("env_files")
+    .update({ protection_level: protectionLevel })
+    .eq("id", envFileId);
+  if (error) return { ok: false, error: "Nie udało się zmienić poziomu ochrony." };
+
+  revalidatePath(`/environments/${envFileId}`);
+  return { ok: true };
+}
+
 export async function removeEnvironmentPasswordAction(
   envFileId: string,
   currentPassword: string

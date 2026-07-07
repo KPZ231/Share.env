@@ -118,6 +118,19 @@ export async function setMemberEnvVisibilityAction(
 ): Promise<ActionResult> {
   await assertOwner(workspaceId);
 
+  // envFileId/memberId are client-supplied -- confirm both actually belong to
+  // this workspace before touching envFileHiddenMember, otherwise an owner of
+  // workspace A could pass IDs from workspace B (cross-workspace IDOR).
+  const [file, target] = await Promise.all([
+    prisma.envFile.findFirst({ where: { id: envFileId, workspaceId }, select: { id: true } }),
+    prisma.workspaceMember.findUnique({
+      where: { workspaceId_userId: { workspaceId, userId: memberId } },
+      select: { userId: true },
+    }),
+  ]);
+  if (!file) return { ok: false, error: "Nie znaleziono pliku." };
+  if (!target) return { ok: false, error: "Użytkownik nie jest członkiem." };
+
   if (hidden) {
     await prisma.envFileHiddenMember.upsert({
       where: { envFileId_userId: { envFileId, userId: memberId } },
@@ -125,7 +138,7 @@ export async function setMemberEnvVisibilityAction(
       update: {},
     });
   } else {
-    await prisma.envFileHiddenMember.deleteMany({ where: { envFileId, userId: memberId } });
+    await prisma.envFileHiddenMember.deleteMany({ where: { envFileId, userId: memberId, workspaceId } });
   }
 
   revalidatePath("/members");

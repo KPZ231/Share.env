@@ -12,6 +12,7 @@ export type EnvironmentDetail = {
   workspaceId: string;
   createdAt: string;
   isProtected: boolean;
+  protectionLevel: "none" | "password_2fa" | "password_2fa_key";
   /** true when password-protected and the caller hasn't unlocked it in this session  pairs is empty in that case. */
   locked: boolean;
   pairs: EnvPair[];
@@ -33,12 +34,13 @@ export async function getEnvironmentDetail(id: string): Promise<EnvironmentDetai
 
   const { data: envFile, error } = await supabase
     .from("env_files")
-    .select("id, name, workspace_id, storage_path, created_at, password_hash, github_owner, github_repo")
+    .select("id, name, workspace_id, storage_path, created_at, password_hash, protection_level, github_owner, github_repo")
     .eq("id", id)
     .maybeSingle();
   if (error || !envFile) return null;
 
   const isProtected = !!envFile.password_hash;
+  const protectionLevel = (envFile.protection_level ?? "none") as EnvironmentDetail["protectionLevel"];
   const githubRepo =
     envFile.github_owner && envFile.github_repo
       ? { owner: envFile.github_owner, name: envFile.github_repo }
@@ -58,6 +60,7 @@ export async function getEnvironmentDetail(id: string): Promise<EnvironmentDetai
       workspaceId: envFile.workspace_id,
       createdAt: envFile.created_at,
       isProtected,
+      protectionLevel,
       locked: true,
       pairs: [],
       githubRepo,
@@ -77,6 +80,7 @@ export async function getEnvironmentDetail(id: string): Promise<EnvironmentDetai
     workspaceId: envFile.workspace_id,
     createdAt: envFile.created_at,
     isProtected,
+    protectionLevel,
     locked: false,
     pairs: parseEnv(text),
     githubRepo,

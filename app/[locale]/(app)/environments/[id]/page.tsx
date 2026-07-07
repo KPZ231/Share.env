@@ -65,6 +65,7 @@ export default async function EnvironmentDetailPage({
               <EnvironmentProtectionPanel
                 envFileId={detail.id}
                 isProtected={detail.isProtected}
+                protectionLevel={detail.protectionLevel}
                 isOwner={role === "owner"}
               />
             )}

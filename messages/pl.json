@@ -697,6 +697,13 @@
         "setSubmit": "Chroń środowisko",
         "setSuccess": "Ochrona hasłem została włączona.",
         "removeSuccess": "Ochrona hasłem została usunięta.",
+        "levelChanged": "Poziom zabezpieczeń został zmieniony.",
+        "sessionHint": "Odblokowanie jest ważne przez 15 minut, potem trzeba zweryfikować się ponownie.",
+        "levels": {
+          "none": { "label": "Brak", "description": "Każdy członek widzi środowisko bez weryfikacji." },
+          "password_2fa": { "label": "Hasło + 2FA", "description": "Hasło i drugi składnik (klucz dostępu lub aplikacja uwierzytelniająca)." },
+          "password_2fa_key": { "label": "Hasło + 2FA + klucz", "description": "Dodatkowo wymaga klucza pracowniczego wygenerowanego przez ownera." }
+        },
         "errors": {
           "tooShort": "Hasło musi mieć co najmniej 8 znaków.",
           "mismatch": "Hasła nie są takie same."
