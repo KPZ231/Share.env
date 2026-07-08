@@ -663,6 +663,8 @@
       "save": "Save changes",
       "saving": "Saving…",
       "success": "Environment updated.",
+      "descriptionLabel": "Description / notes",
+      "websiteLabel": "Linked website",
       "replaceHint": "Drag a .env file here to replace all variables, or click to choose one",
       "unlockHeading": "This environment is protected",
       "unlockSubheading": "Enter the password to view or edit it.",
@@ -708,6 +710,31 @@
           "tooShort": "Password must be at least 8 characters.",
           "mismatch": "Passwords don't match."
         }
+      },
+      "assignedMembers": {
+        "heading": "Assigned employees",
+        "hint": "Uncheck an employee to hide this environment from them.",
+        "empty": "No employees in this workspace yet.",
+        "unnamed": "Unnamed"
+      },
+      "shareLinks": {
+        "heading": "Share via link",
+        "hint": "Whoever holds the link must sign in and satisfy this environment's protection level to take it over.",
+        "expiryDays": "{count, plural, one {# day} other {# days}}",
+        "create": "Create link",
+        "copy": "Copy",
+        "copied": "Copied",
+        "expiresAt": "Expires {date}",
+        "revoke": "Revoke"
+      },
+      "danger": {
+        "heading": "Delete environment",
+        "hint": "This is irreversible and also deletes the .env file.",
+        "trigger": "Delete environment",
+        "confirmPrompt": "Type \"{name}\" to confirm deletion.",
+        "confirmSubmit": "Delete permanently",
+        "cancel": "Cancel",
+        "success": "Environment deleted."
       }
     },
     "new": {
@@ -805,6 +832,15 @@
     "wrongEmail": "This invitation was sent to a different email address.",
     "success": "Joined the workspace.",
     "goToDashboard": "Go to dashboard"
+  },
+  "shareLinks": {
+    "takeover": {
+      "heading": "Take over an environment",
+      "subheading": "You've been invited to take over \"{env}\" from the \"{workspace}\" workspace.",
+      "protectionHint": "To see the file, you'll need to satisfy this environment's protection level (password, 2FA, and possibly an employee key).",
+      "accept": "Take over the file",
+      "invalid": "This link is invalid, expired, or has been revoked."
+    }
   },
   "publicProfile": {
     "notFound": "Profile not found or you don't have access to it.",

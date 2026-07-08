@@ -26,6 +26,13 @@ export async function assertOwner(workspaceId: string): Promise<string> {
   return user.id;
 }
 
+export async function assertEditor(workspaceId: string): Promise<string> {
+  const user = await requireUser();
+  const membership = await assertMember(workspaceId, user.id);
+  if (membership.role === "viewer") throw new Error("Editor role required");
+  return user.id;
+}
+
 export type MemberRow = {
   userId: string;
   role: WorkspaceRole;
@@ -81,4 +88,15 @@ export async function getWorkspaceHiddenMap(workspaceId: string): Promise<Record
     (byUser[row.userId] ??= []).push(row.envFileId);
   }
   return byUser;
+}
+
+/** Owner-only: userIds hidden from one specific environment. */
+export async function getEnvFileHiddenUserIds(workspaceId: string, envFileId: string): Promise<string[]> {
+  await assertOwner(workspaceId);
+
+  const rows = await prisma.envFileHiddenMember.findMany({
+    where: { workspaceId, envFileId },
+    select: { userId: true },
+  });
+  return rows.map((r) => r.userId);
 }

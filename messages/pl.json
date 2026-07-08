@@ -663,6 +663,8 @@
       "save": "Zapisz zmiany",
       "saving": "Zapisywanie…",
       "success": "Środowisko zostało zaktualizowane.",
+      "descriptionLabel": "Opis / notatki",
+      "websiteLabel": "Powiązana strona internetowa",
       "replaceHint": "Przeciągnij tu plik .env, aby zastąpić wszystkie zmienne, albo kliknij, aby go wybrać",
       "unlockHeading": "To środowisko jest chronione",
       "unlockSubheading": "Wpisz hasło, aby je przeglądać lub edytować.",
@@ -708,6 +710,31 @@
           "tooShort": "Hasło musi mieć co najmniej 8 znaków.",
           "mismatch": "Hasła nie są takie same."
         }
+      },
+      "assignedMembers": {
+        "heading": "Przypisani pracownicy",
+        "hint": "Odznacz pracownika, aby ukryć przed nim to środowisko.",
+        "empty": "Brak pracowników w tym workspace'ie.",
+        "unnamed": "Bez nazwy"
+      },
+      "shareLinks": {
+        "heading": "Udostępnij linkiem",
+        "hint": "Osoba z linkiem musi się zalogować i spełnić wymagany poziom ochrony, aby przejąć plik.",
+        "expiryDays": "{count, plural, one {# dzień} few {# dni} many {# dni} other {# dnia}}",
+        "create": "Utwórz link",
+        "copy": "Kopiuj",
+        "copied": "Skopiowano",
+        "expiresAt": "Wygasa {date}",
+        "revoke": "Odwołaj"
+      },
+      "danger": {
+        "heading": "Usuń środowisko",
+        "hint": "Ta operacja jest nieodwracalna i usuwa też plik .env.",
+        "trigger": "Usuń środowisko",
+        "confirmPrompt": "Wpisz \"{name}\", aby potwierdzić usunięcie.",
+        "confirmSubmit": "Usuń na stałe",
+        "cancel": "Anuluj",
+        "success": "Środowisko zostało usunięte."
       }
     },
     "new": {
@@ -805,6 +832,15 @@
     "wrongEmail": "To zaproszenie zostało wysłane na inny adres e-mail.",
     "success": "Dołączono do workspace'a.",
     "goToDashboard": "Przejdź do panelu"
+  },
+  "shareLinks": {
+    "takeover": {
+      "heading": "Przejęcie środowiska",
+      "subheading": "Zostałeś zaproszony do przejęcia „{env}” z workspace'a „{workspace}”.",
+      "protectionHint": "Aby zobaczyć plik, będziesz musiał spełnić poziom ochrony ustawiony dla tego środowiska (hasło, 2FA, ewentualnie klucz pracowniczy).",
+      "accept": "Przejmij plik",
+      "invalid": "Ten link jest nieprawidłowy, wygasł lub został odwołany."
+    }
   },
   "publicProfile": {
     "notFound": "Nie znaleziono profilu lub nie masz do niego dostępu.",

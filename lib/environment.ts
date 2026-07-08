@@ -17,6 +17,8 @@ export type EnvironmentDetail = {
   locked: boolean;
   pairs: EnvPair[];
   githubRepo: { owner: string; name: string } | null;
+  description: string | null;
+  websiteUrl: string | null;
 };
 
 /**
@@ -34,7 +36,9 @@ export async function getEnvironmentDetail(id: string): Promise<EnvironmentDetai
 
   const { data: envFile, error } = await supabase
     .from("env_files")
-    .select("id, name, workspace_id, storage_path, created_at, password_hash, protection_level, github_owner, github_repo")
+    .select(
+      "id, name, workspace_id, storage_path, created_at, password_hash, protection_level, github_owner, github_repo, description, website_url"
+    )
     .eq("id", id)
     .maybeSingle();
   if (error || !envFile) return null;
@@ -64,6 +68,8 @@ export async function getEnvironmentDetail(id: string): Promise<EnvironmentDetai
       locked: true,
       pairs: [],
       githubRepo,
+      description: envFile.description,
+      websiteUrl: envFile.website_url,
     };
   }
 
@@ -84,5 +90,7 @@ export async function getEnvironmentDetail(id: string): Promise<EnvironmentDetai
     locked: false,
     pairs: parseEnv(text),
     githubRepo,
+    description: envFile.description,
+    websiteUrl: envFile.website_url,
   };
 }

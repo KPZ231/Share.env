@@ -14,19 +14,27 @@ export function EnvironmentEditor({
   id,
   initialName,
   initialPairs,
+  initialDescription,
+  initialWebsiteUrl,
   readOnly,
 }: {
   id: string;
   initialName: string;
   initialPairs: EnvPair[];
+  initialDescription: string | null;
+  initialWebsiteUrl: string | null;
   readOnly: boolean;
 }) {
   const t = useTranslations("environments");
   const router = useRouter();
   const [name, setName] = useState(initialName);
+  const [description, setDescription] = useState(initialDescription ?? "");
+  const [websiteUrl, setWebsiteUrl] = useState(initialWebsiteUrl ?? "");
   const [rows, setRows] = useState<Row[]>(() => rowsFromPairs(initialPairs));
   const [isPending, startTransition] = useTransition();
   const nameId = useId();
+  const descriptionId = useId();
+  const websiteId = useId();
 
   async function loadFile(file: File) {
     const text = await file.text();
@@ -60,7 +68,7 @@ export function EnvironmentEditor({
 
     startTransition(async () => {
       try {
-        const result = await updateEnvironmentAction({ id, name: trimmedName, pairs });
+        const result = await updateEnvironmentAction({ id, name: trimmedName, pairs, description, websiteUrl });
         if (!result.ok) throw new Error(result.error);
         toast.success(t("detail.success"));
         router.refresh();
@@ -90,6 +98,39 @@ export function EnvironmentEditor({
           onChange={(e) => setName(e.target.value)}
           maxLength={100}
           className="rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground read-only:opacity-70"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor={websiteId} className="font-mono text-xs uppercase tracking-[0.1em] text-mute">
+            {t("detail.websiteLabel")}
+          </label>
+          <input
+            id={websiteId}
+            type="url"
+            value={websiteUrl}
+            readOnly={readOnly}
+            placeholder="https://"
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+            maxLength={500}
+            className="rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground read-only:opacity-70"
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor={descriptionId} className="font-mono text-xs uppercase tracking-[0.1em] text-mute">
+          {t("detail.descriptionLabel")}
+        </label>
+        <textarea
+          id={descriptionId}
+          value={description}
+          readOnly={readOnly}
+          rows={3}
+          onChange={(e) => setDescription(e.target.value)}
+          maxLength={2000}
+          className="resize-none rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground read-only:opacity-70"
         />
       </div>
 

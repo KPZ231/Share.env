@@ -4,12 +4,17 @@ import { getTranslations } from "next-intl/server";
 import { getEnvironmentDetail } from "@/lib/environment";
 import { getUserWorkspaces } from "@/lib/dashboard";
 import { getGithubConnectionInfo } from "@/lib/github-connection";
+import { getWorkspaceMembers, getEnvFileHiddenUserIds } from "@/lib/membership";
 import { buildMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { EnvironmentEditor } from "@/components/environment-editor";
 import { EnvironmentUnlockGate } from "@/components/environment-unlock-gate";
 import { EnvironmentProtectionPanel } from "@/components/environment-protection-panel";
+import { EnvironmentMembersPanel } from "@/components/environment-members-panel";
+import { EnvironmentSharePanel } from "@/components/environment-share-panel";
+import { EnvironmentDangerZone } from "@/components/environment-danger-zone";
 import { GithubPanel } from "@/components/github-panel";
+import { listShareLinks } from "@/lib/share-links";
 
 export async function generateMetadata({
   params,
@@ -32,6 +37,13 @@ export default async function EnvironmentDetailPage({
   const workspaces = await getUserWorkspaces();
   const role = workspaces.find((w) => w.id === detail.workspaceId)?.role ?? "viewer";
   const githubConnection = !detail.locked ? await getGithubConnectionInfo() : null;
+  const isOwner = role === "owner";
+  const isEditor = role !== "viewer";
+  const [members, hiddenUserIds, shareLinks] = await Promise.all([
+    isOwner ? getWorkspaceMembers(detail.workspaceId) : Promise.resolve([]),
+    isOwner ? getEnvFileHiddenUserIds(detail.workspaceId, detail.id) : Promise.resolve([]),
+    isEditor ? listShareLinks(detail.workspaceId, detail.id) : Promise.resolve([]),
+  ]);
 
   const t = await getTranslations("environments.list");
   const dashboardT = await getTranslations("dashboard.breadcrumbs");
@@ -59,16 +71,34 @@ export default async function EnvironmentDetailPage({
               id={detail.id}
               initialName={detail.name}
               initialPairs={detail.pairs}
+              initialDescription={detail.description}
+              initialWebsiteUrl={detail.websiteUrl}
               readOnly={role === "viewer"}
             />
-            {role !== "viewer" && (
+            {isEditor && (
               <EnvironmentProtectionPanel
                 envFileId={detail.id}
                 isProtected={detail.isProtected}
                 protectionLevel={detail.protectionLevel}
-                isOwner={role === "owner"}
+                isOwner={isOwner}
               />
             )}
+            {isEditor && (
+              <EnvironmentSharePanel
+                workspaceId={detail.workspaceId}
+                envFileId={detail.id}
+                links={shareLinks.map((l) => ({ id: l.id, expiresAt: l.expiresAt.toISOString() }))}
+              />
+            )}
+            {isOwner && (
+              <EnvironmentMembersPanel
+                workspaceId={detail.workspaceId}
+                envFileId={detail.id}
+                members={members.map((m) => ({ userId: m.userId, role: m.role, displayName: m.displayName }))}
+                initialHiddenUserIds={hiddenUserIds}
+              />
+            )}
+            {isEditor && <EnvironmentDangerZone envFileId={detail.id} envName={detail.name} />}
           </div>
 
           <GithubPanel

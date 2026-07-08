@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -8,13 +9,16 @@ import { createClient } from "@/lib/supabase/server";
  * what actually enforce access, per CLAUDE.md.
  */
 
-export async function getUser() {
+// Wrapped in React cache() so the many requireUser()/getUser() calls across
+// one request (layout, page, several Server Actions) dedupe to a single
+// supabase.auth.getUser() network round-trip instead of one each.
+export const getUser = cache(async () => {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   return user;
-}
+});
 
 /** Use in Server Actions / pages that must not run without a session. */
 export async function requireUser() {

@@ -109,6 +109,9 @@ model EnvFile {
   // grant anyone access to it beyond what their own GitHub account already has.
   githubOwner     String?         @map("github_owner")
   githubRepo      String?         @map("github_repo")
+  // Free-text notes and an optional linked website URL, purely descriptive.
+  description     String?
+  websiteUrl      String?         @map("website_url")
 
   workspace  Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   shareLinks ShareLink[]

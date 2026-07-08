@@ -10,6 +10,21 @@ import { serializeEnv, validatePairs, type EnvPair } from "@/lib/env-format";
 import { unlockCookieName, verifyUnlockToken } from "@/lib/env-lock";
 
 const NAME_MAX_LENGTH = 100;
+const DESCRIPTION_MAX_LENGTH = 2000;
+const WEBSITE_URL_MAX_LENGTH = 500;
+
+function normalizeWebsiteUrl(raw: string): { ok: true; value: string | null } | { ok: false; error: string } {
+  const trimmed = raw.trim();
+  if (!trimmed) return { ok: true, value: null };
+  if (trimmed.length > WEBSITE_URL_MAX_LENGTH) return { ok: false, error: "Adres URL jest za długi." };
+  try {
+    const url = new URL(trimmed);
+    if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error("bad protocol");
+    return { ok: true, value: url.toString() };
+  } catch {
+    return { ok: false, error: "Podaj prawidłowy adres URL (http:// lub https://)." };
+  }
+}
 
 export type ActionResult = { ok: true; id: string } | { ok: false; error: string };
 
@@ -96,11 +111,18 @@ export async function updateEnvironmentAction(values: {
   id: string;
   name: string;
   pairs: EnvPair[];
+  description?: string;
+  websiteUrl?: string;
 }): Promise<ActionResult> {
   const user = await requireUser();
 
   const name = values.name.trim().replace(/[\x00-\x1f]/g, "").slice(0, NAME_MAX_LENGTH);
   if (!name) return { ok: false, error: "Podaj nazwę środowiska." };
+
+  const description = (values.description ?? "").trim().slice(0, DESCRIPTION_MAX_LENGTH) || null;
+
+  const urlResult = normalizeWebsiteUrl(values.websiteUrl ?? "");
+  if (!urlResult.ok) return { ok: false, error: urlResult.error };
 
   const validation = validatePairs(values.pairs);
   if (!validation.ok) {
@@ -131,7 +153,7 @@ export async function updateEnvironmentAction(values: {
 
   const { error: updateError } = await supabase
     .from("env_files")
-    .update({ name })
+    .update({ name, description, website_url: urlResult.value })
     .eq("id", values.id);
   if (updateError) return { ok: false, error: "Nie udało się zapisać środowiska." };
 
@@ -146,4 +168,36 @@ export async function updateEnvironmentAction(values: {
   revalidatePath("/environments");
   revalidatePath(`/environments/${values.id}`);
   return { ok: true, id: values.id };
+}
+
+export type DeleteResult = { ok: true } | { ok: false; error: string };
+
+/**
+ * Deletes an environment's row and its storage blob. RLS (editor+ on
+ * env_files/Storage DELETE) is the real authorization boundary  the fetch
+ * below only exists to get workspace_id/storage_path for cache invalidation
+ * and cleanup, not to gate the delete itself.
+ */
+export async function deleteEnvironmentAction(id: string): Promise<DeleteResult> {
+  await requireUser();
+  const supabase = await createClient();
+
+  const { data: envFile, error: fetchError } = await supabase
+    .from("env_files")
+    .select("id, workspace_id, storage_path")
+    .eq("id", id)
+    .maybeSingle();
+  if (fetchError || !envFile) return { ok: false, error: "Nie znaleziono środowiska." };
+
+  const { error: deleteError } = await supabase.from("env_files").delete().eq("id", id);
+  if (deleteError) return { ok: false, error: "Nie udało się usunąć środowiska." };
+
+  // Best-effort: the row is already gone (the part RLS/policy actually
+  // gates); a leftover storage object is an orphan, not a security issue.
+  await supabase.storage.from("env-files").remove([envFile.storage_path]);
+
+  updateTag(`ws:${envFile.workspace_id}`);
+  revalidatePath("/dashboard");
+  revalidatePath("/environments");
+  return { ok: true };
 }
