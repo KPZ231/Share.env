@@ -12,6 +12,10 @@
       "title": "New environment",
       "description": "Upload a .env file or add variables by hand to create a new environment."
     },
+    "settings": {
+      "title": "Workspace settings",
+      "description": "Rename your workspace, update its description and logo, and invite teammates."
+    },
     "onboarding": {
       "title": "Welcome to share.env",
       "description": "Create your first workspace to start securely sharing .env files with your team."
@@ -539,8 +543,33 @@
     "submitting": "Creating...",
     "planNoteFree": "Free plan: up to {limit} workspaces per account.",
     "planNotePremium": "Premium plan: unlimited workspaces.",
+    "survey": {
+      "referralSourceLabel": "Where did you hear about share.env?",
+      "referralSourceOptions": {
+        "search": "Search engine",
+        "social_media": "Social media",
+        "friend_colleague": "A friend or colleague",
+        "github": "GitHub",
+        "other": "Other"
+      },
+      "accountTypeLabel": "Are you signing up as a company or an individual?",
+      "accountTypeOptions": {
+        "company": "Company",
+        "individual": "Individual"
+      },
+      "companySizeLabel": "How many employees does your company have?",
+      "companySizeOptions": {
+        "1": "Just me",
+        "2_10": "2-10",
+        "11_50": "11-50",
+        "51_200": "51-200",
+        "200_plus": "200+"
+      },
+      "selectPlaceholder": "Select an option"
+    },
     "errors": {
       "nameRequired": "Enter a workspace name (min. 2 characters).",
+      "surveyRequired": "Answer both questions above to continue.",
       "generic": "Something went wrong. Please try again."
     }
   },
@@ -626,10 +655,13 @@
     "quickActions": {
       "title": "Quick actions",
       "newEnvironment": "New environment",
+      "newEnvironmentHint": "Upload a .env file or add variables by hand.",
       "inviteMember": "Invite member",
+      "inviteMemberHint": "Add a teammate by email or with a share link.",
       "createShareLink": "Create share link",
+      "createShareLinkHint": "Generate an expiring link to an environment.",
       "manageWorkspace": "Manage workspace",
-      "comingSoon": "Coming soon"
+      "manageWorkspaceHint": "Rename, describe, or set a logo for this workspace."
     },
     "stats": {
       "environments": "Environments",
@@ -783,6 +815,11 @@
       "accessKey": "Access key",
       "since": "Joined"
     },
+    "roles": {
+      "owner": "Owner",
+      "editor": "Editor",
+      "viewer": "Viewer"
+    },
     "unnamed": "Unnamed",
     "you": "(You)",
     "save": "Save",
@@ -823,6 +860,50 @@
       "lastOwner": "A workspace must keep at least one owner."
     }
   },
+  "settings": {
+    "breadcrumb": "Settings",
+    "heading": "Workspace settings",
+    "subheading": "Manage this workspace's identity and who can access it.",
+    "ownerOnly": "Only the workspace owner can change these settings.",
+    "errors": {
+      "generic": "Something went wrong. Please try again."
+    },
+    "general": {
+      "title": "General",
+      "name": "Workspace name",
+      "description": "Description",
+      "descriptionPlaceholder": "What this workspace is for.",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Workspace saved."
+    },
+    "logo": {
+      "change": "Change logo",
+      "remove": "Remove",
+      "hint": "PNG, JPG, or WebP. Up to 4 MB.",
+      "success": "Logo updated.",
+      "removed": "Logo removed.",
+      "errors": {
+        "type": "Please choose a PNG, JPG, or WebP image.",
+        "size": "That image is larger than 4 MB.",
+        "generic": "Upload failed. Please try again."
+      }
+    },
+    "quickInvite": {
+      "title": "Invite a teammate",
+      "subtitle": "Send an email invite or generate a shareable link.",
+      "emailPlaceholder": "person@company.com",
+      "send": "Send invite",
+      "sent": "Invite sent.",
+      "createLink": "Create invite link instead",
+      "manageAll": "Manage all members and pending invites →"
+    },
+    "workspaceId": {
+      "title": "Workspace ID",
+      "copy": "Copy",
+      "copied": "Copied"
+    }
+  },
   "invitations": {
     "heading": "Workspace invitation",
     "subheading": "You've been invited to join \"{workspace}\" as {role}.",
@@ -832,6 +913,15 @@
     "wrongEmail": "This invitation was sent to a different email address.",
     "success": "Joined the workspace.",
     "goToDashboard": "Go to dashboard"
+  },
+  "cli": {
+    "heading": "Authorize the envshare CLI",
+    "subheading": "Confirm this code matches the one shown in your terminal: {code}",
+    "missingCode": "Missing authorization code. Run `envshare login` again.",
+    "approve": "Approve",
+    "deny": "Deny",
+    "approved": "Approved. Return to your terminal.",
+    "denied": "Denied. The CLI login was cancelled."
   },
   "shareLinks": {
     "takeover": {

@@ -5,6 +5,20 @@ import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
 import { parseEnv, type EnvPair } from "@/lib/env-format";
 import { unlockCookieName, verifyUnlockToken } from "@/lib/env-lock";
+import { decryptSecret, type EncryptedSecret } from "@/lib/totp-crypto";
+
+// ponytail: envelope = our JSON {ciphertext,iv,tag}; anything else is a
+// pre-encryption legacy plaintext blob  keeps old files readable without a
+// migration/backfill gate on this read path (see scripts/encrypt-existing-blobs.ts).
+export function decodeBlob(text: string): string {
+  try {
+    const parsed = JSON.parse(text) as Partial<EncryptedSecret>;
+    if (parsed.ciphertext && parsed.iv && parsed.tag) return decryptSecret(parsed as EncryptedSecret);
+  } catch {
+    // not JSON -> legacy plaintext
+  }
+  return text;
+}
 
 export type EnvironmentDetail = {
   id: string;
@@ -88,7 +102,7 @@ export async function getEnvironmentDetail(id: string): Promise<EnvironmentDetai
     isProtected,
     protectionLevel,
     locked: false,
-    pairs: parseEnv(text),
+    pairs: parseEnv(decodeBlob(text)),
     githubRepo,
     description: envFile.description,
     websiteUrl: envFile.website_url,

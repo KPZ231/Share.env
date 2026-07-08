@@ -13,6 +13,8 @@ export const ACTIVE_WORKSPACE_COOKIE = "active_workspace";
 export type UserWorkspace = {
   id: string;
   name: string;
+  description: string | null;
+  logoPath: string | null;
   role: "owner" | "editor" | "viewer";
   createdAt: string;
 };
@@ -33,7 +35,7 @@ export const getUserWorkspaces = cache(async (): Promise<UserWorkspace[]> => {
 
   const { data, error } = await supabase
     .from("workspace_members")
-    .select("role, workspaces(id, name, created_at)")
+    .select("role, workspaces(id, name, description, logo_path, created_at)")
     .eq("user_id", user.id)
     .order("created_at", { referencedTable: "workspaces", ascending: false });
 
@@ -45,16 +47,33 @@ export const getUserWorkspaces = cache(async (): Promise<UserWorkspace[]> => {
       workspace: Array.isArray(row.workspaces) ? row.workspaces[0] : row.workspaces,
     }))
     .filter(
-      (row): row is typeof row & { workspace: { id: string; name: string; created_at: string } } =>
-        row.workspace != null
+      (
+        row
+      ): row is typeof row & {
+        workspace: { id: string; name: string; description: string | null; logo_path: string | null; created_at: string };
+      } => row.workspace != null
     )
     .map((row) => ({
       id: row.workspace.id,
       name: row.workspace.name,
+      description: row.workspace.description,
+      logoPath: row.workspace.logo_path,
       role: row.role,
       createdAt: row.workspace.created_at,
     }));
 });
+
+/**
+ * Private bucket ("workspace-logos")  mirrors lib/profile.ts's
+ * getAvatarSignedUrl. The stored path is never a usable URL on its own.
+ */
+export async function getWorkspaceLogoSignedUrl(logoPath: string | null): Promise<string | null> {
+  if (!logoPath) return null;
+  const supabase = await createClient();
+  const { data, error } = await supabase.storage.from("workspace-logos").createSignedUrl(logoPath, 60 * 60);
+  if (error) return null;
+  return data.signedUrl;
+}
 
 /**
  * Resolves which workspace the dashboard should show: the `active_workspace`

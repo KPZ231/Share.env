@@ -127,46 +127,29 @@ async function QuickActions() {
   const t = await getTranslations("dashboard.quickActions");
 
   const actions = [
-    { key: "newEnvironment", label: t("newEnvironment"), icon: Plus, href: "/environments/new" },
-    { key: "inviteMember", label: t("inviteMember"), icon: UserPlus, href: null },
-    { key: "createShareLink", label: t("createShareLink"), icon: LinkSimple, href: null },
-    { key: "manageWorkspace", label: t("manageWorkspace"), icon: Gear, href: null },
+    { key: "newEnvironment", label: t("newEnvironment"), hint: t("newEnvironmentHint"), icon: Plus, href: "/environments/new" },
+    { key: "inviteMember", label: t("inviteMember"), hint: t("inviteMemberHint"), icon: UserPlus, href: "/members" },
+    { key: "createShareLink", label: t("createShareLink"), hint: t("createShareLinkHint"), icon: LinkSimple, href: "/environments" },
+    { key: "manageWorkspace", label: t("manageWorkspace"), hint: t("manageWorkspaceHint"), icon: Gear, href: "/settings" },
   ];
 
   return (
     <section>
       <h2 className="font-display text-xl font-normal tracking-tight text-foreground">{t("title")}</h2>
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {actions.map(({ key, label, icon: ActionIcon, href }) =>
-          href ? (
-            <Link
-              key={key}
-              href={href}
-              className="group relative flex flex-col items-start gap-3 rounded-lg border border-hairline-strong bg-surface-soft p-5 text-left transition-colors hover:border-foreground"
-            >
-              <span className="flex size-9 items-center justify-center rounded-md bg-accent/15 text-accent">
-                <ActionIcon size={18} />
-              </span>
-              <span className="text-[14px] font-medium text-foreground">{label}</span>
-            </Link>
-          ) : (
-            <button
-              key={key}
-              type="button"
-              disabled
-              aria-disabled
-              className="group relative flex flex-col items-start gap-3 rounded-lg border border-hairline-strong bg-surface-soft p-5 text-left opacity-60 [cursor:not-allowed]"
-            >
-              <span className="flex size-9 items-center justify-center rounded-md bg-accent/15 text-accent">
-                <ActionIcon size={18} />
-              </span>
-              <span className="text-[14px] font-medium text-foreground">{label}</span>
-              <span className="rounded-full bg-surface-elevated px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-mute">
-                {t("comingSoon")}
-              </span>
-            </button>
-          )
-        )}
+        {actions.map(({ key, label, hint, icon: ActionIcon, href }) => (
+          <Link
+            key={key}
+            href={href}
+            className="group relative flex flex-col items-start gap-3 rounded-lg border border-hairline-strong bg-surface-soft p-5 text-left transition-colors hover:border-foreground"
+          >
+            <span className="flex size-9 items-center justify-center rounded-md bg-accent/15 text-accent">
+              <ActionIcon size={18} />
+            </span>
+            <span className="text-[14px] font-medium text-foreground">{label}</span>
+            <span className="text-[12px] leading-snug text-mute">{hint}</span>
+          </Link>
+        ))}
       </div>
     </section>
   );

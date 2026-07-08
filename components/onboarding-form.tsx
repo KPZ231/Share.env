@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { createWorkspaceAction } from "@/app/[locale]/onboarding/actions";
 import { Spinner } from "@/components/spinner";
+import type { AccountType } from "@/lib/onboarding-survey";
+
+type Option = { value: string; label: string };
 
 export function OnboardingForm({
   heading,
@@ -15,9 +18,17 @@ export function OnboardingForm({
   submitLabel,
   submittingLabel,
   errorRequired,
+  errorSurveyRequired,
   errorGeneric,
   planNote,
   next,
+  referralSourceLabel,
+  referralSourceOptions,
+  accountTypeLabel,
+  accountTypeOptions,
+  companySizeLabel,
+  companySizeOptions,
+  selectPlaceholder,
 }: {
   heading: string;
   subheading: string;
@@ -26,14 +37,27 @@ export function OnboardingForm({
   submitLabel: string;
   submittingLabel: string;
   errorRequired: string;
+  errorSurveyRequired: string;
   errorGeneric: string;
   planNote: string;
   next: string | null;
+  referralSourceLabel: string;
+  referralSourceOptions: Option[];
+  accountTypeLabel: string;
+  accountTypeOptions: Option[];
+  companySizeLabel: string;
+  companySizeOptions: Option[];
+  selectPlaceholder: string;
 }) {
   const router = useRouter();
   const [name, setName] = useState("");
+  const [referralSource, setReferralSource] = useState("");
+  const [accountType, setAccountType] = useState<AccountType | "">("");
+  const [companySize, setCompanySize] = useState("");
   const [isPending, startTransition] = useTransition();
   const nameId = useId();
+  const referralId = useId();
+  const companySizeId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,9 +80,17 @@ export function OnboardingForm({
       toast.error(errorRequired);
       return;
     }
+    if (!referralSource || !accountType || (accountType === "company" && !companySize)) {
+      toast.error(errorSurveyRequired);
+      return;
+    }
 
     startTransition(async () => {
-      const result = await createWorkspaceAction(trimmed);
+      const result = await createWorkspaceAction(trimmed, {
+        referralSource,
+        accountType,
+        companySize: accountType === "company" ? companySize : null,
+      });
       if (!result.ok) {
         toast.error(result.error || errorGeneric);
         return;
@@ -87,7 +119,7 @@ export function OnboardingForm({
           e.preventDefault();
           handleSubmit();
         }}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-5"
       >
         <div className="flex flex-col gap-1.5">
           <label htmlFor={nameId} className="font-mono text-xs uppercase tracking-[0.1em] text-mute">
@@ -104,6 +136,75 @@ export function OnboardingForm({
             disabled={isPending}
             className="rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground disabled:opacity-50"
           />
+        </div>
+
+        <div className="flex flex-col gap-4 border-t border-hairline pt-5">
+          <div className="flex flex-col gap-1.5">
+            <span className="font-mono text-xs uppercase tracking-[0.1em] text-mute">{accountTypeLabel}</span>
+            <div className="flex gap-2" role="radiogroup" aria-label={accountTypeLabel}>
+              {accountTypeOptions.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={accountType === option.value}
+                  disabled={isPending}
+                  onClick={() => setAccountType(option.value as AccountType)}
+                  className={`flex-1 rounded-md border px-3.5 py-2.5 text-[15px] font-medium transition-colors disabled:opacity-50 ${
+                    accountType === option.value
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-hairline bg-background text-foreground hover:border-foreground/40"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div
+            className={`flex flex-col gap-1.5 overflow-hidden transition-all duration-300 ${
+              accountType === "company" ? "max-h-24 opacity-100" : "max-h-0 opacity-0"
+            }`}
+          >
+            <label htmlFor={companySizeId} className="font-mono text-xs uppercase tracking-[0.1em] text-mute">
+              {companySizeLabel}
+            </label>
+            <select
+              id={companySizeId}
+              value={companySize}
+              onChange={(e) => setCompanySize(e.target.value)}
+              disabled={isPending || accountType !== "company"}
+              className="rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground disabled:opacity-50"
+            >
+              <option value="">{selectPlaceholder}</option>
+              {companySizeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor={referralId} className="font-mono text-xs uppercase tracking-[0.1em] text-mute">
+              {referralSourceLabel}
+            </label>
+            <select
+              id={referralId}
+              value={referralSource}
+              onChange={(e) => setReferralSource(e.target.value)}
+              disabled={isPending}
+              className="rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground disabled:opacity-50"
+            >
+              <option value="">{selectPlaceholder}</option>
+              {referralSourceOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <button

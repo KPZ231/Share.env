@@ -1,0 +1,8 @@
+{
+  "name": "envshare-cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": { "envshare": "./envshare.mjs" },
+  "engines": { "node": ">=18" }
+}

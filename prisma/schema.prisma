@@ -53,10 +53,14 @@ enum InvitationKind {
 }
 
 model Workspace {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String
-  ownerId   String   @map("owner_id") @db.Uuid
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  // Free-text, purely descriptive -- shown on the settings page, no other behavior depends on it.
+  description String?
+  // Path in the "workspace-logos" Storage bucket, not a public URL (mirrors Profile.avatarPath).
+  logoPath    String?  @map("logo_path")
+  ownerId     String   @map("owner_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   members     WorkspaceMember[]
   envFiles    EnvFile[]
@@ -176,6 +180,14 @@ model Profile {
   // ponytail: manual flag, no billing/Stripe wired yet. Flip by hand until a
   // real subscription flow exists to set it.
   isPremium              Boolean  @default(false) @map("is_premium")
+  // Onboarding analytics, asked once on the onboarding form and never shown
+  // again (see components/onboarding-form.tsx). All nullable -- older rows
+  // and anyone who skips predate/skip these questions. Free-text values are
+  // never accepted; the form only ever sends one of a fixed set of option
+  // ids (see lib/onboarding-survey.ts), so no CHECK constraint is needed.
+  referralSource         String?  @map("referral_source")
+  accountType            String?  @map("account_type")
+  companySize            String?  @map("company_size")
   // Integration slugs (from lib/integrations.ts's static catalog) the user has
   // asked to be notified about. No OAuth is wired up yet  see IntegrationsSearch.
   interestedIntegrations String[] @default([]) @map("interested_integrations")
@@ -238,6 +250,44 @@ model GithubConnection {
   createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("github_connections")
+}
+
+// One row per `envshare login` device-code round trip (see lib/cli-auth.ts).
+// Short-lived (10 min) and single-use  the raw device code and, once
+// approved, the raw CLI token are held here only long enough for the CLI's
+// poll to pick them up, then the row is deleted.
+model CliDeviceAuth {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  deviceCodeHash String    @unique @map("device_code_hash")
+  // Short human-typeable code shown to the user on the authorize page to
+  // confirm they're approving the CLI instance that's actually polling.
+  userCode       String    @unique @map("user_code")
+  status         String    @default("pending") // pending | approved | denied
+  userId         String?   @map("user_id") @db.Uuid
+  // Set once approved; cleared (and the raw value handed to the CLI) the
+  // moment /api/cli/device/poll picks it up, so it's never left sitting here.
+  issuedToken    String?   @map("issued_token")
+  expiresAt      DateTime  @map("expires_at") @db.Timestamptz
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("cli_device_auths")
+}
+
+// A long-lived bearer credential for the `envshare` CLI, scoped to one user.
+// Same trust level as a Supabase session cookie  every CLI API route
+// resolves this to a userId and then re-applies the same membership/role
+// checks Server Actions already do (see lib/cli-auth.ts).
+model CliToken {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tokenHash  String    @unique @map("token_hash")
+  userId     String    @map("user_id") @db.Uuid
+  label      String? // e.g. hostname, shown in a future "manage CLI sessions" UI
+  revoked    Boolean   @default(false)
+  lastUsedAt DateTime? @map("last_used_at") @db.Timestamptz
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([userId])
+  @@map("cli_tokens")
 }
 
 model ShareLink {

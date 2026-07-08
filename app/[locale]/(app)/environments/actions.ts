@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { FREE_ENVIRONMENT_LIMIT } from "@/lib/billing";
 import { serializeEnv, validatePairs, type EnvPair } from "@/lib/env-format";
 import { unlockCookieName, verifyUnlockToken } from "@/lib/env-lock";
+import { encryptSecret } from "@/lib/totp-crypto";
 
 const NAME_MAX_LENGTH = 100;
 const DESCRIPTION_MAX_LENGTH = 2000;
@@ -83,10 +84,12 @@ export async function createEnvironmentAction(values: {
   });
   if (insertError) return { ok: false, error: "Nie udało się utworzyć środowiska." };
 
-  const content = serializeEnv(values.pairs);
+  // ponytail: envelope-encrypt so the Supabase bucket only ever holds ciphertext;
+  // key lives in TOTP_ENCRYPTION_KEY (Vercel env), not in Supabase.
+  const content = JSON.stringify(encryptSecret(serializeEnv(values.pairs)));
   const { error: uploadError } = await supabase.storage
     .from("env-files")
-    .upload(storagePath, content, { contentType: "text/plain", upsert: false });
+    .upload(storagePath, content, { contentType: "application/json", upsert: false });
 
   if (uploadError) {
     // ponytail: best-effort cleanup of the orphaned row; a reconciliation job
@@ -157,10 +160,10 @@ export async function updateEnvironmentAction(values: {
     .eq("id", values.id);
   if (updateError) return { ok: false, error: "Nie udało się zapisać środowiska." };
 
-  const content = serializeEnv(values.pairs);
+  const content = JSON.stringify(encryptSecret(serializeEnv(values.pairs)));
   const { error: uploadError } = await supabase.storage
     .from("env-files")
-    .upload(envFile.storage_path, content, { contentType: "text/plain", upsert: true });
+    .upload(envFile.storage_path, content, { contentType: "application/json", upsert: true });
   if (uploadError) return { ok: false, error: "Nie udało się zapisać pliku środowiska." };
 
   updateTag(`ws:${envFile.workspace_id}`);

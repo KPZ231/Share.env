@@ -12,6 +12,10 @@
       "title": "Nowe środowisko",
       "description": "Prześlij plik .env lub dodaj zmienne ręcznie, aby utworzyć nowe środowisko."
     },
+    "settings": {
+      "title": "Ustawienia workspace'u",
+      "description": "Zmień nazwę workspace'u, opis, logo i zaproś współpracowników."
+    },
     "onboarding": {
       "title": "Witaj w share.env",
       "description": "Utwórz swój pierwszy workspace, aby zacząć bezpiecznie udostępniać pliki .env zespołowi."
@@ -539,8 +543,33 @@
     "submitting": "Tworzenie...",
     "planNoteFree": "Plan darmowy: do {limit} workspace'ów na konto.",
     "planNotePremium": "Plan premium: bez limitu workspace'ów.",
+    "survey": {
+      "referralSourceLabel": "Skąd dowiedziałeś się o share.env?",
+      "referralSourceOptions": {
+        "search": "Wyszukiwarka",
+        "social_media": "Media społecznościowe",
+        "friend_colleague": "Znajomy lub współpracownik",
+        "github": "GitHub",
+        "other": "Inne"
+      },
+      "accountTypeLabel": "Zakładasz konto jako firma czy osoba prywatna?",
+      "accountTypeOptions": {
+        "company": "Firma",
+        "individual": "Osoba prywatna"
+      },
+      "companySizeLabel": "Ile pracowników liczy Twoja firma?",
+      "companySizeOptions": {
+        "1": "Tylko ja",
+        "2_10": "2-10",
+        "11_50": "11-50",
+        "51_200": "51-200",
+        "200_plus": "200+"
+      },
+      "selectPlaceholder": "Wybierz opcję"
+    },
     "errors": {
       "nameRequired": "Podaj nazwę workspace'a (min. 2 znaki).",
+      "surveyRequired": "Odpowiedz na oba pytania powyżej, aby kontynuować.",
       "generic": "Coś poszło nie tak. Spróbuj ponownie."
     }
   },
@@ -626,10 +655,13 @@
     "quickActions": {
       "title": "Szybkie akcje",
       "newEnvironment": "Nowe środowisko",
+      "newEnvironmentHint": "Prześlij plik .env lub dodaj zmienne ręcznie.",
       "inviteMember": "Zaproś członka",
+      "inviteMemberHint": "Dodaj współpracownika przez e-mail lub link.",
       "createShareLink": "Utwórz link udostępniania",
+      "createShareLinkHint": "Wygeneruj wygasający link do środowiska.",
       "manageWorkspace": "Zarządzaj workspace'em",
-      "comingSoon": "Wkrótce"
+      "manageWorkspaceHint": "Zmień nazwę, opis lub logo tego workspace'u."
     },
     "stats": {
       "environments": "Środowiska",
@@ -783,6 +815,11 @@
       "accessKey": "Klucz zabezpieczeń",
       "since": "Dołączył(a)"
     },
+    "roles": {
+      "owner": "Właściciel",
+      "editor": "Edytor",
+      "viewer": "Przeglądający"
+    },
     "unnamed": "Bez nazwy",
     "you": "(Ty)",
     "save": "Zapisz",
@@ -823,6 +860,50 @@
       "lastOwner": "Workspace musi mieć co najmniej jednego ownera."
     }
   },
+  "settings": {
+    "breadcrumb": "Ustawienia",
+    "heading": "Ustawienia workspace'u",
+    "subheading": "Zarządzaj tożsamością workspace'u i tym, kto ma do niego dostęp.",
+    "ownerOnly": "Tylko właściciel workspace'u może zmieniać te ustawienia.",
+    "errors": {
+      "generic": "Coś poszło nie tak. Spróbuj ponownie."
+    },
+    "general": {
+      "title": "Ogólne",
+      "name": "Nazwa workspace'u",
+      "description": "Opis",
+      "descriptionPlaceholder": "Do czego służy ten workspace.",
+      "save": "Zapisz zmiany",
+      "saving": "Zapisywanie…",
+      "saved": "Workspace zapisany."
+    },
+    "logo": {
+      "change": "Zmień logo",
+      "remove": "Usuń",
+      "hint": "PNG, JPG lub WebP. Do 4 MB.",
+      "success": "Logo zaktualizowane.",
+      "removed": "Logo usunięte.",
+      "errors": {
+        "type": "Wybierz obraz PNG, JPG lub WebP.",
+        "size": "Ten obraz jest większy niż 4 MB.",
+        "generic": "Przesyłanie nie powiodło się. Spróbuj ponownie."
+      }
+    },
+    "quickInvite": {
+      "title": "Zaproś współpracownika",
+      "subtitle": "Wyślij zaproszenie e-mail lub wygeneruj link do udostępnienia.",
+      "emailPlaceholder": "osoba@firma.com",
+      "send": "Wyślij zaproszenie",
+      "sent": "Zaproszenie wysłane.",
+      "createLink": "Utwórz link z zaproszeniem",
+      "manageAll": "Zarządzaj wszystkimi członkami i zaproszeniami →"
+    },
+    "workspaceId": {
+      "title": "ID workspace'u",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano"
+    }
+  },
   "invitations": {
     "heading": "Zaproszenie do workspace'a",
     "subheading": "Zostałeś zaproszony do dołączenia do „{workspace}” jako {role}.",
@@ -832,6 +913,15 @@
     "wrongEmail": "To zaproszenie zostało wysłane na inny adres e-mail.",
     "success": "Dołączono do workspace'a.",
     "goToDashboard": "Przejdź do panelu"
+  },
+  "cli": {
+    "heading": "Autoryzuj CLI envshare",
+    "subheading": "Potwierdź, że ten kod zgadza się z kodem w terminalu: {code}",
+    "missingCode": "Brak kodu autoryzacji. Uruchom ponownie `envshare login`.",
+    "approve": "Zatwierdź",
+    "deny": "Odrzuć",
+    "approved": "Zatwierdzono. Wróć do terminala.",
+    "denied": "Odrzucono. Logowanie CLI zostało anulowane."
   },
   "shareLinks": {
     "takeover": {

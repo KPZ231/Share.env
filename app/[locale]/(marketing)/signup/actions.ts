@@ -92,17 +92,29 @@ export async function signUpAction(values: SignUpValues): Promise<SignUpResult> 
     return { ok: false, error: GENERIC_ERROR };
   }
 
-  const actionLink = linkData?.properties?.action_link;
-  if (!actionLink) {
-    console.error("signUpAction failed: generateLink returned no action_link");
+  const hashedToken = linkData?.properties?.hashed_token;
+  if (!hashedToken) {
+    console.error("signUpAction failed: generateLink returned no hashed_token");
     return { ok: false, error: GENERIC_ERROR };
   }
+
+  // Link straight to our own /auth/callback with the token_hash, instead of
+  // mailing Supabase's action_link. action_link round-trips through
+  // Supabase's hosted /verify endpoint, which verifies the OTP itself and
+  // redirects with the session in the URL *fragment* -- invisible
+  // server-side, so our callback route never runs its post-signup
+  // membership check (the browser's Supabase client just picks the session
+  // up client-side instead) and the new-user-goes-to-onboarding redirect
+  // gets silently skipped.
+  const confirmUrl = new URL(`${origin}/${values.locale}/auth/callback`);
+  confirmUrl.searchParams.set("token_hash", hashedToken);
+  confirmUrl.searchParams.set("type", "signup");
 
   try {
     await sendMail(
       email,
       "Potwierdź swoje konto - share.env",
-      `<p>Cześć ${name},</p><p>Potwierdź swój adres e-mail, aby aktywować konto share.env:</p><p><a href="${actionLink}">Potwierdź konto</a></p>`
+      `<p>Cześć ${name},</p><p>Potwierdź swój adres e-mail, aby aktywować konto share.env:</p><p><a href="${confirmUrl.toString()}">Potwierdź konto</a></p>`
     );
   } catch (err) {
     console.error("signUpAction failed (sendMail):", err);

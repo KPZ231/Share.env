@@ -1,4 +1,4 @@
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
 import { updateSession } from "@/lib/supabase/proxy-session";
@@ -9,6 +9,12 @@ const handleI18nRouting = createIntlMiddleware(routing);
 // Locale routing runs first (produces the response + locale-aware request),
 // then the Supabase session refresh writes its cookies onto that response.
 export async function proxy(request: NextRequest) {
+  // API routes are locale-agnostic (JSON, not pages) and authenticate via
+  // their own bearer-token/session checks  running locale routing on them
+  // makes next-intl treat "/api" as an unmatched path and redirect to a
+  // localized page instead of hitting the route handler.
+  if (request.nextUrl.pathname.startsWith("/api/")) return NextResponse.next();
+
   // ponytail: geo > accept-language for first visit. Vercel sets x-vercel-ip-country;
   // absent locally, so PL/EN split just falls back to next-intl's Accept-Language default.
   if (!request.cookies.has("NEXT_LOCALE")) {
