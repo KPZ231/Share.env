@@ -28,6 +28,14 @@
       "title": "Rejestracja",
       "description": "Załóż konto share.env i zacznij bezpiecznie udostępniać pliki .env swojemu zespołowi."
     },
+    "forgotPassword": {
+      "title": "Zresetuj hasło",
+      "description": "Poproś o link do zresetowania hasła do konta share.env."
+    },
+    "resetPassword": {
+      "title": "Ustaw nowe hasło",
+      "description": "Wybierz nowe hasło do konta share.env."
+    },
     "signin": {
       "title": "Logowanie",
       "description": "Zaloguj się do konta share.env, aby uzyskać dostęp do workspace'ów zespołu."
@@ -927,6 +935,45 @@
     "panel": {
       "heading": "Wróć dokładnie tam, gdzie skończył zespół",
       "body": "Szyfrowane przechowywanie, linki z wygaśnięciem i role dostępu  dla zespołów, które traktują pliki .env poważnie."
+    }
+  },
+  "forgotPassword": {
+    "heading": "Zresetuj hasło",
+    "subtext": "Podaj swój email, a wyślemy Ci link do zresetowania hasła.",
+    "fields": {
+      "email": "Email"
+    },
+    "placeholders": {
+      "email": "ty@firma.com"
+    },
+    "submit": "Wyślij link resetujący",
+    "submitting": "Wysyłanie…",
+    "sentHeading": "Sprawdź swoją skrzynkę",
+    "sentSubtext": "Jeśli konto dla {email} istnieje, wysłaliśmy link do zresetowania hasła.",
+    "backToSignin": "Wróć do logowania",
+    "errors": {
+      "email": "Podaj poprawny adres email."
+    }
+  },
+  "resetPassword": {
+    "heading": "Ustaw nowe hasło",
+    "subtext": "Wybierz nowe hasło do swojego konta.",
+    "fields": {
+      "password": "Nowe hasło"
+    },
+    "placeholders": {
+      "password": "Wpisz nowe hasło"
+    },
+    "hint": "Co najmniej 12 znaków, wielkie i małe litery, cyfra i symbol.",
+    "showPassword": "Pokaż hasło",
+    "hidePassword": "Ukryj hasło",
+    "submit": "Zaktualizuj hasło",
+    "submitting": "Aktualizowanie…",
+    "success": "Hasło zaktualizowane  przekierowanie do workspace'a.",
+    "backToSignin": "Wróć do logowania",
+    "errors": {
+      "password": "Hasło nie spełnia wymagań.",
+      "generic": "Coś poszło nie tak. Spróbuj ponownie lub poproś o nowy link."
     }
   },
   "onboarding": {

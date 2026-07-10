@@ -92,6 +92,13 @@ export async function signUpAction(values: SignUpValues): Promise<SignUpResult> 
     return { ok: false, error: GENERIC_ERROR };
   }
 
+  // generateLink doesn't error for an already-registered email (it just
+  // mints a valid token) — identities is the same empty-means-existing
+  // signal Supabase's own signUp uses, so check it before mailing anything.
+  if (linkData.user?.identities?.length === 0) {
+    return { ok: true };
+  }
+
   const hashedToken = linkData?.properties?.hashed_token;
   if (!hashedToken) {
     console.error("signUpAction failed: generateLink returned no hashed_token");

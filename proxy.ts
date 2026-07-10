@@ -21,14 +21,15 @@ function buildCspHeader(nonce: string): string {
     ? `'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' http://localhost:8400`
     : `'self' 'nonce-${nonce}' 'strict-dynamic'`;
   const connectSrc = isDev
-    ? "'self' https://*.supabase.co http://localhost:8400"
-    : "'self' https://*.supabase.co";
+    ? "'self' https://*.supabase.co http://localhost:8400 https://www.googletagmanager.com https://www.google-analytics.com"
+    : "'self' https://*.supabase.co https://www.googletagmanager.com https://www.google-analytics.com";
   return [
     "default-src 'self'",
     `script-src ${scriptSrc}`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data:",
+    "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com",
     `connect-src ${connectSrc}`,
+    "frame-src https://www.googletagmanager.com",
     "frame-ancestors 'none'",
   ].join("; ");
 }

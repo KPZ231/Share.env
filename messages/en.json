@@ -32,6 +32,14 @@
       "title": "Log in",
       "description": "Log in to your share.env account to access your team's workspaces."
     },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "description": "Request a password reset link for your share.env account."
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "description": "Choose a new password for your share.env account."
+    },
     "verify2fa": {
       "title": "Verify it's you",
       "description": "Confirm your identity with a passkey or authenticator app."
@@ -929,6 +937,45 @@
     "panel": {
       "heading": "Pick up right where your team left off",
       "body": "Encrypted storage, expiring links, and role-based access  built for teams who take .env files seriously."
+    }
+  },
+  "forgotPassword": {
+    "heading": "Reset your password",
+    "subtext": "Enter your email and we'll send you a link to reset your password.",
+    "fields": {
+      "email": "Email"
+    },
+    "placeholders": {
+      "email": "you@company.com"
+    },
+    "submit": "Send reset link",
+    "submitting": "Sending…",
+    "sentHeading": "Check your inbox",
+    "sentSubtext": "If an account exists for {email}, we've sent a password reset link.",
+    "backToSignin": "Back to log in",
+    "errors": {
+      "email": "Enter a valid email address."
+    }
+  },
+  "resetPassword": {
+    "heading": "Set a new password",
+    "subtext": "Choose a new password for your account.",
+    "fields": {
+      "password": "New password"
+    },
+    "placeholders": {
+      "password": "Enter a new password"
+    },
+    "hint": "At least 12 characters, with upper and lower case, a number, and a symbol.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "submit": "Update password",
+    "submitting": "Updating…",
+    "success": "Password updated  redirecting to your workspace.",
+    "backToSignin": "Back to log in",
+    "errors": {
+      "password": "Password doesn't meet the requirements.",
+      "generic": "Something went wrong. Please try again, or request a new reset link."
     }
   },
   "onboarding": {
