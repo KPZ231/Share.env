@@ -53,8 +53,22 @@ export function Faq() {
     return () => ctx.revert();
   }, []);
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
+
   return (
     <div ref={rootRef} className="bg-background py-16 lg:py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <section
         aria-labelledby="faq-heading"
         className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,320px)_1fr] lg:gap-16 lg:px-8"
@@ -89,8 +103,8 @@ export function Faq() {
               </p>
             </div>
             <a
-              href="mailto:support@share-env.app"
-              className="mt-1 w-fit rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-black transition-opacity hover:opacity-90"
+              href="mailto:kpzsproductionscontact@gmail.com"
+              className="tactile mt-1 w-fit rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-black hover:opacity-90"
             >
               {t("contactCta")}
             </a>
@@ -103,7 +117,7 @@ export function Faq() {
               key={item.question}
               data-faq="item"
               open={index === 0}
-              className="group rounded-lg border border-hairline-strong bg-surface-soft px-6 py-4 open:pb-5"
+              className="group rounded-lg border border-hairline-strong bg-surface-soft px-6 py-4 transition-colors duration-200 open:pb-5 hover:border-white/25"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-lg font-medium text-foreground marker:content-none">
                 {item.question}

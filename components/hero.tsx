@@ -80,14 +80,14 @@ export function Hero() {
                 <Link
                   href="/signup"
                   data-hero="cta"
-                  className="rounded-md bg-foreground px-6 py-2.5 text-center text-[14px] font-medium text-black transition-opacity hover:opacity-90"
+                  className="tactile rounded-md bg-foreground px-6 py-2.5 text-center text-[14px] font-medium text-black hover:opacity-90"
                 >
                   {t("ctaPrimary")}
                 </Link>
                 <Link
                   href="#how-it-works"
                   data-hero="cta"
-                  className="rounded-md border border-hairline-strong px-6 py-2.5 text-center text-[14px] font-medium text-foreground transition-colors hover:bg-surface-elevated"
+                  className="tactile rounded-md border border-hairline-strong px-6 py-2.5 text-center text-[14px] font-medium text-foreground hover:bg-surface-elevated"
                 >
                   {t("ctaSecondary")}
                 </Link>
@@ -95,7 +95,7 @@ export function Hero() {
             </div>
 
             <div className="relative flex min-h-[280px] items-center lg:min-h-0">
-              <div className="w-full overflow-hidden rounded-lg border border-hairline-strong bg-surface-deep">
+              <div className="w-full overflow-hidden rounded-lg border border-hairline-strong bg-surface-deep shadow-[0_24px_64px_-24px_var(--accent-glow)]">
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
                   <div className="flex items-center gap-2">
                     <span className="h-2.5 w-2.5 rounded-full bg-white/15" />

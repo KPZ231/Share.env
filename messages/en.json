@@ -51,6 +51,30 @@
     "useCases": {
       "title": "Use cases",
       "description": "Why teams switch to share.env, and how onboarding, key rotation, and offboarding actually work day to day."
+    },
+    "cli": {
+      "title": "envshare CLI",
+      "description": "Clone a repo and pull its .env in one command, straight from the terminal, with the same access control as the web app."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "description": "How share.env collects, uses, and protects your data, and the rights you have under GDPR and other privacy laws."
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "description": "The terms that govern your use of share.env, including your account, billing, and responsibilities."
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "description": "The cookies share.env uses to keep you signed in and remember your active workspace, and nothing more."
+    },
+    "security": {
+      "title": "Security",
+      "description": "How share.env protects your secrets: Row Level Security on every table, encryption at rest, and a straightforward way to report a vulnerability."
+    },
+    "billing": {
+      "title": "Billing",
+      "description": "Manage this workspace's subscription and environment limit."
     }
   },
   "featuresPage": {
@@ -115,12 +139,372 @@
     "description": "Onboarding, key rotation, and offboarding are where .env files leak. Here's why teams switch, and how each moment actually works.",
     "tag": "Built for real workflows"
   },
+  "cliPage": {
+    "eyebrow": "CLI",
+    "title": "Pull secrets without leaving the terminal",
+    "description": "envshare is a small command-line tool that clones the repo behind an environment and writes its .env for you, respecting the same password, 2FA, and access-key protection as the web app.",
+    "tag": "Zero dependencies",
+    "overview": {
+      "heading": "One login, then it stays out of your way",
+      "subheading": "Authenticate once with a device code, the same flow GitHub's CLI uses. From there, every pull is a single command.",
+      "items": [
+        "Device-code login, no password typed into the terminal",
+        "Protected environments prompt for password and 2FA inline",
+        "Writes straight to .env with owner-only file permissions"
+      ]
+    },
+    "useCases": {
+      "heading": "Where it actually gets used",
+      "subheading": "Three moments where a terminal command beats opening the browser."
+    },
+    "useCaseItems": [
+      {
+        "title": "Onboarding a new teammate",
+        "description": "They run one command, confirm a code in the browser once, and the repo plus its .env are both sitting in their working directory.",
+        "payoff": "No more \"can you send me the env file\" in a DM."
+      },
+      {
+        "title": "Daily local development",
+        "description": "Already have the repo cloned? envshare pull refreshes .env from whatever the workspace currently holds, in place.",
+        "payoff": "The .env in your editor matches what's actually deployed."
+      },
+      {
+        "title": "Rotating a leaked key",
+        "description": "Update the value once in the workspace, then everyone re-runs envshare pull instead of passing the new key around by hand.",
+        "payoff": "The exposure window is one pull, not one thread."
+      }
+    ],
+    "install": {
+      "heading": "Install it",
+      "subheading": "One package, no separate download. Run it with npx, or install it once if you'll use it daily.",
+      "steps": [
+        "Run it directly with npx, nothing to install",
+        "Or install it once for the plain envshare command",
+        "Log in and it's ready in any repo"
+      ],
+      "code": "npx @kpz231/envshare login\n\n# or install once:\nnpm install -g @kpz231/envshare\nenvshare login",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "commands": {
+      "heading": "Command reference",
+      "subheading": "Five commands cover the whole workflow.",
+      "items": [
+        {
+          "name": "envshare login",
+          "description": "Starts a device-code login and saves your CLI session locally."
+        },
+        {
+          "name": "envshare list",
+          "description": "Lists every environment your account can access, by workspace."
+        },
+        {
+          "name": "envshare clone <name>",
+          "description": "Clones the linked repo and writes its .env, prompting for a password or 2FA code if the environment is protected."
+        },
+        {
+          "name": "envshare pull",
+          "description": "Re-downloads .env into the current directory, for repos already cloned."
+        },
+        {
+          "name": "envshare logout",
+          "description": "Revokes the local session and forgets the saved token."
+        }
+      ]
+    }
+  },
+  "privacyPage": {
+    "eyebrow": "Legal",
+    "title": "Privacy Policy",
+    "updated": "Last updated: July 8, 2026",
+    "intro": "This policy explains what personal data share.env collects, why, and what rights you have over it. It does not cover the contents of the .env files you store  those are your data, encrypted at rest, and we only process them to provide the service you asked for.",
+    "sections": [
+      {
+        "heading": "1. Who is responsible for your data",
+        "paragraphs": [
+          "share.env is operated by KPZsProductions. For anything in this policy, or to exercise any of the rights below, contact us at kpzsproductionscontact@gmail.com."
+        ]
+      },
+      {
+        "heading": "2. What we collect",
+        "paragraphs": [
+          "We collect only what the product needs to function:"
+        ],
+        "list": [
+          "Account data: email address, and anything you choose to add to your profile (display name, bio, avatar).",
+          "Workspace data: workspace name, description, logo, membership roles, and invitations you send or receive.",
+          "The .env files and variables you upload  encrypted at rest, scoped to your workspace, never analyzed or read by us outside an authorized support request you initiate.",
+          "Security data needed to protect your account: password hashes, TOTP and passkey credentials, and access logs for protected environments.",
+          "Basic technical data: IP address and timestamps for security-relevant actions (sign-in, share link creation, environment downloads), kept only as long as needed for abuse prevention."
+        ]
+      },
+      {
+        "heading": "3. Why we process it (legal basis)",
+        "list": [
+          "Performance of a contract: creating your account, running your workspace, and delivering the file-sharing service you signed up for (GDPR Art. 6(1)(b)).",
+          "Legitimate interest: securing the service against abuse, debugging failures, and preventing unauthorized access (Art. 6(1)(f)).",
+          "Consent: optional product update emails and any analytics you explicitly opt into (Art. 6(1)(a))  you can withdraw this at any time from your profile settings."
+        ]
+      },
+      {
+        "heading": "4. Who else processes your data",
+        "paragraphs": [
+          "We use a small number of infrastructure providers to run the service, each acting as our data processor under a data processing agreement:"
+        ],
+        "list": [
+          "Supabase  database, authentication, and encrypted file storage.",
+          "Vercel  application hosting and edge network.",
+          "A transactional email provider  for invite emails and account notifications only.",
+          "We do not sell your data, and we do not share it with advertisers or data brokers."
+        ]
+      },
+      {
+        "heading": "5. International transfers",
+        "paragraphs": [
+          "Our infrastructure providers may process data outside the European Economic Area (for example, in the United States). Where that happens, transfers are covered by Standard Contractual Clauses or an equivalent safeguard recognized under GDPR Chapter V."
+        ]
+      },
+      {
+        "heading": "6. How long we keep it",
+        "paragraphs": [
+          "Account and workspace data is kept while your account is active. If you delete your account, your profile and any workspace you solely own are removed; environments are deleted with their storage objects. Security logs are kept for a limited period strictly for abuse investigation, then deleted."
+        ]
+      },
+      {
+        "heading": "7. Your rights",
+        "paragraphs": [
+          "Under GDPR and similar laws, you have the right to:"
+        ],
+        "list": [
+          "Access the personal data we hold about you (see the data export tool on your profile page).",
+          "Correct inaccurate data, or delete your account and associated data.",
+          "Object to or restrict certain processing, and withdraw consent where processing is based on it.",
+          "Receive your data in a portable format, and lodge a complaint with your local data protection authority (in Poland, the UODO)."
+        ]
+      },
+      {
+        "heading": "8. Additional rights for California residents (CCPA/CPRA)",
+        "paragraphs": [
+          "If you are a California resident, you have the right to know what personal information we collect, request its deletion, and opt out of its sale. We do not sell personal information as defined by the CCPA, so there is nothing to opt out of."
+        ]
+      },
+      {
+        "heading": "9. Security",
+        "paragraphs": [
+          "Every table is protected by Row Level Security enforced at the database, not just the interface. File contents are encrypted at rest. Share links use high-entropy tokens, always expire, and can be revoked instantly. See our security page for details."
+        ]
+      },
+      {
+        "heading": "10. Children",
+        "paragraphs": [
+          "share.env is not directed at children under 16, and we do not knowingly collect their data."
+        ]
+      },
+      {
+        "heading": "11. Changes to this policy",
+        "paragraphs": [
+          "If we make a material change, we'll update the date at the top of this page and, where appropriate, notify account owners by email."
+        ]
+      },
+      {
+        "heading": "12. Contact",
+        "paragraphs": [
+          "Questions about this policy or your data: kpzsproductionscontact@gmail.com."
+        ]
+      }
+    ]
+  },
+  "termsPage": {
+    "eyebrow": "Legal",
+    "title": "Terms of Service",
+    "updated": "Last updated: July 8, 2026",
+    "intro": "These terms govern your use of share.env. By creating an account, you agree to them. If you're accepting on behalf of a company, you confirm you have the authority to do so.",
+    "sections": [
+      {
+        "heading": "1. The service",
+        "paragraphs": [
+          "share.env lets a workspace store .env files and share them with teammates under owner, editor, and viewer roles, and generate expiring links for people without an account. We may add, change, or remove features at any time; we'll try to give notice before removing anything you actively rely on."
+        ]
+      },
+      {
+        "heading": "2. Your account",
+        "list": [
+          "You must provide a valid email address and keep your credentials confidential.",
+          "You're responsible for all activity under your account, including anything done by workspace members you invite.",
+          "You must be at least 16 years old to create an account.",
+          "Notify us immediately at kpzsproductionscontact@gmail.com if you suspect unauthorized access."
+        ]
+      },
+      {
+        "heading": "3. Acceptable use",
+        "paragraphs": [
+          "You agree not to use share.env to:"
+        ],
+        "list": [
+          "Store or share content you don't have the legal right to hold (e.g. someone else's credentials without authorization).",
+          "Attempt to bypass workspace roles, Row Level Security, or any other access control.",
+          "Probe, scan, or attack the service's infrastructure, or resell access without our written agreement.",
+          "Upload malware or content that violates applicable law."
+        ]
+      },
+      {
+        "heading": "4. Your content, our license",
+        "paragraphs": [
+          "You retain all rights to the .env files and other content you upload. You grant us a limited license to store, encrypt, back up, and transmit that content solely to operate the service for you  we don't use it for any other purpose, and we don't claim ownership of it."
+        ]
+      },
+      {
+        "heading": "5. Plans and billing",
+        "paragraphs": [
+          "The free plan covers up to 3 environments. Beyond that, environments are billed at $2 per environment per month, billed monthly. Downgrading or deleting environments takes effect at the next billing cycle; we don't provide partial-month refunds except where required by law."
+        ]
+      },
+      {
+        "heading": "6. Availability",
+        "paragraphs": [
+          "We aim for high availability but the service is provided \"as is\", without an uptime guarantee unless a separate written SLA says otherwise. Scheduled maintenance will be announced where practical."
+        ]
+      },
+      {
+        "heading": "7. Limitation of liability",
+        "paragraphs": [
+          "To the maximum extent permitted by law, share.env is not liable for indirect, incidental, or consequential damages, or for losses arising from your own mismanagement of credentials, workspace roles, or share links. Nothing in these terms limits liability that cannot be limited under applicable law."
+        ]
+      },
+      {
+        "heading": "8. Suspension and termination",
+        "paragraphs": [
+          "We may suspend or terminate an account that violates section 3, with notice where feasible. You can delete your account at any time from your profile page; workspaces you solely own are deleted along with their environments."
+        ]
+      },
+      {
+        "heading": "9. Changes to these terms",
+        "paragraphs": [
+          "We'll post material changes here with an updated date, and notify account owners by email for changes that meaningfully reduce your rights."
+        ]
+      },
+      {
+        "heading": "10. Governing law",
+        "paragraphs": [
+          "These terms are governed by the laws of Poland, without regard to conflict-of-law rules, without prejudice to any mandatory consumer-protection rights you have under the law of your country of residence."
+        ]
+      },
+      {
+        "heading": "11. Contact",
+        "paragraphs": [
+          "Questions about these terms: kpzsproductionscontact@gmail.com."
+        ]
+      }
+    ]
+  },
+  "cookiesPage": {
+    "eyebrow": "Legal",
+    "title": "Cookie Policy",
+    "updated": "Last updated: July 8, 2026",
+    "intro": "share.env uses a short list of strictly necessary cookies to keep you signed in and remember your active workspace. We don't run analytics or advertising cookies, so there's nothing else to disclose here.",
+    "sections": [
+      {
+        "heading": "1. What cookies we set",
+        "list": [
+          "Supabase authentication cookies (names prefixed sb-)  keep you signed in between requests. Removed on sign-out or expiry.",
+          "active_workspace  remembers which workspace you last viewed, so the dashboard opens on the right one next time."
+        ]
+      },
+      {
+        "heading": "2. Why no consent banner toggle",
+        "paragraphs": [
+          "Both cookies above are strictly necessary to provide the service you're logged in to use  they don't track you across other sites, and they carry no advertising or analytics purpose. Under the ePrivacy rules most jurisdictions follow, strictly necessary cookies are exempt from opt-in consent; that's why our banner is a simple acknowledgement rather than a toggle list."
+        ]
+      },
+      {
+        "heading": "3. Managing cookies",
+        "paragraphs": [
+          "You can block or delete cookies from your browser settings at any time. Doing so will sign you out and reset your active workspace selection, since those cookies are what keep that state."
+        ]
+      },
+      {
+        "heading": "4. Changes",
+        "paragraphs": [
+          "If we ever add a non-essential cookie (analytics, for example), we'll update this page and add a real opt-in control before doing so."
+        ]
+      },
+      {
+        "heading": "5. Contact",
+        "paragraphs": [
+          "Questions about cookies: kpzsproductionscontact@gmail.com."
+        ]
+      }
+    ]
+  },
+  "cookieConsent": {
+    "message": "We use only strictly necessary cookies to keep you signed in and remember your workspace. See our <link>Cookie Policy</link> for details.",
+    "accept": "Got it"
+  },
+  "securityPage": {
+    "eyebrow": "Security",
+    "title": "Built on access control, not obscurity",
+    "description": "Every table has Row Level Security. Every file is encrypted at rest. Here's the detail behind that, and how to report a problem if you find one.",
+    "tag": "AES-256 at rest",
+    "sections": [
+      {
+        "heading": "Infrastructure and sub-processors",
+        "paragraphs": [
+          "share.env runs on a small, named set of providers, each under a data processing agreement:"
+        ],
+        "list": [
+          "Supabase  Postgres database, authentication, and encrypted file storage. Row Level Security policies run inside the database itself, so authorization holds even if application code has a bug.",
+          "Vercel  application hosting and edge network for the web app and API routes.",
+          "A transactional email provider  used only for invite and account emails."
+        ]
+      },
+      {
+        "heading": "How access is enforced",
+        "list": [
+          "Row Level Security is enabled on every table with no exceptions; the default is deny-all, and every operation needs an explicit policy.",
+          "Workspace roles (owner, editor, viewer) are enforced by those database policies, not just hidden in the UI  a missing button is UX, not a security boundary.",
+          "Share links use cryptographically generated, high-entropy tokens, always carry an expiry, and can be revoked instantly.",
+          "Password-protected environments layer a scrypt-hashed password with TOTP or a passkey, and optionally a workspace-issued Access Key, before any content is returned."
+        ]
+      },
+      {
+        "heading": "Data protection",
+        "paragraphs": [
+          "File contents are encrypted at rest in Supabase Storage. We don't log the contents of your .env files or access tokens in application logs, error trackers, or analytics."
+        ]
+      },
+      {
+        "heading": "Compliance status",
+        "paragraphs": [
+          "share.env is an early-stage product. We haven't pursued SOC 2 or ISO 27001 certification yet, and we won't claim we have. What we do have is enforced from day one: database-level RLS, encryption at rest, and least-privilege use of service-role credentials. We'll update this page if that changes."
+        ]
+      },
+      {
+        "heading": "Reporting a vulnerability",
+        "paragraphs": [
+          "If you find a security issue, email kpzsproductionscontact@gmail.com with details and, if possible, steps to reproduce. We don't yet run a paid bug bounty program, but we will acknowledge reports, fix confirmed issues promptly, and credit reporters who want credit.",
+          "Please don't test against other users' data or workspaces you don't own; use your own account and environments."
+        ]
+      }
+    ]
+  },
   "valueStats": {
     "items": [
-      { "value": "< 2 min", "label": "To onboard a new engineer" },
-      { "value": "1 click", "label": "To revoke a leaked link" },
-      { "value": "0", "label": "Secrets left in chat history" },
-      { "value": "100%", "label": "Of access changes logged" }
+      {
+        "value": "< 2 min",
+        "label": "To onboard a new engineer"
+      },
+      {
+        "value": "1 click",
+        "label": "To revoke a leaked link"
+      },
+      {
+        "value": "0",
+        "label": "Secrets left in chat history"
+      },
+      {
+        "value": "100%",
+        "label": "Of access changes logged"
+      }
     ]
   },
   "useCasePersonas": {
@@ -182,7 +566,7 @@
       "features": "Features",
       "use-cases": "Use cases",
       "pricing": "Pricing",
-      "docs": "Docs"
+      "cli": "CLI"
     },
     "login": "Log in",
     "signup": "Start for free",
@@ -227,6 +611,7 @@
       "empty": "No integrations match \"{query}\".",
       "notify": "Notify me",
       "notifying": "Notifying",
+      "manage": "Manage",
       "disclaimer": "None of these are connected yet — marking interest just tells us what to build next."
     },
     "github": {
@@ -299,10 +684,22 @@
     "ctaSecondary": "See how it works",
     "visualAlt": "Abstract glass and metal vault representing encrypted .env file storage",
     "stats": [
-      { "value": "AES-256", "label": "Encryption at rest" },
-      { "value": "RLS", "label": "On every table" },
-      { "value": "3 ways", "label": "To access files" },
-      { "value": "Tokens", "label": "With expiry dates" }
+      {
+        "value": "AES-256",
+        "label": "Encryption at rest"
+      },
+      {
+        "value": "RLS",
+        "label": "On every table"
+      },
+      {
+        "value": "3 ways",
+        "label": "To access files"
+      },
+      {
+        "value": "Tokens",
+        "label": "With expiry dates"
+      }
     ]
   },
   "howItWorks": {
@@ -637,6 +1034,7 @@
       "members": "Members",
       "shareLinks": "Share links",
       "settings": "Settings",
+      "billing": "Billing",
       "profile": "Profile",
       "comingSoon": "Soon"
     },
@@ -649,6 +1047,7 @@
     "environments": {
       "title": "Environments",
       "usage": "{used} of {limit} used",
+      "usagePaid": "{used} environments · {paid} paid · ~{cost}/mo",
       "empty": "No environments yet. Upload your first .env file to get started.",
       "recentTitle": "Recently added"
     },
@@ -734,9 +1133,18 @@
         "levelChanged": "Security level updated.",
         "sessionHint": "An unlock stays valid for 15 minutes, then you'll need to verify again.",
         "levels": {
-          "none": { "label": "None", "description": "Any workspace member sees the environment without verification." },
-          "password_2fa": { "label": "Password + 2FA", "description": "Password plus a second factor (passkey or authenticator app)." },
-          "password_2fa_key": { "label": "Password + 2FA + key", "description": "Also requires an employee key generated by the owner." }
+          "none": {
+            "label": "None",
+            "description": "Any workspace member sees the environment without verification."
+          },
+          "password_2fa": {
+            "label": "Password + 2FA",
+            "description": "Password plus a second factor (passkey or authenticator app)."
+          },
+          "password_2fa_key": {
+            "label": "Password + 2FA + key",
+            "description": "Also requires an employee key generated by the owner."
+          }
         },
         "errors": {
           "tooShort": "Password must be at least 8 characters.",
@@ -802,7 +1210,8 @@
         "generic": "Something went wrong. Please try again."
       },
       "success": "Environment created.",
-      "bulkImported": "{count} variables imported."
+      "bulkImported": "{count} variables imported.",
+      "upgradeLink": "Go to billing →"
     }
   },
   "members": {
@@ -904,6 +1313,79 @@
       "copied": "Copied"
     }
   },
+  "billing": {
+    "breadcrumb": "Billing",
+    "title": "Billing",
+    "freeUsage": "Environments: {count} (free limit: {limit})",
+    "paidUnits": "Paid environments: {count}",
+    "estimatedCost": "Estimated monthly cost: {price}",
+    "subscribeCta": "Add payment method",
+    "manageCta": "Manage billing",
+    "statusActive": "Subscription active.",
+    "statusPastDue": "Payment past due — check your payment method.",
+    "statusCanceled": "Subscription canceled.",
+    "noSubscription": "No active subscription.",
+    "checkoutSuccess": "Subscription activated.",
+    "checkoutCanceled": "Checkout canceled.",
+    "upcomingInvoiceTitle": "Upcoming invoice",
+    "invoiceHistoryTitle": "Invoice history"
+  },
+  "settingsIntegrations": {
+    "breadcrumb": "Integrations",
+    "title": "Integrations",
+    "subtitle": "Connect this workspace to the tools you already use, and push environment variables straight into them.",
+    "ownerOnly": "Only the workspace owner can manage integrations.",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connected": "{name} connected.",
+    "disconnected": "{name} disconnected.",
+    "connectedAs": "Connected as {label}",
+    "connectGithubActions": "Use GitHub connection ({login})",
+    "connectGithubFirst": "Connect GitHub in your profile first",
+    "tokenPlaceholder": "Access token",
+    "gitlabHostPlaceholder": "gitlab.com",
+    "webhookPlaceholder": "Incoming webhook URL",
+    "loadTargets": "Load projects",
+    "linkTarget": "Link to this environment",
+    "targetLinked": "Linked to {name}.",
+    "linkedTo": "Synced to {name}",
+    "syncNow": "Sync now",
+    "synced": "Environment variables synced.",
+    "docs": {
+      "title": "How this works",
+      "intro": "Connect a provider, pick which environment it pushes to, then use \"Sync now\" whenever you want to push the current values.",
+      "githubActions": {
+        "title": "GitHub Actions",
+        "body": "Connect GitHub in your profile first, then click \"Use GitHub connection\" here. Pick a repo and sync — variables land as encrypted repository secrets."
+      },
+      "gitlab": {
+        "title": "GitLab",
+        "body": "Create a personal access token with the \"api\" scope, paste it here (add your self-hosted host if not gitlab.com), then pick a project to sync CI/CD variables into."
+      },
+      "vercel": {
+        "title": "Vercel",
+        "body": "Create an access token in Vercel's account settings, paste it here, then pick a project. Variables are added for production, preview, and development."
+      },
+      "netlify": {
+        "title": "Netlify",
+        "body": "Create a personal access token in Netlify's user settings, paste it here, then pick a site to sync environment variables into."
+      },
+      "slack": {
+        "title": "Slack",
+        "body": "Add an Incoming Webhook to a Slack channel and paste its URL here. You'll get an alert when a share link is about to expire or a protected environment is rotated."
+      },
+      "discord": {
+        "title": "Discord",
+        "body": "Create a webhook for a channel (Channel Settings → Integrations → Webhooks) and paste its URL here for the same expiry/rotation alerts."
+      }
+    },
+    "wipNotice": {
+      "title": "Still a work in progress",
+      "body": "Integrations are new and may not work perfectly yet — some providers or actions could fail unexpectedly.",
+      "reportPrefix": "Found a bug? Report it to:",
+      "dismiss": "Got it"
+    }
+  },
   "invitations": {
     "heading": "Workspace invitation",
     "subheading": "You've been invited to join \"{workspace}\" as {role}.",
@@ -944,6 +1426,7 @@
     "columns": {
       "product": {
         "title": "Product",
+        "cli": "CLI",
         "docs": "API documentation",
         "status": "Service status"
       },
@@ -951,6 +1434,7 @@
         "title": "Legal",
         "privacy": "Privacy policy",
         "terms": "Terms of service",
+        "cookies": "Cookie policy",
         "security": "Security"
       }
     },

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { buildMetadata } from "@/lib/metadata";
-import { resolveActiveWorkspace, getWorkspaceOverview } from "@/lib/dashboard";
-import { FREE_ENVIRONMENT_LIMIT } from "@/lib/billing";
+import { resolveActiveWorkspace } from "@/lib/dashboard";
+import { checkCanAddEnvironment } from "@/lib/env-billing";
 import { getGithubConnectionInfo } from "@/lib/github-connection";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { EnvironmentCreator } from "@/components/environment-creator";
+import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
   params,
@@ -27,9 +28,9 @@ export default async function NewEnvironmentPage() {
       ? t("roleBlocked")
       : null;
 
-  const overview = workspace ? await getWorkspaceOverview(workspace.id) : null;
-  const atLimit = overview ? overview.environmentCount >= FREE_ENVIRONMENT_LIMIT : false;
-  const canProceed = !blockedMessage && !atLimit;
+  const gate = workspace ? await checkCanAddEnvironment(workspace.id) : { ok: true as const };
+  const needsCheckout = !gate.ok;
+  const canProceed = !blockedMessage && !needsCheckout;
   const githubConnection = canProceed ? await getGithubConnectionInfo() : null;
 
   return (
@@ -52,10 +53,13 @@ export default async function NewEnvironmentPage() {
         <p className="rounded-lg border border-hairline-strong bg-surface-soft p-6 text-sm text-body">
           {blockedMessage}
         </p>
-      ) : atLimit ? (
-        <p className="rounded-lg border border-hairline-strong bg-surface-soft p-6 text-sm text-body">
-          {t("limitReached")}
-        </p>
+      ) : needsCheckout ? (
+        <div className="flex flex-col gap-3 rounded-lg border border-hairline-strong bg-surface-soft p-6 text-sm text-body">
+          <p>{t("limitReached")}</p>
+          <Link href="/settings/billing" className="w-fit font-medium text-accent hover:underline">
+            {t("upgradeLink")}
+          </Link>
+        </div>
       ) : (
         <EnvironmentCreator
           githubConnected={!!githubConnection}

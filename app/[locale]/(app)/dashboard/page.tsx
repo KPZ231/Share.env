@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cache, Suspense } from "react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import {
   FolderSimple,
   Gear,
@@ -11,6 +11,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { buildMetadata } from "@/lib/metadata";
 import { resolveActiveWorkspace, getWorkspaceOverview, type WorkspaceOverview } from "@/lib/dashboard";
+import { monthlyCost, formatPrice } from "@/lib/billing";
 import { Spinner } from "@/components/spinner";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Link } from "@/i18n/navigation";
@@ -32,28 +33,38 @@ export async function generateMetadata({
 
 async function EnvironmentsSection({ workspaceId }: { workspaceId: string }) {
   const t = await getTranslations("dashboard.environments");
+  const locale = await getLocale();
   const overview = await cachedOverview(workspaceId);
+  const paidUnits = Math.max(0, overview.environmentCount - overview.freeEnvironmentLimit);
 
   return (
     <section className="rounded-lg border border-hairline-strong bg-surface-soft p-6 lg:p-8">
       <div className="flex items-center justify-between gap-4">
         <h2 className="font-display text-xl font-normal tracking-tight text-foreground">{t("title")}</h2>
         <span className="font-mono text-xs uppercase tracking-[0.1em] text-mute">
-          {t("usage", { used: overview.environmentCount, limit: overview.freeEnvironmentLimit })}
+          {overview.hasActiveSubscription
+            ? t("usagePaid", {
+                used: overview.environmentCount,
+                paid: paidUnits,
+                cost: formatPrice(monthlyCost(overview.environmentCount), locale),
+              })
+            : t("usage", { used: overview.environmentCount, limit: overview.freeEnvironmentLimit })}
         </span>
       </div>
 
-      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-surface-elevated">
-        <div
-          className="h-full rounded-full bg-accent"
-          style={{
-            width: `${Math.min(
-              100,
-              (overview.environmentCount / Math.max(1, overview.freeEnvironmentLimit)) * 100
-            )}%`,
-          }}
-        />
-      </div>
+      {!overview.hasActiveSubscription && (
+        <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-surface-elevated">
+          <div
+            className="h-full rounded-full bg-accent"
+            style={{
+              width: `${Math.min(
+                100,
+                (overview.environmentCount / Math.max(1, overview.freeEnvironmentLimit)) * 100
+              )}%`,
+            }}
+          />
+        </div>
+      )}
 
       <div className="mt-6">
         <p className="font-mono text-xs uppercase tracking-[0.1em] text-mute">{t("recentTitle")}</p>

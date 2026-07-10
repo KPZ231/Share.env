@@ -102,6 +102,7 @@ export type WorkspaceOverview = {
   activeShareLinkCount: number;
   recentEnvFiles: { id: string; name: string; createdAt: Date }[];
   freeEnvironmentLimit: number;
+  hasActiveSubscription: boolean;
 };
 
 /**
@@ -128,7 +129,7 @@ export async function getWorkspaceOverview(workspaceId: string): Promise<Workspa
     async () => {
       const now = new Date();
 
-      const [environmentCount, memberCount, activeShareLinkCount, recentEnvFiles] =
+      const [environmentCount, memberCount, activeShareLinkCount, recentEnvFiles, workspaceRow] =
         await Promise.all([
           prisma.envFile.count({ where: { workspaceId } }),
           prisma.workspaceMember.count({ where: { workspaceId } }),
@@ -145,9 +146,13 @@ export async function getWorkspaceOverview(workspaceId: string): Promise<Workspa
             take: 5,
             select: { id: true, name: true, createdAt: true },
           }),
+          prisma.workspace.findUnique({ where: { id: workspaceId }, select: { stripeSubscriptionStatus: true } }),
         ]);
 
-      return { environmentCount, memberCount, activeShareLinkCount, recentEnvFiles };
+      const hasActiveSubscription =
+        workspaceRow?.stripeSubscriptionStatus === "active" || workspaceRow?.stripeSubscriptionStatus === "past_due";
+
+      return { environmentCount, memberCount, activeShareLinkCount, recentEnvFiles, hasActiveSubscription };
     },
     [workspaceId, isOwner ? "owner" : user.id],
     { tags: [`ws:${workspaceId}`], revalidate: 60 }
@@ -166,7 +171,7 @@ const ENVIRONMENTS_PAGE_SIZE = 50;
  */
 export async function getWorkspaceEnvFiles(
   workspaceId: string
-): Promise<{ id: string; name: string; createdAt: Date }[]> {
+): Promise<{ id: string; name: string; createdAt: Date; syncTargets: unknown }[]> {
   const user = await requireUser();
 
   const membership = await prisma.workspaceMember.findUnique({
@@ -186,6 +191,6 @@ export async function getWorkspaceEnvFiles(
         : { workspaceId, hiddenFor: { none: { userId: user.id } } },
     orderBy: { createdAt: "desc" },
     take: ENVIRONMENTS_PAGE_SIZE,
-    select: { id: true, name: true, createdAt: true },
+    select: { id: true, name: true, createdAt: true, syncTargets: true },
   });
 }

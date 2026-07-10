@@ -151,8 +151,11 @@ export function ProfileView({
         <p className="text-[14px] text-mute">{t("subheading")}</p>
       </div>
 
-      <form onSubmit={handleSaveProfile} className="mt-10 flex flex-col gap-6 border-t border-hairline pt-8">
-        <h2 className="text-[15px] font-medium text-foreground">{t("basics.title")}</h2>
+      <form
+        onSubmit={handleSaveProfile}
+        className="mt-10 flex flex-col gap-6 rounded-lg border border-hairline-strong bg-surface-soft p-6"
+      >
+        <h2 className="text-[15px] font-semibold text-foreground">{t("basics.title")}</h2>
 
         <AvatarUploader
           userId={profile.userId}
@@ -171,7 +174,7 @@ export function ProfileView({
             onChange={(e) => setDisplayName(e.target.value)}
             maxLength={80}
             placeholder={email}
-            className="rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground"
+            className="rounded-md border border-hairline-strong bg-surface-elevated px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-accent"
           />
         </div>
 
@@ -180,7 +183,7 @@ export function ProfileView({
             <label htmlFor="bio" className="text-sm font-medium text-foreground">
               {t("basics.bio")}
             </label>
-            <span className="text-[12px] text-mute">
+            <span className="text-[13px] text-body">
               {bio.length}/{BIO_MAX_LENGTH}
             </span>
           </div>
@@ -190,7 +193,7 @@ export function ProfileView({
             onChange={(e) => setBio(e.target.value.slice(0, BIO_MAX_LENGTH))}
             rows={3}
             placeholder={t("basics.bioPlaceholder")}
-            className="resize-none rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground"
+            className="resize-none rounded-md border border-hairline-strong bg-surface-elevated px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-accent"
           />
         </div>
 
@@ -203,10 +206,10 @@ export function ProfileView({
         </button>
       </form>
 
-      <div className="mt-10 flex flex-col gap-4 border-t border-hairline pt-8">
+      <div className="mt-10 flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-soft p-6">
         <div>
-          <h2 className="text-[15px] font-medium text-foreground">{t("integrations.title")}</h2>
-          <p className="text-[13px] text-mute">{t("integrations.subtitle")}</p>
+          <h2 className="text-[15px] font-semibold text-foreground">{t("integrations.title")}</h2>
+          <p className="text-[13px] text-body">{t("integrations.subtitle")}</p>
         </div>
         <IntegrationsSearch initialInterested={profile.interestedIntegrations} />
       </div>
@@ -215,13 +218,13 @@ export function ProfileView({
 
       <TwoFactorSection status={twoFactorStatus} />
 
-      <div className="mt-10 flex flex-col gap-5 border-t border-hairline pt-8">
-        <h2 className="text-[15px] font-medium text-foreground">{t("privacy.title")}</h2>
+      <div className="mt-10 flex flex-col gap-5 rounded-lg border border-hairline-strong bg-surface-soft p-6">
+        <h2 className="text-[15px] font-semibold text-foreground">{t("privacy.title")}</h2>
 
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col">
             <span className="text-[14px] text-foreground">{t("privacy.productEmails")}</span>
-            <span className="text-[13px] text-mute">{t("privacy.productEmailsHint")}</span>
+            <span className="text-[13px] text-body">{t("privacy.productEmailsHint")}</span>
           </div>
           <Switch
             checked={productEmailsConsent}
@@ -233,7 +236,7 @@ export function ProfileView({
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col">
             <span className="text-[14px] text-foreground">{t("privacy.marketing")}</span>
-            <span className="text-[13px] text-mute">{t("privacy.marketingHint")}</span>
+            <span className="text-[13px] text-body">{t("privacy.marketingHint")}</span>
           </div>
           <Switch
             checked={marketingConsent}
@@ -242,10 +245,10 @@ export function ProfileView({
           />
         </div>
 
-        <div className="flex items-center justify-between gap-4 border-t border-hairline pt-5">
+        <div className="flex items-center justify-between gap-4 border-t border-hairline-strong pt-5">
           <div className="flex flex-col">
             <span className="text-[14px] text-foreground">{t("privacy.export")}</span>
-            <span className="text-[13px] text-mute">{t("privacy.exportHint")}</span>
+            <span className="text-[13px] text-body">{t("privacy.exportHint")}</span>
           </div>
           <button
             type="button"
@@ -259,12 +262,12 @@ export function ProfileView({
         </div>
       </div>
 
-      <div className="mt-10 flex flex-col gap-4 border-t border-hairline pt-8 pb-4">
-        <h2 className="text-[15px] font-medium text-foreground">{t("danger.title")}</h2>
+      <div className="mt-10 flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-soft p-6">
+        <h2 className="text-[15px] font-semibold text-foreground">{t("danger.title")}</h2>
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col">
             <span className="text-[14px] text-foreground">{t("danger.deleteAccount")}</span>
-            <span className="text-[13px] text-mute">{t("danger.deleteAccountHint")}</span>
+            <span className="text-[13px] text-body">{t("danger.deleteAccountHint")}</span>
           </div>
           {!confirmingDelete && (
             <button
@@ -292,7 +295,7 @@ export function ProfileView({
               onChange={(e) => setDeleteEmailInput(e.target.value)}
               placeholder={email}
               autoComplete="off"
-              className="rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-red-500"
+              className="rounded-md border border-hairline-strong bg-surface-elevated px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-red-500"
             />
             <div className="flex gap-2">
               <button

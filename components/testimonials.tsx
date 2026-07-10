@@ -71,11 +71,13 @@ export function Testimonials() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <figure
               key={item.name}
               data-testimonial="card"
-              className="flex flex-col gap-5 rounded-lg border border-hairline-strong bg-surface-soft p-6 will-change-transform lg:p-8"
+              className={`flex flex-col gap-5 rounded-lg border border-hairline-strong bg-surface-soft p-6 will-change-transform lg:p-8 ${
+                index === 0 ? "sm:col-span-2 lg:justify-center" : ""
+              }`}
             >
               <Quotes
                 data-testimonial="quote"
@@ -85,7 +87,11 @@ export function Testimonials() {
                 aria-hidden
               />
 
-              <blockquote className="flex-1 text-base leading-relaxed text-foreground">
+              <blockquote
+                className={`flex-1 leading-relaxed text-foreground ${
+                  index === 0 ? "text-lg lg:text-xl" : "text-base"
+                }`}
+              >
                 {item.quote}
               </blockquote>
 

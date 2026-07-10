@@ -3,12 +3,13 @@
 import { cookies } from "next/headers";
 import { revalidatePath, updateTag } from "next/cache";
 import { requireUser } from "@/lib/auth";
-import { resolveActiveWorkspace, getWorkspaceOverview } from "@/lib/dashboard";
+import { resolveActiveWorkspace } from "@/lib/dashboard";
 import { createClient } from "@/lib/supabase/server";
-import { FREE_ENVIRONMENT_LIMIT } from "@/lib/billing";
+import { checkCanAddEnvironment, syncSubscriptionQuantity } from "@/lib/env-billing";
 import { serializeEnv, validatePairs, type EnvPair } from "@/lib/env-format";
 import { unlockCookieName, verifyUnlockToken } from "@/lib/env-lock";
 import { encryptSecret } from "@/lib/totp-crypto";
+import { notifyWorkspace } from "@/lib/integrations/notify";
 
 const NAME_MAX_LENGTH = 100;
 const DESCRIPTION_MAX_LENGTH = 2000;
@@ -27,7 +28,9 @@ function normalizeWebsiteUrl(raw: string): { ok: true; value: string | null } | 
   }
 }
 
-export type ActionResult = { ok: true; id: string } | { ok: false; error: string };
+export type ActionResult =
+  | { ok: true; id: string }
+  | { ok: false; error: string; needsCheckout?: true };
 
 /**
  * Creates a new environment: one .env blob in the RLS-protected "env-files"
@@ -65,9 +68,13 @@ export async function createEnvironmentAction(values: {
     return { ok: false, error: "Dodaj co najmniej jedną zmienną." };
   }
 
-  const overview = await getWorkspaceOverview(workspace.id);
-  if (overview.environmentCount >= FREE_ENVIRONMENT_LIMIT) {
-    return { ok: false, error: "Osiągnięto limit środowisk w darmowym planie." };
+  const gate = await checkCanAddEnvironment(workspace.id);
+  if (!gate.ok) {
+    return {
+      ok: false,
+      needsCheckout: true,
+      error: "Osiągnięto limit darmowych środowisk. Dodaj metodę płatności, aby kontynuować.",
+    };
   }
 
   const envFileId = crypto.randomUUID();
@@ -97,6 +104,8 @@ export async function createEnvironmentAction(values: {
     await supabase.from("env_files").delete().eq("id", envFileId);
     return { ok: false, error: "Nie udało się zapisać pliku środowiska." };
   }
+
+  await syncSubscriptionQuantity(workspace.id);
 
   updateTag(`ws:${workspace.id}`);
   revalidatePath("/dashboard");
@@ -170,6 +179,17 @@ export async function updateEnvironmentAction(values: {
   revalidatePath("/dashboard");
   revalidatePath("/environments");
   revalidatePath(`/environments/${values.id}`);
+
+  // Best-effort rotation alert for a protected environment's connected chat
+  // integrations (see lib/integrations/notify.ts)  never blocks the save,
+  // never includes any pair's value.
+  if (envFile.password_hash) {
+    notifyWorkspace(envFile.workspace_id, {
+      title: "Sekret zrotowany",
+      body: `Środowisko „${name}” zostało właśnie zapisane.`,
+    }).catch(() => {});
+  }
+
   return { ok: true, id: values.id };
 }
 
@@ -198,6 +218,7 @@ export async function deleteEnvironmentAction(id: string): Promise<DeleteResult>
   // Best-effort: the row is already gone (the part RLS/policy actually
   // gates); a leftover storage object is an orphan, not a security issue.
   await supabase.storage.from("env-files").remove([envFile.storage_path]);
+  await syncSubscriptionQuantity(envFile.workspace_id);
 
   updateTag(`ws:${envFile.workspace_id}`);
   revalidatePath("/dashboard");

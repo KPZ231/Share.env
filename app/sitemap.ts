@@ -5,7 +5,17 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 // ponytail: statyczna lista publicznych tras; przy dynamicznych stronach
 // publicznych (np. publiczny landing per workspace) dołożyć fetch z DB.
-const PUBLIC_PATHS = [""];
+const PUBLIC_PATHS = [
+  "",
+  "/features",
+  "/pricing",
+  "/use-cases",
+  "/cli",
+  "/security",
+  "/privacy",
+  "/terms",
+  "/cookies",
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return PUBLIC_PATHS.map((path) => ({

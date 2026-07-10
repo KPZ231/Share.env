@@ -3,6 +3,7 @@ import "server-only";
 import { randomInt } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { generateShareToken, hashToken } from "@/lib/tokens";
+import { encryptSecret, decryptSecret, type EncryptedSecret } from "@/lib/totp-crypto";
 
 /**
  * Device-code login for `envshare` (GitHub CLI style) + bearer-token
@@ -45,7 +46,11 @@ export async function pollDeviceAuth(deviceCode: string): Promise<DevicePollResu
   if (row.status === "denied") return { status: "denied" };
   if (row.status !== "approved" || !row.issuedToken) return { status: "pending" };
 
-  const token = row.issuedToken;
+  // ponytail: the row briefly holds a working bearer token between approval
+  // and the CLI's poll  encrypted at rest with the same AES-256-GCM key as
+  // the .env blobs/TOTP secrets, so a DB read alone in that window doesn't
+  // hand over a usable credential.
+  const token = decryptSecret(JSON.parse(row.issuedToken) as EncryptedSecret);
   await prisma.cliDeviceAuth.delete({ where: { id: row.id } });
   return { status: "approved", token };
 }
@@ -69,7 +74,7 @@ export async function resolveDeviceAuth(
   await prisma.cliToken.create({ data: { tokenHash: hashToken(rawToken), userId } });
   await prisma.cliDeviceAuth.update({
     where: { id: row.id },
-    data: { status: "approved", userId, issuedToken: rawToken },
+    data: { status: "approved", userId, issuedToken: JSON.stringify(encryptSecret(rawToken)) },
   });
   return { ok: true };
 }

@@ -81,7 +81,7 @@ export function FinalCta() {
             <Link
               href="/signup"
               data-cta="button"
-              className="w-fit shrink-0 rounded-md bg-foreground px-8 py-3 text-base font-medium text-black transition-opacity hover:opacity-90"
+              className="tactile w-fit shrink-0 rounded-md bg-foreground px-8 py-3 text-base font-medium text-black hover:opacity-90"
             >
               {t("cta")}
             </Link>

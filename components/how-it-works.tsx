@@ -54,9 +54,9 @@ export function HowItWorks() {
               "-=0.6"
             )
             .from(
-              "[data-hiw=connector]",
-              { scaleX: 0, transformOrigin: "left" },
-              "-=0.5"
+              "[data-hiw=rule]",
+              { scaleX: 0, transformOrigin: "left", stagger: 0.1, duration: 0.5 },
+              "-=0.7"
             );
         }
       );
@@ -69,7 +69,7 @@ export function HowItWorks() {
     <div ref={rootRef} className="relative w-full overflow-hidden bg-background py-16 lg:py-24">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_120%_100%_at_80%_0%,var(--accent-glow),transparent_70%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_120%_100%_at_80%_0%,var(--accent-glow),transparent_70%)] [mask-image:linear-gradient(to_bottom,transparent,black_35%,black_65%,transparent)]"
       />
       <section
         id="how-it-works"
@@ -99,17 +99,15 @@ export function HowItWorks() {
                 <li
                   key={step.title}
                   data-hiw="step"
-                  className="relative flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-soft p-6"
+                  className="relative flex flex-col gap-5 pt-6"
                 >
-                  {index < steps.length - 1 && (
-                    <span
-                      aria-hidden
-                      data-hiw="connector"
-                      className="pointer-events-none absolute right-[-1.5rem] top-1/2 z-10 hidden h-px w-6 -translate-y-1/2 bg-hairline-strong lg:block"
-                    />
-                  )}
+                  <span
+                    aria-hidden
+                    data-hiw="rule"
+                    className="absolute inset-x-0 top-0 h-px bg-hairline-strong"
+                  />
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-between">
                     <span
                       data-hiw="icon"
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent/15"
@@ -117,7 +115,7 @@ export function HowItWorks() {
                     >
                       <StepIcon size={20} weight="bold" className="text-accent" />
                     </span>
-                    <span className="font-mono text-xs text-mute">
+                    <span className="font-mono text-sm text-mute">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>

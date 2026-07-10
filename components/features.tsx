@@ -88,8 +88,10 @@ export function Features() {
               <article
                 key={item.title}
                 data-feature="card"
-                className={`group flex flex-col gap-4 rounded-lg border border-hairline-strong bg-surface-soft p-6 transition-colors will-change-transform hover:border-white/25 lg:p-8 ${
-                  isLead ? "lg:row-span-2 lg:justify-center" : ""
+                className={`group flex flex-col gap-4 rounded-lg border border-hairline-strong p-6 transition-[transform,border-color] duration-200 ease-out will-change-transform hover:-translate-y-0.5 hover:border-white/25 lg:p-8 ${
+                  isLead
+                    ? "bg-[linear-gradient(160deg,var(--accent-glow),transparent_55%)] bg-surface-soft lg:row-span-2 lg:justify-center"
+                    : "bg-surface-soft"
                 }`}
               >
                 <span

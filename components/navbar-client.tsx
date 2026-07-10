@@ -8,7 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { signOutAction } from "@/lib/auth-actions";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 
-const NAV_LINK_HREFS = ["/features", "/use-cases", "/pricing", "/docs"] as const;
+const NAV_LINK_HREFS = ["/features", "/use-cases", "/pricing", "/cli"] as const;
 
 type Account = { email: string; name: string | null };
 

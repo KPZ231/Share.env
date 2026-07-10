@@ -61,12 +61,26 @@ model Workspace {
   logoPath    String?  @map("logo_path")
   ownerId     String   @map("owner_id") @db.Uuid
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  // Stripe pay-as-you-go billing (see lib/stripe.ts, lib/env-billing.ts). One
+  // subscription per workspace, quantity = paid environments beyond the free
+  // FREE_ENVIRONMENT_LIMIT. Written only by Prisma (webhook/server actions) --
+  // write-locked against the "authenticated" role by a DB trigger, same
+  // pattern as Profile.isPremium, so an owner can't self-grant status via a
+  // direct supabase-js call.
+  stripeCustomerId         String? @map("stripe_customer_id")
+  stripeSubscriptionId     String? @map("stripe_subscription_id")
+  // "active" | "past_due" | "canceled" | null (no subscription yet). Mirrors
+  // Stripe's own subscription.status values so the webhook can write it
+  // through unchanged.
+  stripeSubscriptionStatus String? @map("stripe_subscription_status")
 
-  members     WorkspaceMember[]
-  envFiles    EnvFile[]
-  invitations Invitation[]
+  members      WorkspaceMember[]
+  envFiles     EnvFile[]
+  invitations  Invitation[]
+  integrations IntegrationConnection[]
 
   @@index([ownerId])
+  @@index([stripeCustomerId])
   @@map("workspaces")
 }
 
@@ -116,6 +130,10 @@ model EnvFile {
   // Free-text notes and an optional linked website URL, purely descriptive.
   description     String?
   websiteUrl      String?         @map("website_url")
+  // Provider -> chosen sync target, e.g. {"vercel": {"id":"prj_123","name":"my-app"}}.
+  // Json instead of a join table since it's only ever read/written whole, per
+  // env file, never queried across rows  see lib/integrations/sync.ts.
+  syncTargets     Json?           @map("sync_targets")
 
   workspace  Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   shareLinks ShareLink[]
@@ -288,6 +306,47 @@ model CliToken {
 
   @@index([userId])
   @@map("cli_tokens")
+}
+
+// One connection per (workspace, provider)  owner-only to create/remove,
+// shared by the whole team once set up (unlike GithubConnection, which is
+// per-user). credential holds a provider-specific JSON payload (OAuth token,
+// PAT, webhook URL, ids)  one AES-256-GCM blob (lib/totp-crypto.ts's
+// encryptSecret) instead of a column per provider, since nothing ever queries
+// into it. See lib/integration-connection.ts.
+model IntegrationConnection {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workspaceId   String   @map("workspace_id") @db.Uuid
+  provider      String // "github-actions" | "gitlab" | "vercel" | "netlify" | "slack" | "discord"
+  label         String? // e.g. GitHub login / GitLab host / webhook channel name, for display only
+  credentialEnc String   @map("credential_enc")
+  credentialIv  String   @map("credential_iv")
+  credentialTag String   @map("credential_tag")
+  createdBy     String?  @map("created_by") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, provider])
+  @@map("integration_connections")
+}
+
+// Audit trail for a sync push  intentionally holds no secret values, only
+// who pushed what to where and whether it succeeded (see security review:
+// pushing secrets off-platform must always be traceable).
+model IntegrationSyncLog {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workspaceId  String   @map("workspace_id") @db.Uuid
+  envFileId    String   @map("env_file_id") @db.Uuid
+  provider     String
+  targetName   String   @map("target_name")
+  status       String // "success" | "error"
+  errorMessage String?  @map("error_message")
+  triggeredBy  String?  @map("triggered_by") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([workspaceId, createdAt])
+  @@map("integration_sync_logs")
 }
 
 model ShareLink {

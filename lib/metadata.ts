@@ -22,9 +22,10 @@ export async function buildMetadata({
     description,
     alternates: {
       canonical: `/${locale}${path}`,
-      languages: Object.fromEntries(
-        routing.locales.map((l) => [l, `/${l}${path}`])
-      ),
+      languages: {
+        ...Object.fromEntries(routing.locales.map((l) => [l, `/${l}${path}`])),
+        "x-default": `/${routing.defaultLocale}${path}`,
+      },
     },
     openGraph: {
       title,
@@ -32,11 +33,13 @@ export async function buildMetadata({
       locale,
       type: "website",
       url: `/${locale}${path}`,
+      images: ["/hero-vault.png"],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: ["/hero-vault.png"],
     },
     robots: noindex ? { index: false, follow: false } : undefined,
   };

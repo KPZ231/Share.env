@@ -33,6 +33,32 @@
   --font-display: var(--font-display);
 }
 
+.tactile {
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), opacity 160ms ease,
+    background-color 160ms ease, border-color 160ms ease;
+}
+
+.tactile:active {
+  transform: scale(0.97);
+}
+
+/* Smooth <details> open/close where supported (Chrome 131+); instant elsewhere */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+
+  details::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition: block-size 250ms cubic-bezier(0.23, 1, 0.32, 1), content-visibility 250ms allow-discrete;
+  }
+
+  details[open]::details-content {
+    block-size: auto;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

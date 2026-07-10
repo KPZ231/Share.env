@@ -19,10 +19,23 @@ import { ACCOUNT_2FA_COOKIE, verifyAccountTwoFactorToken } from "@/lib/env-lock"
  * Next.js 16's Proxy runs on the Node.js runtime (not Edge), so the
  * node:crypto-based token check in lib/env-lock.ts works here.
  *
- * Routes considered public: /, /signin, /signup, /privacy, /auth/callback, and any
- * public share-link resolver under /share. Everything else requires a session.
+ * Routes considered public: /, /signin, /signup, /privacy, /terms, /cookies,
+ * /security, /auth/callback, the /cli marketing page, and any public
+ * share-link resolver under /share. Everything else requires a session
+ * including /cli/authorize, which is an exact-match miss here on purpose (it
+ * needs a signed-in user to approve a device login).
  */
-const PUBLIC_PATHS = ["/", "/signin", "/signup", "/privacy", "/auth/callback"];
+const PUBLIC_PATHS = [
+  "/",
+  "/signin",
+  "/signup",
+  "/privacy",
+  "/terms",
+  "/cookies",
+  "/security",
+  "/auth/callback",
+  "/cli",
+];
 const VERIFY_2FA_PATH = "/verify-2fa";
 
 // Locale prefix (e.g. /pl, /en) is always present  see i18n/routing.ts  so

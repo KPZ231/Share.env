@@ -51,6 +51,30 @@
     "useCases": {
       "title": "Zastosowania",
       "description": "Dlaczego zespoły przechodzą na share.env oraz jak w praktyce wygląda onboarding, rotacja kluczy i offboarding."
+    },
+    "cli": {
+      "title": "envshare CLI",
+      "description": "Sklonuj repozytorium i pobierz jego .env jedną komendą, prosto z terminala, z taką samą kontrolą dostępu jak w aplikacji webowej."
+    },
+    "privacy": {
+      "title": "Polityka prywatności",
+      "description": "Jak share.env zbiera, wykorzystuje i chroni Twoje dane oraz jakie masz prawa na mocy RODO i innych przepisów o ochronie prywatności."
+    },
+    "terms": {
+      "title": "Regulamin",
+      "description": "Zasady korzystania z share.env, w tym konto, rozliczenia i Twoje obowiązki."
+    },
+    "cookies": {
+      "title": "Polityka cookies",
+      "description": "Ciasteczka, których używa share.env, aby utrzymać Twoje logowanie i zapamiętać aktywny workspace, i nic ponadto."
+    },
+    "security": {
+      "title": "Bezpieczeństwo",
+      "description": "Jak share.env chroni Twoje sekrety: Row Level Security na każdej tabeli, szyfrowanie w spoczynku i prosty sposób na zgłoszenie podatności."
+    },
+    "billing": {
+      "title": "Płatności",
+      "description": "Zarządzaj subskrypcją i limitem środowisk tego workspace'a."
     }
   },
   "featuresPage": {
@@ -115,12 +139,370 @@
     "description": "Onboarding, rotacja kluczy i offboarding to miejsca, w których pliki .env wyciekają. Oto dlaczego zespoły się przenoszą i jak wygląda każdy z tych momentów.",
     "tag": "Zaprojektowane pod realne workflow"
   },
+  "cliPage": {
+    "eyebrow": "CLI",
+    "title": "Pobieraj sekrety bez wychodzenia z terminala",
+    "description": "envshare to niewielkie narzędzie CLI, które klonuje repozytorium powiązane ze środowiskiem i zapisuje jego plik .env, respektując tę samą ochronę hasłem, 2FA i kluczem dostępu co aplikacja webowa.",
+    "tag": "Zero zależności",
+    "overview": {
+      "heading": "Jedno logowanie, potem nie przeszkadza",
+      "subheading": "Zaloguj się raz przez kod urządzenia, dokładnie tak jak w CLI GitHuba. Od tej pory każde pobranie to jedna komenda.",
+      "items": [
+        "Logowanie kodem urządzenia, bez wpisywania hasła w terminalu",
+        "Chronione środowiska proszą o hasło i 2FA bezpośrednio w CLI",
+        "Zapisuje prosto do .env z uprawnieniami tylko dla właściciela pliku"
+      ]
+    },
+    "useCases": {
+      "heading": "Gdzie to naprawdę się przydaje",
+      "subheading": "Trzy momenty, w których komenda w terminalu wygrywa z otwieraniem przeglądarki."
+    },
+    "useCaseItems": [
+      {
+        "title": "Wdrażanie nowego członka zespołu",
+        "description": "Uruchamia jedną komendę, potwierdza kod w przeglądarce raz, a repozytorium i jego .env lądują w folderze roboczym.",
+        "payoff": "Koniec z „wyślij mi plik env” na czacie."
+      },
+      {
+        "title": "Codzienny development lokalny",
+        "description": "Masz już sklonowane repozytorium? envshare pull odświeża .env tym, co aktualnie trzyma workspace, w tym samym miejscu.",
+        "payoff": ".env w edytorze zgadza się z tym, co faktycznie działa na produkcji."
+      },
+      {
+        "title": "Rotacja wyciekniętego klucza",
+        "description": "Zaktualizuj wartość raz w workspace, a każdy odpala envshare pull zamiast przekazywać nowy klucz ręcznie.",
+        "payoff": "Okno wycieku to jedno pobranie, nie jeden wątek na czacie."
+      }
+    ],
+    "install": {
+      "heading": "Instalacja",
+      "subheading": "Jeden pakiet, bez osobnego pobierania. Uruchom przez npx albo zainstaluj raz, jeśli używasz go codziennie.",
+      "steps": [
+        "Uruchom bezpośrednio przez npx, bez instalacji",
+        "Albo zainstaluj raz, żeby mieć samo envshare",
+        "Zaloguj się i jest gotowe w każdym repo"
+      ],
+      "code": "npx @kpz231/envshare login\n\n# albo zainstaluj raz:\nnpm install -g @kpz231/envshare\nenvshare login",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano"
+    },
+    "commands": {
+      "heading": "Lista komend",
+      "subheading": "Pięć komend pokrywa cały workflow.",
+      "items": [
+        {
+          "name": "envshare login",
+          "description": "Uruchamia logowanie kodem urządzenia i zapisuje sesję CLI lokalnie."
+        },
+        {
+          "name": "envshare list",
+          "description": "Wyświetla każde środowisko dostępne dla Twojego konta, według workspace'a."
+        },
+        {
+          "name": "envshare clone <nazwa>",
+          "description": "Klonuje powiązane repozytorium i zapisuje jego .env, pytając o hasło lub kod 2FA jeśli środowisko jest chronione."
+        },
+        {
+          "name": "envshare pull",
+          "description": "Ponownie pobiera .env do bieżącego katalogu, dla repozytoriów już sklonowanych."
+        },
+        {
+          "name": "envshare logout",
+          "description": "Odwołuje lokalną sesję i zapomina zapisany token."
+        }
+      ]
+    }
+  },
+  "privacyPage": {
+    "eyebrow": "Prawne",
+    "title": "Polityka prywatności",
+    "updated": "Ostatnia aktualizacja: 8 lipca 2026",
+    "intro": "Ta polityka wyjaśnia, jakie dane osobowe zbiera share.env, w jakim celu i jakie masz nad nimi prawa. Nie obejmuje zawartości przesyłanych przez Ciebie plików .env  to Twoje dane, szyfrowane w spoczynku, które przetwarzamy wyłącznie po to, by dostarczyć usługę, o którą prosisz.",
+    "sections": [
+      {
+        "heading": "1. Kto odpowiada za Twoje dane",
+        "paragraphs": [
+          "share.env prowadzi KPZsProductions. W sprawach dotyczących tej polityki oraz w celu skorzystania z praw opisanych poniżej, napisz na kpzsproductionscontact@gmail.com."
+        ]
+      },
+      {
+        "heading": "2. Jakie dane zbieramy",
+        "paragraphs": [
+          "Zbieramy wyłącznie to, czego potrzebuje produkt:"
+        ],
+        "list": [
+          "Dane konta: adres e-mail oraz wszystko, co dobrowolnie dodasz do profilu (wyświetlana nazwa, opis, awatar).",
+          "Dane workspace'u: nazwa, opis, logo, role członków oraz wysyłane i otrzymywane zaproszenia.",
+          "Pliki .env i zmienne, które przesyłasz  szyfrowane w spoczynku, ograniczone do Twojego workspace'u, nigdy nie analizowane ani czytane przez nas poza autoryzowanym zgłoszeniem wsparcia, które sam inicjujesz.",
+          "Dane bezpieczeństwa niezbędne do ochrony konta: hashe haseł, dane uwierzytelniające TOTP i klucze dostępu (passkeys) oraz logi dostępu do chronionych środowisk.",
+          "Podstawowe dane techniczne: adres IP i znaczniki czasu dla działań istotnych dla bezpieczeństwa (logowanie, tworzenie linku, pobranie środowiska), przechowywane tylko tak długo, jak potrzeba do zapobiegania nadużyciom."
+        ]
+      },
+      {
+        "heading": "3. Dlaczego przetwarzamy dane (podstawa prawna)",
+        "list": [
+          "Wykonanie umowy: założenie konta, prowadzenie workspace'u i dostarczenie usługi współdzielenia plików, na którą się zapisałeś (art. 6 ust. 1 lit. b RODO).",
+          "Prawnie uzasadniony interes: zabezpieczenie usługi przed nadużyciami, diagnozowanie awarii i zapobieganie nieautoryzowanemu dostępowi (art. 6 ust. 1 lit. f RODO).",
+          "Zgoda: opcjonalne e-maile o produkcie oraz ewentualna analityka, na którą wyraźnie się zgodzisz (art. 6 ust. 1 lit. a RODO)  możesz ją wycofać w dowolnym momencie w ustawieniach profilu."
+        ]
+      },
+      {
+        "heading": "4. Kto jeszcze przetwarza Twoje dane",
+        "paragraphs": [
+          "Korzystamy z niewielkiej liczby dostawców infrastruktury, każdy działa jako nasz procesor danych na podstawie umowy powierzenia przetwarzania:"
+        ],
+        "list": [
+          "Supabase  baza danych, uwierzytelnianie i szyfrowane przechowywanie plików.",
+          "Vercel  hosting aplikacji i sieć edge.",
+          "Dostawca poczty transakcyjnej  wyłącznie do e-maili z zaproszeniami i powiadomień o koncie.",
+          "Nie sprzedajemy Twoich danych i nie udostępniamy ich reklamodawcom ani brokerom danych."
+        ]
+      },
+      {
+        "heading": "5. Przekazywanie danych poza EOG",
+        "paragraphs": [
+          "Nasi dostawcy infrastruktury mogą przetwarzać dane poza Europejskim Obszarem Gospodarczym (np. w USA). W takich przypadkach transfer odbywa się na podstawie Standardowych Klauzul Umownych lub równoważnego zabezpieczenia uznanego przez Rozdział V RODO."
+        ]
+      },
+      {
+        "heading": "6. Jak długo przechowujemy dane",
+        "paragraphs": [
+          "Dane konta i workspace'u przechowujemy, dopóki konto jest aktywne. Po usunięciu konta usuwany jest profil oraz workspace'y, których jesteś jedynym właścicielem; środowiska są usuwane razem z obiektami w storage. Logi bezpieczeństwa przechowujemy przez ograniczony czas wyłącznie na potrzeby wyjaśniania nadużyć, a następnie usuwamy."
+        ]
+      },
+      {
+        "heading": "7. Twoje prawa",
+        "paragraphs": [
+          "Na mocy RODO i podobnych przepisów masz prawo do:"
+        ],
+        "list": [
+          "Dostępu do danych osobowych, które o Tobie przechowujemy (zobacz narzędzie eksportu danych na stronie profilu).",
+          "Sprostowania nieprawidłowych danych lub usunięcia konta wraz z powiązanymi danymi.",
+          "Sprzeciwu wobec przetwarzania lub jego ograniczenia oraz wycofania zgody tam, gdzie przetwarzanie się na niej opiera.",
+          "Otrzymania danych w formacie przenośnym oraz złożenia skargi do organu nadzorczego (w Polsce  UODO)."
+        ]
+      },
+      {
+        "heading": "8. Dodatkowe prawa dla mieszkańców Kalifornii (CCPA/CPRA)",
+        "paragraphs": [
+          "Jeśli mieszkasz w Kalifornii, masz prawo wiedzieć, jakie dane osobowe zbieramy, żądać ich usunięcia oraz sprzeciwić się ich sprzedaży. Nie sprzedajemy danych osobowych w rozumieniu CCPA, więc nie ma z czego rezygnować."
+        ]
+      },
+      {
+        "heading": "9. Bezpieczeństwo",
+        "paragraphs": [
+          "Każda tabela jest chroniona przez Row Level Security egzekwowane w bazie danych, nie tylko w interfejsie. Zawartość plików jest szyfrowana w spoczynku. Linki udostępniania używają tokenów o wysokiej entropii, zawsze wygasają i można je natychmiast odwołać. Szczegóły na naszej stronie bezpieczeństwa."
+        ]
+      },
+      {
+        "heading": "10. Dzieci",
+        "paragraphs": [
+          "share.env nie jest kierowany do dzieci poniżej 16 roku życia i świadomie nie zbieramy ich danych."
+        ]
+      },
+      {
+        "heading": "11. Zmiany polityki",
+        "paragraphs": [
+          "Jeśli wprowadzimy istotną zmianę, zaktualizujemy datę na górze tej strony i, w uzasadnionych przypadkach, powiadomimy właścicieli kont e-mailem."
+        ]
+      },
+      {
+        "heading": "12. Kontakt",
+        "paragraphs": [
+          "Pytania dotyczące tej polityki lub Twoich danych: kpzsproductionscontact@gmail.com."
+        ]
+      }
+    ]
+  },
+  "termsPage": {
+    "eyebrow": "Prawne",
+    "title": "Regulamin",
+    "updated": "Ostatnia aktualizacja: 8 lipca 2026",
+    "intro": "Ten regulamin określa zasady korzystania z share.env. Zakładając konto, akceptujesz go. Jeśli akceptujesz go w imieniu firmy, potwierdzasz, że masz do tego uprawnienia.",
+    "sections": [
+      {
+        "heading": "1. Usługa",
+        "paragraphs": [
+          "share.env pozwala workspace'owi przechowywać pliki .env i udostępniać je członkom zespołu w rolach owner, editor i viewer oraz generować wygasające linki dla osób bez konta. Możemy w dowolnym momencie dodawać, zmieniać lub usuwać funkcje; postaramy się poinformować z wyprzedzeniem, zanim usuniemy coś, z czego aktywnie korzystasz."
+        ]
+      },
+      {
+        "heading": "2. Twoje konto",
+        "list": [
+          "Musisz podać prawidłowy adres e-mail i zachować poufność danych logowania.",
+          "Odpowiadasz za wszystkie działania w ramach swojego konta, w tym za działania członków workspace'u, których zaprosisz.",
+          "Aby założyć konto, musisz mieć ukończone 16 lat.",
+          "Natychmiast powiadom nas na kpzsproductionscontact@gmail.com, jeśli podejrzewasz nieautoryzowany dostęp."
+        ]
+      },
+      {
+        "heading": "3. Dozwolone użycie",
+        "paragraphs": [
+          "Zobowiązujesz się nie używać share.env do:"
+        ],
+        "list": [
+          "Przechowywania lub udostępniania treści, do których nie masz prawa (np. cudzych danych logowania bez upoważnienia).",
+          "Prób obejścia ról workspace'u, Row Level Security lub innych mechanizmów kontroli dostępu.",
+          "Testowania, skanowania lub atakowania infrastruktury usługi ani odsprzedaży dostępu bez naszej pisemnej zgody.",
+          "Przesyłania złośliwego oprogramowania lub treści niezgodnych z obowiązującym prawem."
+        ]
+      },
+      {
+        "heading": "4. Twoje treści, nasza licencja",
+        "paragraphs": [
+          "Zachowujesz wszystkie prawa do plików .env i innych treści, które przesyłasz. Udzielasz nam ograniczonej licencji na przechowywanie, szyfrowanie, tworzenie kopii zapasowych i przesyłanie tych treści wyłącznie w celu świadczenia Ci usługi  nie wykorzystujemy ich w żadnym innym celu i nie rościmy sobie do nich praw własności."
+        ]
+      },
+      {
+        "heading": "5. Plany i rozliczenia",
+        "paragraphs": [
+          "Plan darmowy obejmuje do 3 środowisk. Powyżej tego limitu środowiska są rozliczane w cenie 2 USD za środowisko miesięcznie, rozliczane co miesiąc. Obniżenie planu lub usunięcie środowiska obowiązuje od następnego cyklu rozliczeniowego; nie zwracamy proporcjonalnej części opłaty za niewykorzystany okres, chyba że wymaga tego prawo."
+        ]
+      },
+      {
+        "heading": "6. Dostępność usługi",
+        "paragraphs": [
+          "Dążymy do wysokiej dostępności, ale usługa jest świadczona „tak jak jest”, bez gwarancji nieprzerwanego działania, chyba że odrębna pisemna umowa SLA stanowi inaczej. Planowane prace serwisowe będziemy zapowiadać, gdy to możliwe."
+        ]
+      },
+      {
+        "heading": "7. Ograniczenie odpowiedzialności",
+        "paragraphs": [
+          "W maksymalnym zakresie dozwolonym przez prawo share.env nie odpowiada za szkody pośrednie, przypadkowe ani następcze, ani za straty wynikające z Twojego własnego niewłaściwego zarządzania danymi logowania, rolami w workspace'ie czy linkami udostępniania. Nic w tym regulaminie nie ogranicza odpowiedzialności, której nie można ograniczyć na mocy obowiązującego prawa."
+        ]
+      },
+      {
+        "heading": "8. Zawieszenie i zakończenie",
+        "paragraphs": [
+          "Możemy zawiesić lub zamknąć konto naruszające sekcję 3, informując o tym, gdy to możliwe. Możesz usunąć konto w dowolnym momencie na stronie profilu; workspace'y, których jesteś jedynym właścicielem, zostają usunięte wraz z ich środowiskami."
+        ]
+      },
+      {
+        "heading": "9. Zmiany regulaminu",
+        "paragraphs": [
+          "Istotne zmiany opublikujemy tutaj wraz z zaktualizowaną datą i powiadomimy właścicieli kont e-mailem w przypadku zmian, które istotnie ograniczają Twoje prawa."
+        ]
+      },
+      {
+        "heading": "10. Prawo właściwe",
+        "paragraphs": [
+          "Ten regulamin podlega prawu polskiemu, z pominięciem norm kolizyjnych, bez uszczerbku dla bezwzględnie obowiązujących praw konsumenckich przysługujących Ci na mocy prawa kraju Twojego zamieszkania."
+        ]
+      },
+      {
+        "heading": "11. Kontakt",
+        "paragraphs": [
+          "Pytania dotyczące regulaminu: kpzsproductionscontact@gmail.com."
+        ]
+      }
+    ]
+  },
+  "cookiesPage": {
+    "eyebrow": "Prawne",
+    "title": "Polityka cookies",
+    "updated": "Ostatnia aktualizacja: 8 lipca 2026",
+    "intro": "share.env używa krótkiej listy niezbędnych ciasteczek, aby utrzymać Twoje logowanie i zapamiętać aktywny workspace. Nie używamy ciasteczek analitycznych ani reklamowych, więc nie ma tu nic więcej do ujawnienia.",
+    "sections": [
+      {
+        "heading": "1. Jakie ciasteczka ustawiamy",
+        "list": [
+          "Ciasteczka uwierzytelniania Supabase (nazwy zaczynające się od sb-)  utrzymują Twoje logowanie między żądaniami. Usuwane przy wylogowaniu lub wygaśnięciu.",
+          "active_workspace  zapamiętuje, który workspace oglądałeś ostatnio, dzięki czemu panel otwiera się na właściwym przy następnej wizycie."
+        ]
+      },
+      {
+        "heading": "2. Dlaczego bez przełącznika zgody",
+        "paragraphs": [
+          "Oba powyższe ciasteczka są niezbędne do świadczenia usługi, do której jesteś zalogowany  nie śledzą Cię na innych stronach i nie służą celom reklamowym ani analitycznym. Zgodnie z zasadami ePrivacy obowiązującymi w większości jurysdykcji, niezbędne ciasteczka są zwolnione z obowiązku uzyskania zgody  dlatego nasz baner to proste potwierdzenie, a nie lista przełączników."
+        ]
+      },
+      {
+        "heading": "3. Zarządzanie ciasteczkami",
+        "paragraphs": [
+          "Możesz zablokować lub usunąć ciasteczka w ustawieniach przeglądarki w dowolnym momencie. Spowoduje to wylogowanie i zresetowanie wyboru aktywnego workspace'u, ponieważ to właśnie te ciasteczka przechowują ten stan."
+        ]
+      },
+      {
+        "heading": "4. Zmiany",
+        "paragraphs": [
+          "Jeśli kiedykolwiek dodamy nieistotne ciasteczko (np. analityczne), zaktualizujemy tę stronę i dodamy realną kontrolę opt-in, zanim to zrobimy."
+        ]
+      },
+      {
+        "heading": "5. Kontakt",
+        "paragraphs": [
+          "Pytania dotyczące ciasteczek: kpzsproductionscontact@gmail.com."
+        ]
+      }
+    ]
+  },
+  "cookieConsent": {
+    "message": "Używamy wyłącznie niezbędnych ciasteczek, aby utrzymać Twoje logowanie i zapamiętać workspace. Zobacz naszą <link>Politykę cookies</link>, aby dowiedzieć się więcej.",
+    "accept": "Rozumiem"
+  },
+  "securityPage": {
+    "eyebrow": "Bezpieczeństwo",
+    "title": "Zbudowane na kontroli dostępu, nie na ukrywaniu",
+    "description": "Każda tabela ma Row Level Security. Każdy plik jest szyfrowany w spoczynku. Oto szczegóły, a także jak zgłosić problem, jeśli go znajdziesz.",
+    "tag": "AES-256 w spoczynku",
+    "sections": [
+      {
+        "heading": "Infrastruktura i podmioty przetwarzające",
+        "paragraphs": ["share.env działa na niewielkiej, nazwanej liczbie dostawców, każdy na podstawie umowy powierzenia przetwarzania:"],
+        "list": [
+          "Supabase  baza danych Postgres, uwierzytelnianie i szyfrowane przechowywanie plików. Polityki Row Level Security działają wewnątrz samej bazy danych, więc autoryzacja obowiązuje nawet, gdy w kodzie aplikacji jest błąd.",
+          "Vercel  hosting aplikacji i sieć edge dla aplikacji webowej i endpointów API.",
+          "Dostawca poczty transakcyjnej  wykorzystywany wyłącznie do e-maili z zaproszeniami i powiadomień o koncie."
+        ]
+      },
+      {
+        "heading": "Jak egzekwowany jest dostęp",
+        "list": [
+          "Row Level Security jest włączone na każdej tabeli bez wyjątków; domyślnie jest to deny-all, a każda operacja wymaga jawnej polityki.",
+          "Role w workspace'ie (owner, editor, viewer) są egzekwowane przez te polityki bazodanowe, a nie tylko ukrywane w interfejsie  brak przycisku w UI to UX, nie zabezpieczenie.",
+          "Linki udostępniania używają kryptograficznie generowanych tokenów o wysokiej entropii, zawsze mają datę wygaśnięcia i można je natychmiast odwołać.",
+          "Środowiska chronione hasłem łączą hash hasła (scrypt) z TOTP lub kluczem dostępu (passkey), a opcjonalnie także z Kluczem Zabezpieczeń wydanym przez workspace, zanim jakakolwiek zawartość zostanie zwrócona."
+        ]
+      },
+      {
+        "heading": "Ochrona danych",
+        "paragraphs": [
+          "Zawartość plików jest szyfrowana w spoczynku w Supabase Storage. Nie logujemy zawartości plików .env ani tokenów dostępu w logach aplikacji, error trackerach czy analityce."
+        ]
+      },
+      {
+        "heading": "Status zgodności",
+        "paragraphs": [
+          "share.env jest produktem na wczesnym etapie. Nie przeszliśmy jeszcze certyfikacji SOC 2 ani ISO 27001 i nie twierdzimy inaczej. To, co faktycznie mamy, egzekwowane od pierwszego dnia: RLS na poziomie bazy danych, szyfrowanie w spoczynku oraz zasadę najmniejszych uprawnień dla poświadczeń service-role. Zaktualizujemy tę stronę, jeśli to się zmieni."
+        ]
+      },
+      {
+        "heading": "Zgłaszanie podatności",
+        "paragraphs": [
+          "Jeśli znajdziesz problem z bezpieczeństwem, napisz na kpzsproductionscontact@gmail.com ze szczegółami i, jeśli to możliwe, krokami do odtworzenia. Nie prowadzimy jeszcze płatnego programu bug bounty, ale potwierdzimy zgłoszenie, szybko naprawimy potwierdzone problemy i uznamy autora zgłoszenia, jeśli sobie tego zażyczy.",
+          "Prosimy nie testować na danych ani workspace'ach innych użytkowników  używaj własnego konta i środowisk."
+        ]
+      }
+    ]
+  },
   "valueStats": {
     "items": [
-      { "value": "< 2 min", "label": "Na wdrożenie nowego inżyniera" },
-      { "value": "1 klik", "label": "Do odwołania wyciekniętego linku" },
-      { "value": "0", "label": "Sekretów zostawionych w historii czatu" },
-      { "value": "100%", "label": "Zmian dostępu zapisanych w logu" }
+      {
+        "value": "< 2 min",
+        "label": "Na wdrożenie nowego inżyniera"
+      },
+      {
+        "value": "1 klik",
+        "label": "Do odwołania wyciekniętego linku"
+      },
+      {
+        "value": "0",
+        "label": "Sekretów zostawionych w historii czatu"
+      },
+      {
+        "value": "100%",
+        "label": "Zmian dostępu zapisanych w logu"
+      }
     ]
   },
   "useCasePersonas": {
@@ -182,7 +564,7 @@
       "features": "Funkcje",
       "use-cases": "Zastosowania",
       "pricing": "Cennik",
-      "docs": "Dokumentacja"
+      "cli": "CLI"
     },
     "login": "Zaloguj się",
     "signup": "Zacznij za darmo",
@@ -227,6 +609,7 @@
       "empty": "Brak integracji pasujących do \"{query}\".",
       "notify": "Powiadom mnie",
       "notifying": "Powiadamiam",
+      "manage": "Zarządzaj",
       "disclaimer": "Żadna z nich nie jest jeszcze podłączona  zaznaczenie zainteresowania mówi nam tylko, co budować dalej."
     },
     "github": {
@@ -299,10 +682,22 @@
     "ctaSecondary": "Zobacz jak to działa",
     "visualAlt": "Abstrakcyjny sejf ze szkła i metalu symbolizujący zaszyfrowane przechowywanie plików .env",
     "stats": [
-      { "value": "AES-256", "label": "Szyfrowanie at-rest" },
-      { "value": "RLS", "label": "Na każdej tabeli" },
-      { "value": "3 sposoby", "label": "Dostępu do plików" },
-      { "value": "Tokeny", "label": "Z terminem wygaśnięcia" }
+      {
+        "value": "AES-256",
+        "label": "Szyfrowanie at-rest"
+      },
+      {
+        "value": "RLS",
+        "label": "Na każdej tabeli"
+      },
+      {
+        "value": "3 sposoby",
+        "label": "Dostępu do plików"
+      },
+      {
+        "value": "Tokeny",
+        "label": "Z terminem wygaśnięcia"
+      }
     ]
   },
   "howItWorks": {
@@ -637,6 +1032,7 @@
       "members": "Członkowie",
       "shareLinks": "Linki udostępniania",
       "settings": "Ustawienia",
+      "billing": "Płatności",
       "profile": "Profil",
       "comingSoon": "Wkrótce"
     },
@@ -649,6 +1045,7 @@
     "environments": {
       "title": "Środowiska",
       "usage": "Wykorzystano {used} z {limit}",
+      "usagePaid": "{used} środowisk · {paid} płatnych · ~{cost}/mies.",
       "empty": "Brak środowisk. Prześlij swój pierwszy plik .env, aby zacząć.",
       "recentTitle": "Ostatnio dodane"
     },
@@ -734,9 +1131,18 @@
         "levelChanged": "Poziom zabezpieczeń został zmieniony.",
         "sessionHint": "Odblokowanie jest ważne przez 15 minut, potem trzeba zweryfikować się ponownie.",
         "levels": {
-          "none": { "label": "Brak", "description": "Każdy członek widzi środowisko bez weryfikacji." },
-          "password_2fa": { "label": "Hasło + 2FA", "description": "Hasło i drugi składnik (klucz dostępu lub aplikacja uwierzytelniająca)." },
-          "password_2fa_key": { "label": "Hasło + 2FA + klucz", "description": "Dodatkowo wymaga klucza pracowniczego wygenerowanego przez ownera." }
+          "none": {
+            "label": "Brak",
+            "description": "Każdy członek widzi środowisko bez weryfikacji."
+          },
+          "password_2fa": {
+            "label": "Hasło + 2FA",
+            "description": "Hasło i drugi składnik (klucz dostępu lub aplikacja uwierzytelniająca)."
+          },
+          "password_2fa_key": {
+            "label": "Hasło + 2FA + klucz",
+            "description": "Dodatkowo wymaga klucza pracowniczego wygenerowanego przez ownera."
+          }
         },
         "errors": {
           "tooShort": "Hasło musi mieć co najmniej 8 znaków.",
@@ -802,7 +1208,8 @@
         "generic": "Coś poszło nie tak. Spróbuj ponownie."
       },
       "success": "Środowisko zostało utworzone.",
-      "bulkImported": "Zaimportowano {count} zmiennych."
+      "bulkImported": "Zaimportowano {count} zmiennych.",
+      "upgradeLink": "Przejdź do płatności →"
     }
   },
   "members": {
@@ -904,6 +1311,79 @@
       "copied": "Skopiowano"
     }
   },
+  "billing": {
+    "breadcrumb": "Płatności",
+    "title": "Płatności",
+    "freeUsage": "Środowiska: {count} (darmowy limit: {limit})",
+    "paidUnits": "Płatne środowiska: {count}",
+    "estimatedCost": "Szacowany koszt miesięczny: {price}",
+    "subscribeCta": "Dodaj metodę płatności",
+    "manageCta": "Zarządzaj płatnościami",
+    "statusActive": "Subskrypcja aktywna.",
+    "statusPastDue": "Płatność zaległa — sprawdź metodę płatności.",
+    "statusCanceled": "Subskrypcja anulowana.",
+    "noSubscription": "Brak aktywnej subskrypcji.",
+    "checkoutSuccess": "Subskrypcja aktywowana.",
+    "checkoutCanceled": "Płatność anulowana.",
+    "upcomingInvoiceTitle": "Nadchodząca faktura",
+    "invoiceHistoryTitle": "Historia faktur"
+  },
+  "settingsIntegrations": {
+    "breadcrumb": "Integracje",
+    "title": "Integracje",
+    "subtitle": "Połącz ten workspace z narzędziami, których już używasz, i wypychaj do nich zmienne środowiskowe.",
+    "ownerOnly": "Tylko właściciel workspace'a może zarządzać integracjami.",
+    "connect": "Połącz",
+    "disconnect": "Odłącz",
+    "connected": "{name} połączono.",
+    "disconnected": "{name} odłączono.",
+    "connectedAs": "Połączono jako {label}",
+    "connectGithubActions": "Użyj połączenia GitHub ({login})",
+    "connectGithubFirst": "Najpierw połącz GitHub w profilu",
+    "tokenPlaceholder": "Token dostępu",
+    "gitlabHostPlaceholder": "gitlab.com",
+    "webhookPlaceholder": "Adres webhooka przychodzącego",
+    "loadTargets": "Wczytaj projekty",
+    "linkTarget": "Połącz z tym środowiskiem",
+    "targetLinked": "Połączono z {name}.",
+    "linkedTo": "Synchronizowane z {name}",
+    "syncNow": "Synchronizuj teraz",
+    "synced": "Zmienne środowiskowe zsynchronizowane.",
+    "docs": {
+      "title": "Jak to działa",
+      "intro": "Połącz dostawcę, wybierz środowisko, do którego ma wypychać zmienne, a potem użyj „Synchronizuj teraz”, gdy chcesz wypchnąć aktualne wartości.",
+      "githubActions": {
+        "title": "GitHub Actions",
+        "body": "Najpierw połącz GitHub w profilu, potem kliknij tutaj „Użyj połączenia GitHub”. Wybierz repozytorium i zsynchronizuj — zmienne trafiają jako zaszyfrowane sekrety repozytorium."
+      },
+      "gitlab": {
+        "title": "GitLab",
+        "body": "Utwórz personal access token ze scope'em „api”, wklej go tutaj (dodaj własny host, jeśli to nie gitlab.com), a potem wybierz projekt, do którego zsynchronizować zmienne CI/CD."
+      },
+      "vercel": {
+        "title": "Vercel",
+        "body": "Utwórz access token w ustawieniach konta Vercel, wklej go tutaj, a potem wybierz projekt. Zmienne trafiają do production, preview i development."
+      },
+      "netlify": {
+        "title": "Netlify",
+        "body": "Utwórz personal access token w ustawieniach użytkownika Netlify, wklej go tutaj, a potem wybierz site, do którego zsynchronizować zmienne."
+      },
+      "slack": {
+        "title": "Slack",
+        "body": "Dodaj Incoming Webhook do kanału na Slacku i wklej tutaj jego adres URL. Dostaniesz alert, gdy link do udostępniania wkrótce wygaśnie albo chronione środowisko zostanie zrotowane."
+      },
+      "discord": {
+        "title": "Discord",
+        "body": "Utwórz webhook dla kanału (Ustawienia kanału → Integracje → Webhooki) i wklej tutaj jego adres URL, żeby dostawać te same alerty o wygasaniu/rotacji."
+      }
+    },
+    "wipNotice": {
+      "title": "Wciąż w trakcie prac",
+      "body": "Integracje są nowe i mogą jeszcze nie działać idealnie — niektórzy dostawcy lub akcje mogą się nieoczekiwanie wywalić.",
+      "reportPrefix": "Znalazłeś błąd? Zgłoś go na:",
+      "dismiss": "Rozumiem"
+    }
+  },
   "invitations": {
     "heading": "Zaproszenie do workspace'a",
     "subheading": "Zostałeś zaproszony do dołączenia do „{workspace}” jako {role}.",
@@ -944,6 +1424,7 @@
     "columns": {
       "product": {
         "title": "Produkt",
+        "cli": "CLI",
         "docs": "Dokumentacja API",
         "status": "Status usługi"
       },
@@ -951,6 +1432,7 @@
         "title": "Prawne",
         "privacy": "Polityka prywatności",
         "terms": "Regulamin",
+        "cookies": "Polityka cookies",
         "security": "Bezpieczeństwo"
       }
     },

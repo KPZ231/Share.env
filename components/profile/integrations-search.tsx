@@ -2,9 +2,10 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { MagnifyingGlass, Bell, BellRinging } from "@phosphor-icons/react";
+import { MagnifyingGlass, Bell, BellRinging, ArrowRight } from "@phosphor-icons/react";
 import { INTEGRATIONS_CATALOG } from "@/lib/integrations";
 import { toggleIntegrationInterestAction } from "@/app/[locale]/(app)/profile/actions";
+import { Link } from "@/i18n/navigation";
 
 export function IntegrationsSearch({ initialInterested }: { initialInterested: string[] }) {
   const t = useTranslations("profile.integrations");
@@ -44,7 +45,7 @@ export function IntegrationsSearch({ initialInterested }: { initialInterested: s
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("searchPlaceholder")}
-          className="w-full rounded-md border border-hairline bg-background py-2.5 pl-9 pr-3.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground"
+          className="w-full rounded-md border border-hairline-strong bg-surface-elevated py-2.5 pl-9 pr-3.5 text-[15px] text-foreground outline-none transition-colors focus:border-accent"
         />
       </div>
 
@@ -63,20 +64,30 @@ export function IntegrationsSearch({ initialInterested }: { initialInterested: s
                   <span className="text-[14px] font-medium text-foreground">{integration.name}</span>
                   <span className="text-[13px] text-mute">{integration.description}</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => toggle(integration.slug)}
-                  disabled={Boolean(isBusy)}
-                  aria-pressed={isInterested}
-                  className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] font-medium transition-colors active:scale-95 disabled:opacity-60 ${
-                    isInterested
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-hairline-strong text-body hover:border-foreground/40 hover:text-foreground"
-                  }`}
-                >
-                  {isInterested ? <BellRinging size={14} weight="fill" /> : <Bell size={14} />}
-                  {isInterested ? t("notifying") : t("notify")}
-                </button>
+                {integration.status === "live" ? (
+                  <Link
+                    href="/settings/integrations"
+                    className="flex shrink-0 items-center gap-1.5 rounded-full border border-foreground bg-foreground px-3 py-1.5 text-[13px] font-medium text-background transition-opacity hover:opacity-90"
+                  >
+                    {t("manage")}
+                    <ArrowRight size={14} />
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => toggle(integration.slug)}
+                    disabled={Boolean(isBusy)}
+                    aria-pressed={isInterested}
+                    className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] font-medium transition-colors active:scale-95 disabled:opacity-60 ${
+                      isInterested
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-hairline-strong text-body hover:border-foreground/40 hover:text-foreground"
+                    }`}
+                  >
+                    {isInterested ? <BellRinging size={14} weight="fill" /> : <Bell size={14} />}
+                    {isInterested ? t("notifying") : t("notify")}
+                  </button>
+                )}
               </li>
             );
           })}

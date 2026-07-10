@@ -10,6 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const PRODUCT_LINKS = [
+  { href: "/cli" as const, key: "cli" },
   { href: "/docs" as const, key: "docs" },
   { href: "/status" as const, key: "status" },
 ];
@@ -17,6 +18,7 @@ const PRODUCT_LINKS = [
 const LEGAL_LINKS = [
   { href: "/privacy" as const, key: "privacy" },
   { href: "/terms" as const, key: "terms" },
+  { href: "/cookies" as const, key: "cookies" },
   { href: "/security" as const, key: "security" },
 ];
 
@@ -129,7 +131,7 @@ export function Footer() {
               className="flex sm:col-span-2 lg:col-span-1 lg:justify-self-end"
             >
               <a
-                href="mailto:support@share-env.app"
+                href="mailto:kpzsproductionscontact@gmail.com"
                 className="w-fit rounded-md bg-foreground px-6 py-2.5 text-center text-[14px] font-medium text-black transition-opacity hover:opacity-90"
               >
                 {t("contactCta")}

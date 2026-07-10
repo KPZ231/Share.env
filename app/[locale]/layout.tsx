@@ -4,6 +4,8 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { Toaster } from "sonner";
 import { routing } from "@/i18n/routing";
+import { CookieConsentBanner } from "@/components/cookie-consent-banner";
+import { Analytics } from "@vercel/analytics/next"
 import "../globals.css";
 
 const geistSans = Geist({
@@ -39,15 +41,31 @@ export default async function RootLayout({
     notFound();
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const orgJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "share-env",
+    url: siteUrl,
+    applicationCategory: "SecurityApplication",
+    operatingSystem: "Web",
+  };
+
   return (
     <html
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} ${displaySerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
         <NextIntlClientProvider>
+          <Analytics />
           {children}
           <Toaster position="top-right" richColors closeButton />
+          <CookieConsentBanner />
         </NextIntlClientProvider>
       </body>
     </html>

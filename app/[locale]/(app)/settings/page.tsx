@@ -4,6 +4,7 @@ import { buildMetadata } from "@/lib/metadata";
 import { resolveActiveWorkspace, getWorkspaceLogoSignedUrl } from "@/lib/dashboard";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { WorkspaceSettingsPanel } from "@/components/settings/workspace-settings-panel";
+import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
   params,
@@ -37,13 +38,25 @@ export default async function SettingsPage() {
   }
 
   const logoUrl = await getWorkspaceLogoSignedUrl(workspace.logoPath);
+  const billingT = await getTranslations("billing");
+  const integrationsT = await getTranslations("settingsIntegrations");
 
   return (
-    <WorkspaceSettingsPanel
-      workspaceId={workspace.id}
-      name={workspace.name}
-      description={workspace.description}
-      logoUrl={logoUrl}
-    />
+    <div className="flex flex-col gap-8">
+      <WorkspaceSettingsPanel
+        workspaceId={workspace.id}
+        name={workspace.name}
+        description={workspace.description}
+        logoUrl={logoUrl}
+      />
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-2 px-4 sm:px-6 lg:px-8">
+        <Link href="/settings/billing" className="text-sm font-medium text-accent hover:underline">
+          {billingT("breadcrumb")} →
+        </Link>
+        <Link href="/settings/integrations" className="text-sm font-medium text-accent hover:underline">
+          {integrationsT("breadcrumb")} →
+        </Link>
+      </div>
+    </div>
   );
 }

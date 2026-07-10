@@ -40,13 +40,18 @@ export function SigninForm() {
 
       const tl = gsap
         .timeline({ defaults: { ease: "power3.out", duration: 0.6 } })
-        .from("[data-signin=eyebrow]", { y: 16, opacity: 0 })
-        .from("[data-signin=heading]", { y: 20, opacity: 0 }, "-=0.4")
+        .from("[data-signin=heading]", { y: 20, opacity: 0 })
         .from("[data-signin=subtext]", { y: 16, opacity: 0 }, "-=0.4")
         .from("[data-signin=oauth]", { y: 14, opacity: 0, stagger: 0.08 }, "-=0.35")
         .from("[data-signin=field]", { y: 14, opacity: 0, stagger: 0.06 }, "-=0.3");
 
-      safety = setTimeout(() => tl.progress(1), 2000);
+      safety = setTimeout(() => {
+        tl.progress(1).kill();
+        gsap.set(
+          "[data-signin=heading], [data-signin=subtext], [data-signin=oauth], [data-signin=field]",
+          { clearProps: "all" }
+        );
+      }, 2000);
     }, rootRef);
 
     return () => {
@@ -121,14 +126,11 @@ export function SigninForm() {
 
   return (
     <div ref={rootRef} className="mx-auto flex w-full max-w-sm flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <span
-          data-signin="eyebrow"
-          className="font-mono text-xs uppercase tracking-[0.12em] text-foreground/50"
+      <div className="flex flex-col items-center gap-3 text-center">
+        <h1
+          data-signin="heading"
+          className="font-display text-3xl font-normal tracking-tight text-foreground md:text-4xl"
         >
-          {t("eyebrow")}
-        </span>
-        <h1 data-signin="heading" className="text-3xl font-semibold tracking-tight text-foreground">
           {t("heading")}
         </h1>
         <p data-signin="subtext" className="text-sm leading-relaxed text-foreground/60">
@@ -136,12 +138,12 @@ export function SigninForm() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-col gap-3">
         <button
           type="button"
           data-signin="oauth"
           onClick={() => handleOAuth("google")}
-          className="flex flex-1 items-center justify-center gap-2 rounded-full border border-hairline bg-background px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface-soft"
+          className="tactile flex items-center justify-center gap-2 rounded-full bg-foreground px-4 py-3 text-sm font-medium text-background hover:opacity-90"
         >
           <GoogleLogo weight="bold" className="size-4" />
           Google
@@ -150,7 +152,7 @@ export function SigninForm() {
           type="button"
           data-signin="oauth"
           onClick={() => handleOAuth("github")}
-          className="flex flex-1 items-center justify-center gap-2 rounded-full border border-hairline bg-background px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface-soft"
+          className="tactile flex items-center justify-center gap-2 rounded-full bg-foreground px-4 py-3 text-sm font-medium text-background hover:opacity-90"
         >
           <GithubLogo weight="bold" className="size-4" />
           GitHub
@@ -190,7 +192,7 @@ export function SigninForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={Boolean(errors.email)}
-            className="rounded-md border border-hairline bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors focus:border-foreground"
+            className="rounded-md border border-hairline bg-surface-soft px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-[border-color,box-shadow] duration-150 focus:border-foreground/60 focus:ring-[3px] focus:ring-white/10 aria-invalid:border-red-400/60"
             placeholder={t("placeholders.email")}
           />
         </div>
@@ -214,7 +216,7 @@ export function SigninForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               aria-invalid={Boolean(errors.password)}
-              className="w-full rounded-md border border-hairline bg-background px-3.5 py-2.5 pr-10 text-[15px] text-foreground outline-none transition-colors focus:border-foreground"
+              className="w-full rounded-md border border-hairline bg-surface-soft px-3.5 py-2.5 pr-10 text-[15px] text-foreground outline-none transition-[border-color,box-shadow] duration-150 focus:border-foreground/60 focus:ring-[3px] focus:ring-white/10 aria-invalid:border-red-400/60"
               placeholder={t("placeholders.password")}
             />
             <button
@@ -233,7 +235,7 @@ export function SigninForm() {
             type="checkbox"
             checked={remember}
             onChange={(e) => setRemember(e.target.checked)}
-            className="size-4 shrink-0 rounded border-hairline"
+            className="size-4 shrink-0 rounded border-hairline accent-[var(--accent)]"
           />
           {t("remember")}
         </label>
@@ -241,7 +243,7 @@ export function SigninForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-1 rounded-full bg-foreground px-6 py-3 text-[15px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="tactile mt-1 rounded-full border border-hairline bg-surface-soft px-6 py-3 text-[15px] font-medium text-foreground hover:border-hairline-strong hover:bg-surface-elevated disabled:opacity-50"
         >
           {submitting ? t("submitting") : t("submit")}
         </button>

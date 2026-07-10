@@ -2,25 +2,35 @@
 
 import { useTranslations } from "next-intl";
 import {
+  CreditCard,
   FolderSimple,
   Gear,
   SquaresFour,
   UserCircle,
   UsersThree,
+  type Icon,
 } from "@phosphor-icons/react";
 import { Link, usePathname } from "@/i18n/navigation";
 
-const NAV_ITEMS = [
+type NavItem = { key: string; href: string; icon: Icon };
+
+// Not `as const`: that would infer each `icon` as its own singleton function
+// type instead of the shared `Icon` component type, which is what broke JSX
+// (`<Icon />`) once NAV_ITEMS and BILLING_NAV_ITEM were combined into one array.
+const NAV_ITEMS: NavItem[] = [
   { key: "overview", href: "/dashboard", icon: SquaresFour },
   { key: "environments", href: "/environments", icon: FolderSimple },
   { key: "members", href: "/members", icon: UsersThree },
   { key: "settings", href: "/settings", icon: Gear },
   { key: "profile", href: "/profile", icon: UserCircle },
-] as const;
+];
 
-export function DashboardSidebar() {
+const BILLING_NAV_ITEM: NavItem = { key: "billing", href: "/settings/billing", icon: CreditCard };
+
+export function DashboardSidebar({ isOwner }: { isOwner: boolean }) {
   const t = useTranslations("dashboard.sidebar");
   const pathname = usePathname();
+  const items = isOwner ? [...NAV_ITEMS, BILLING_NAV_ITEM] : NAV_ITEMS;
 
   return (
     <nav
@@ -28,7 +38,7 @@ export function DashboardSidebar() {
       className="fixed inset-x-0 bottom-6 z-40 flex justify-center px-4"
     >
       <div className="flex items-center gap-1 rounded-full border border-hairline-strong bg-surface-soft/95 p-1.5 shadow-lg backdrop-blur">
-        {NAV_ITEMS.map(({ key, href, icon: Icon }) => {
+        {items.map(({ key, href, icon: Icon }) => {
           const active = href !== null && pathname === href;
           const label = t(key);
 

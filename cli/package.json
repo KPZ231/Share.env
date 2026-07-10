@@ -1,8 +1,12 @@
 {
-  "name": "envshare-cli",
+  "name": "@kpz231/envshare",
   "version": "0.1.0",
-  "private": true,
+  "description": "CLI for share.env: clone the repo behind an environment and pull its .env, with the same password/2FA/access-key protection as the web app.",
   "type": "module",
   "bin": { "envshare": "./envshare.mjs" },
+  "files": ["envshare.mjs", "README.md"],
+  "keywords": ["env", "dotenv", "secrets", "cli", "share-env"],
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/share-env/share-env.git", "directory": "cli" },
   "engines": { "node": ">=18" }
 }

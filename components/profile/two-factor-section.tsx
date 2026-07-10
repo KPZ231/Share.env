@@ -104,10 +104,10 @@ export function TwoFactorSection({ status }: { status: TwoFactorStatus }) {
   }
 
   return (
-    <div className="mt-10 flex flex-col gap-5 border-t border-hairline pt-8">
+    <div className="mt-10 flex flex-col gap-5 border-t border-hairline-strong pt-8">
       <div>
-        <h2 className="text-[15px] font-medium text-foreground">{t("title")}</h2>
-        <p className="text-[13px] text-mute">{t("subtitle")}</p>
+        <h2 className="text-[15px] font-semibold text-foreground">{t("title")}</h2>
+        <p className="text-[13px] text-body">{t("subtitle")}</p>
       </div>
 
       <div className="flex flex-col gap-3 rounded-lg border border-hairline-strong bg-surface-soft p-5">
@@ -151,7 +151,7 @@ export function TwoFactorSection({ status }: { status: TwoFactorStatus }) {
             onChange={(e) => setDeviceLabel(e.target.value)}
             placeholder={t("passkeys.labelPlaceholder")}
             maxLength={60}
-            className="flex-1 rounded-md border border-hairline bg-background px-3 py-2 text-[13px] text-foreground outline-none transition-colors focus:border-foreground"
+            className="flex-1 rounded-md border border-hairline-strong bg-surface-elevated px-3 py-2 text-[13px] text-foreground outline-none transition-colors focus:border-accent"
           />
           <button
             type="button"
@@ -210,7 +210,7 @@ export function TwoFactorSection({ status }: { status: TwoFactorStatus }) {
               className="size-[220px] self-start rounded-md border border-hairline bg-white p-2"
             />
             <p className="text-[13px] text-body">{t("totp.manualEntryHint")}</p>
-            <code className="break-all rounded-md border border-hairline bg-background px-3 py-2 text-[13px] text-foreground">
+            <code className="break-all rounded-md border border-hairline-strong bg-surface-elevated px-3 py-2 text-[13px] text-foreground">
               {totpSetup.secret}
             </code>
             <div className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export function TwoFactorSection({ status }: { status: TwoFactorStatus }) {
                 value={totpCode}
                 onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ""))}
                 placeholder={t("totp.codeLabel")}
-                className="w-32 rounded-md border border-hairline bg-background px-3 py-2 text-center font-mono text-[15px] tracking-[0.2em] text-foreground outline-none transition-colors focus:border-foreground"
+                className="w-32 rounded-md border border-hairline-strong bg-surface-elevated px-3 py-2 text-center font-mono text-[15px] tracking-[0.2em] text-foreground outline-none transition-colors focus:border-accent"
               />
               <button
                 type="button"

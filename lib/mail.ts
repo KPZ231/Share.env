@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 
 /**
  * Gmail SMTP relay for auth emails, replacing Supabase's default mailer
- * (its shared sender is rate-limited to a couple of emails/hour  fine for
+ * (its shared sender is rate-limited to a couple of emails/hour — fine for
  * a demo project, not for real signups). Only ever call from server code.
  */
 const transporter = nodemailer.createTransport({

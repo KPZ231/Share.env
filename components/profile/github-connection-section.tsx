@@ -21,10 +21,10 @@ export function GithubConnectionSection({ connection }: { connection: GithubConn
   }
 
   return (
-    <div className="mt-10 flex flex-col gap-4 border-t border-hairline pt-8">
+    <div className="mt-10 flex flex-col gap-4 border-t border-hairline-strong pt-8">
       <div>
-        <h2 className="text-[15px] font-medium text-foreground">{t("title")}</h2>
-        <p className="text-[13px] text-mute">{t("subtitle")}</p>
+        <h2 className="text-[15px] font-semibold text-foreground">{t("title")}</h2>
+        <p className="text-[13px] text-body">{t("subtitle")}</p>
       </div>
 
       <div className="flex items-center justify-between gap-4 rounded-lg border border-hairline-strong bg-surface-soft p-5">

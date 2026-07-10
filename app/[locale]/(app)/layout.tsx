@@ -19,7 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-full flex-1 flex-col bg-background">
       <DashboardNav workspaces={workspaces} activeWorkspaceId={active?.id ?? ""} />
       <main className="flex-1 pb-28">{children}</main>
-      <DashboardSidebar />
+      <DashboardSidebar isOwner={active?.role === "owner"} />
     </div>
   );
 }
