@@ -8,7 +8,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  if (!checkRateLimit(`cli-unlock:${userId}:${id}`, 10, 60_000)) {
+  if (!(await checkRateLimit(`cli-unlock:${userId}:${id}`, 10, 60_000))) {
     return NextResponse.json({ error: "Zbyt wiele prób. Spróbuj ponownie za chwilę." }, { status: 429 });
   }
   const body = await request.json().catch(() => ({}));

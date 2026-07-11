@@ -36,8 +36,8 @@ const AUTH_CHALLENGE_COOKIE = (envFileId: string) => `webauthn_auth_challenge_${
 // brute-force guessing of an env's password/2FA/access-key from the web UI,
 // which previously had no limit at all (scrypt/HMAC compare cost was the
 // only friction).
-function requireUnlockRateLimit(step: string, envFileId: string, userId: string): { ok: false; error: string } | null {
-  if (!checkRateLimit(`unlock:${step}:${userId}:${envFileId}`, 10, 60_000)) {
+async function requireUnlockRateLimit(step: string, envFileId: string, userId: string): Promise<{ ok: false; error: string } | null> {
+  if (!(await checkRateLimit(`unlock:${step}:${userId}:${envFileId}`, 10, 60_000))) {
     return { ok: false, error: "Zbyt wiele prób. Spróbuj ponownie za chwilę." };
   }
   return null;
@@ -69,7 +69,7 @@ export async function verifyEnvironmentPasswordAction(
   password: string
 ): Promise<{ ok: true; hasTotp: boolean; hasPasskeys: boolean } | { ok: false; error: string }> {
   const user = await requireUser();
-  const limited = requireUnlockRateLimit("password", envFileId, user.id);
+  const limited = await requireUnlockRateLimit("password", envFileId, user.id);
   if (limited) return limited;
 
   const supabase = await createClient();
@@ -165,7 +165,7 @@ async function requireTwoFactorStep(envFileId: string, userId: string): Promise<
 /** Step 3: the workspace-issued Access Key, for protection_level = password_2fa_key only. */
 export async function verifyEnvironmentAccessKeyAction(envFileId: string, accessKey: string): Promise<ActionResult> {
   const user = await requireUser();
-  const limited = requireUnlockRateLimit("access-key", envFileId, user.id);
+  const limited = await requireUnlockRateLimit("access-key", envFileId, user.id);
   if (limited) return limited;
   if (!(await requireTwoFactorStep(envFileId, user.id))) {
     return { ok: false, error: "Sesja weryfikacji wygasła. Zacznij od hasła ponownie." };
@@ -197,7 +197,7 @@ export async function verifyEnvironmentAccessKeyAction(envFileId: string, access
 /** Step 2 (TOTP option): consumes the password-step token, verifies the code, issues the next-step cookie. */
 export async function verifyEnvironmentTotpAction(envFileId: string, code: string): Promise<TwoFactorStepResult> {
   const user = await requireUser();
-  const limited = requireUnlockRateLimit("totp", envFileId, user.id);
+  const limited = await requireUnlockRateLimit("totp", envFileId, user.id);
   if (limited) return limited;
   if (!(await requirePasswordStep(envFileId, user.id))) {
     return { ok: false, error: "Sesja weryfikacji wygasła. Wpisz hasło ponownie." };
@@ -253,7 +253,7 @@ export async function finishEnvironmentPasskeyAuthAction(
   response: AuthenticationResponseJSON
 ): Promise<TwoFactorStepResult> {
   const user = await requireUser();
-  const limited = requireUnlockRateLimit("passkey", envFileId, user.id);
+  const limited = await requireUnlockRateLimit("passkey", envFileId, user.id);
   if (limited) return limited;
   if (!(await requirePasswordStep(envFileId, user.id))) {
     return { ok: false, error: "Sesja weryfikacji wygasła. Wpisz hasło ponownie." };

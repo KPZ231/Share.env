@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   if (typeof deviceCode !== "string" || !deviceCode) {
     return NextResponse.json({ error: "device_code required" }, { status: 400 });
   }
-  if (!checkRateLimit(`cli-poll:${deviceCode}`, 60, 60_000)) {
+  if (!(await checkRateLimit(`cli-poll:${deviceCode}`, 60, 60_000))) {
     return NextResponse.json({ error: "Zbyt wiele prób." }, { status: 429 });
   }
 

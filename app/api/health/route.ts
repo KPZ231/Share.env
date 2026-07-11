@@ -37,7 +37,7 @@ async function supabaseHealth(path: string): Promise<void> {
  */
 export async function GET(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  if (!checkRateLimit(`${ip}:health`, 30, 60_000)) {
+  if (!(await checkRateLimit(`${ip}:health`, 30, 60_000))) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 

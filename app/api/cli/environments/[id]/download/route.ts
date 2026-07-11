@@ -8,7 +8,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  if (!checkRateLimit(`cli-download:${userId}`, 30, 60_000)) {
+  if (!(await checkRateLimit(`cli-download:${userId}`, 30, 60_000))) {
     return NextResponse.json({ error: "Zbyt wiele prób. Spróbuj ponownie za chwilę." }, { status: 429 });
   }
 
