@@ -28,7 +28,10 @@ const displaySerif = Newsreader({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  // ponytail: defaults to the real domain, not localhost — so metadataBase
+  // (and every relative canonical/OG URL resolved against it) is correct in
+  // prod even if NEXT_PUBLIC_SITE_URL is unset there. Local dev overrides via .env.local.
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.share-env.site"),
   title: { template: "%s  share-env", default: "share-env" },
 };
 
@@ -46,14 +49,34 @@ export default async function RootLayout({
 
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const orgJsonLd = {
+  // ponytail: defaults to the real domain, not localhost — same rationale as
+  // the module-level metadataBase above.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.share-env.site";
+  const publisherRef = { "@type": "Organization", name: "KPZsProductions" };
+  const softwareJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "share-env",
+    name: "share.env",
     url: siteUrl,
+    description:
+      "Secure .env file and secrets sharing for teams: AES-256-GCM encryption, role-based access, and expiring share links.",
     applicationCategory: "SecurityApplication",
     operatingSystem: "Web",
+    author: publisherRef,
+    publisher: publisherRef,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      description: "Free for up to 3 environments. $2 per environment per month after that.",
+    },
+  };
+  const orgJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "share.env",
+    url: siteUrl,
+    parentOrganization: publisherRef,
   };
 
   return (
@@ -82,6 +105,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}

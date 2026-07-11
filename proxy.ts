@@ -104,9 +104,11 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Run on everything except static assets and Next internals, so both
-     * locale negotiation and the session cookie stay fresh on every navigable route.
+     * Run on everything except static assets, Next internals, and the
+     * generated robots.txt/sitemap.xml metadata routes — those must bypass
+     * locale negotiation and the auth gate so crawlers (Googlebot, GPTBot,
+     * etc.) can fetch them unauthenticated.
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

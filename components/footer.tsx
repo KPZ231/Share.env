@@ -50,18 +50,13 @@ export function Footer() {
             },
           });
 
-          tl.from("[data-footer=heading]", { y: 20, opacity: 0 })
-            .from("[data-footer=cta]", { y: 16, opacity: 0 }, "-=0.4")
-            .from(
-              "[data-footer=column]",
-              { y: 16, opacity: 0, stagger: 0.08 },
-              "-=0.35"
-            )
-            .from(
-              "[data-footer=social]",
-              { y: 12, opacity: 0, stagger: 0.06 },
-              "-=0.3"
-            );
+          // ponytail: opacity-only (no y/scale) — a transform tween here
+          // measured as real Lighthouse CLS (the footer is the tallest
+          // section on the page, so any position shift scores heavily).
+          tl.from("[data-footer=heading]", { opacity: 0 })
+            .from("[data-footer=cta]", { opacity: 0 }, "-=0.4")
+            .from("[data-footer=column]", { opacity: 0, stagger: 0.08 }, "-=0.35")
+            .from("[data-footer=social]", { opacity: 0, stagger: 0.06 }, "-=0.3");
         }
       );
     }, rootRef);

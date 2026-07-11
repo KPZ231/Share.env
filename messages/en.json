@@ -1,8 +1,9 @@
 {
   "meta": {
     "home": {
-      "title": "share-env  secure .env file sharing",
-      "description": "Store and share .env files with your team without pasting secrets in Slack. Encryption, workspace roles, and expiring links."
+      "title": "share.env  Secure .env File Sharing for Teams",
+      "description": "Share .env files and API keys with your team securely  no more pasting secrets in Slack. AES-256 encryption, role-based access, and expiring links. Free for up to 3 environments.",
+      "keywords": ["share .env file", "env file sharing", "secrets management", "API key sharing", "secure secrets sharing", "team secrets manager"]
     },
     "dashboard": {
       "title": "Dashboard",
@@ -49,36 +50,44 @@
       "description": "Manage your avatar, bio, integrations, data export, and privacy settings."
     },
     "features": {
-      "title": "Features",
-      "description": "Encryption at rest, expiring share links, role-based access, and version history for every .env file your team stores."
+      "title": "Features  Secure .env File Management",
+      "description": "AES-256 encryption at rest, expiring share links, role-based access control, and full version history for every .env file your team stores.",
+      "keywords": ["env file encryption", "role-based access control", "expiring share links", "version history secrets", "secure secrets sharing"]
     },
     "pricing": {
-      "title": "Pricing",
-      "description": "Free for up to 3 environments. $2 per environment per month after that, billed monthly."
+      "title": "Pricing  Free .env Sharing for Up to 3 Environments",
+      "description": "Start free with up to 3 environments. $2 per environment per month after that, billed monthly, with unlimited team members on every plan.",
+      "keywords": ["share.env pricing", "env file sharing cost", "secrets management pricing", "free secrets manager"]
     },
     "useCases": {
-      "title": "Use cases",
-      "description": "Why teams switch to share.env, and how onboarding, key rotation, and offboarding actually work day to day."
+      "title": "Use Cases  Secrets Management for Every Team",
+      "description": "Why engineering teams switch to share.env, and how onboarding, key rotation, and offboarding actually work day to day.",
+      "keywords": ["secrets management use cases", "key rotation", "developer onboarding secrets", "team offboarding access"]
     },
     "cli": {
-      "title": "envshare CLI",
-      "description": "Clone a repo and pull its .env in one command, straight from the terminal, with the same access control as the web app."
+      "title": "envshare CLI  Pull .env Files from the Terminal",
+      "description": "Clone a repo and pull its .env in one command, straight from the terminal, with the same access control as the web app.",
+      "keywords": ["env file CLI", "envshare CLI", "pull .env from terminal", "secrets CLI tool"]
     },
     "privacy": {
       "title": "Privacy Policy",
-      "description": "How share.env collects, uses, and protects your data, and the rights you have under GDPR and other privacy laws."
+      "description": "How share.env collects, uses, and protects your data, and the rights you have under GDPR and other privacy laws.",
+      "keywords": ["share.env privacy policy", "GDPR data protection"]
     },
     "terms": {
       "title": "Terms of Service",
-      "description": "The terms that govern your use of share.env, including your account, billing, and responsibilities."
+      "description": "The terms that govern your use of share.env, including your account, billing, and responsibilities.",
+      "keywords": ["share.env terms of service"]
     },
     "cookies": {
       "title": "Cookie Policy",
-      "description": "The cookies share.env uses to keep you signed in and remember your active workspace, and nothing more."
+      "description": "The cookies share.env uses to keep you signed in and remember your active workspace, and nothing more.",
+      "keywords": ["share.env cookie policy"]
     },
     "security": {
-      "title": "Security",
-      "description": "How share.env protects your secrets: Row Level Security on every table, encryption at rest, and a straightforward way to report a vulnerability."
+      "title": "Security  How share.env Protects Your .env Files",
+      "description": "How share.env protects your secrets: Row Level Security on every table, AES-256 encryption at rest, and a straightforward way to report a vulnerability.",
+      "keywords": ["env file security", "Row Level Security Postgres", "AES-256 encryption at rest", "vulnerability disclosure"]
     },
     "billing": {
       "title": "Billing",
@@ -87,8 +96,8 @@
   },
   "featuresPage": {
     "eyebrow": "Product",
-    "title": "Everything you need to keep secrets safe",
-    "description": "Encryption, access control, and audit history built into every workspace, not bolted on afterwards.",
+    "title": "Secure .env File Sharing: Everything You Need to Keep Secrets Safe",
+    "description": "AES-256 encryption, role-based access control, and full audit history built into every workspace  not bolted on afterwards.",
     "tag": "AES-256 at rest"
   },
   "securityDeepDive": {
@@ -687,7 +696,7 @@
     "headlineLine1": "Share .env files",
     "headlineLine2": "with your team,",
     "headlineLine3": "not the internet",
-    "subtext": "Secure secrets storage for your team: encryption, access roles, and expiring links instead of pasting API keys into chat.",
+    "subtext": "Secure .env file sharing and secrets storage for your team: AES-256 encryption, role-based access, and expiring links instead of pasting API keys into chat.",
     "ctaPrimary": "Start for free",
     "ctaSecondary": "See how it works",
     "visualAlt": "Abstract glass and metal vault representing encrypted .env file storage",
@@ -712,7 +721,7 @@
   },
   "howItWorks": {
     "eyebrow": "How it works",
-    "title": "From .env file to your team in four steps",
+    "title": "How to Share .env Files Securely: Four Steps",
     "lead": "No more pasting API keys and database passwords into Slack. Upload once, and share.env handles encryption, links, and access for you.",
     "steps": [
       {
@@ -766,7 +775,7 @@
     ]
   },
   "pricing": {
-    "heading": "Simple pricing, pay for what you use",
+    "heading": "share.env Pricing: Simple, Pay for What You Use",
     "subheading": "Every team starts free. Only pay when you add environments beyond the first three.",
     "perEnvironment": "per environment / month",
     "free": {
@@ -1037,14 +1046,14 @@
   },
   "faq": {
     "eyebrow": "FAQ",
-    "heading": "Questions about security and data retention",
+    "heading": "share.env FAQ: Security and Data Retention",
     "contactTitle": "Still have a question?",
     "contactText": "Send us a message  we usually reply to security and onboarding questions the same business day.",
     "contactCta": "Send an email",
     "items": [
       {
         "question": "How exactly are .env files encrypted?",
-        "answer": "Files live in Supabase Storage, where they're encrypted at rest. On top of that, Postgres Row Level Security ensures only requests authorized for your workspace can read the records  nobody else can access the contents, even with direct database access."
+        "answer": "Every .env file's content is encrypted with AES-256-GCM before it's ever written to storage  only the encrypted envelope (ciphertext, IV, and authentication tag) lands in Supabase Storage, never the plaintext secrets. GCM is authenticated encryption: any attempt to tamper with the encrypted data causes decryption to fail loudly instead of silently returning corrupted content. On top of that, Supabase Storage applies its own default encryption at rest, and Postgres Row Level Security ensures only queries authorized for your workspace can read the underlying records. As a result, even someone with direct access to the database or storage bucket can't read your secrets without the encryption key."
       },
       {
         "question": "How long do you keep files and version history?",
@@ -1052,11 +1061,11 @@
       },
       {
         "question": "Can I see who had access to a given secret?",
-        "answer": "Yes. Every change to a .env file is logged with who made it and when, and any share link can be revoked instantly, immediately blocking further access through that link."
+        "answer": "Yes. Every change to a .env file is logged with who made it and when, so the version history doubles as an audit trail for the whole workspace. Token-based share links always carry a mandatory expiration date, and any owner or editor can revoke a link at any time from the dashboard  revocation takes effect immediately and blocks further access through that link, even if someone already opened it. The same applies to role-based access: removing someone from a workspace or downgrading them to viewer instantly limits what they can read or edit, because permissions are enforced by RLS policies rather than just hidden UI buttons."
       },
       {
         "question": "Is self-hosting available?",
-        "answer": "Right now share.env only runs as a hosted service  self-hosting isn't supported. The whole stack (database, auth, storage) runs on Supabase and Vercel, which lets us maintain a high security bar without you having to manage your own servers."
+        "answer": "Right now share.env only runs as a hosted service  self-hosting isn't supported. The whole stack (database, auth, storage) runs on Supabase, with the application layer hosted on Vercel, which lets us maintain one consistently high security bar (RLS on every table and bucket, AES-256-GCM encryption of file contents, rate limiting on public endpoints) instead of pushing server patching and hardening onto you. We've also deliberately skipped client-side zero-knowledge end-to-end encryption in favor of this model  it keeps team sharing simple (owner/editor/viewer roles, token-based links) while still layering on the protections above. If self-hosting is a hard requirement for you, reach out directly  we treat that feedback as a signal for roadmap prioritization."
       },
       {
         "question": "What happens to my secrets if I delete my account?",

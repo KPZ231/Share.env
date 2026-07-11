@@ -34,12 +34,11 @@ export function Testimonials() {
             },
           });
 
-          tl.from("[data-testimonial=header]", { y: 20, opacity: 0 })
-            .from(
-              "[data-testimonial=card]",
-              { y: 28, scale: 0.97, opacity: 0, stagger: 0.12 },
-              "-=0.3"
-            )
+          // ponytail: opacity-only (no y/scale) on header/card — a transform
+          // tween here measured as real Lighthouse CLS. The quote icon keeps
+          // its scale pop since it's small/contained and doesn't shift layout.
+          tl.from("[data-testimonial=header]", { opacity: 0 })
+            .from("[data-testimonial=card]", { opacity: 0, stagger: 0.12 }, "-=0.3")
             .from(
               "[data-testimonial=quote]",
               { scale: 0.5, opacity: 0, stagger: 0.12, duration: 0.4, ease: "back.out(1.7)" },

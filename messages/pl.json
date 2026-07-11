@@ -1,8 +1,9 @@
 {
   "meta": {
     "home": {
-      "title": "share-env  bezpieczne współdzielenie plików .env",
-      "description": "Przechowuj i udostępniaj pliki .env zespołowi bez wklejania sekretów na Slacku. Szyfrowanie, role w workspace i linki z wygaśnięciem."
+      "title": "share.env  Bezpieczne udostępnianie plików .env dla zespołów",
+      "description": "Udostępniaj pliki .env i klucze API zespołowi bezpiecznie  koniec wklejania sekretów na Slacku. Szyfrowanie AES-256, role dostępu i linki z wygaśnięciem. Za darmo do 3 środowisk.",
+      "keywords": ["udostępnianie plików .env", "bezpieczne przechowywanie sekretów", "zarządzanie sekretami zespołu", "udostępnianie kluczy API", "menedżer sekretów dla zespołu"]
     },
     "dashboard": {
       "title": "Panel",
@@ -49,36 +50,44 @@
       "description": "Zarządzaj awatarem, opisem, integracjami, eksportem danych i ustawieniami prywatności."
     },
     "features": {
-      "title": "Funkcje",
-      "description": "Szyfrowanie danych, linki z wygaśnięciem, dostęp oparty na rolach i historia wersji dla każdego pliku .env zespołu."
+      "title": "Funkcje  Bezpieczne zarządzanie plikami .env",
+      "description": "Szyfrowanie AES-256, linki z wygaśnięciem, dostęp oparty na rolach i pełna historia wersji dla każdego pliku .env zespołu.",
+      "keywords": ["szyfrowanie plików .env", "dostęp oparty na rolach", "linki z wygaśnięciem", "historia wersji sekretów", "bezpieczne udostępnianie sekretów"]
     },
     "pricing": {
-      "title": "Cennik",
-      "description": "Za darmo do 3 środowisk. Powyżej tego 2 dolary za środowisko miesięcznie, rozliczane co miesiąc."
+      "title": "Cennik  Darmowe udostępnianie .env do 3 środowisk",
+      "description": "Zacznij za darmo z 3 środowiskami. Powyżej tego 2 dolary za środowisko miesięcznie, rozliczane co miesiąc, z nielimitowaną liczbą członków zespołu w każdym planie.",
+      "keywords": ["cennik share.env", "koszt udostępniania plików .env", "cennik zarządzania sekretami", "darmowy menedżer sekretów"]
     },
     "useCases": {
-      "title": "Zastosowania",
-      "description": "Dlaczego zespoły przechodzą na share.env oraz jak w praktyce wygląda onboarding, rotacja kluczy i offboarding."
+      "title": "Zastosowania  Zarządzanie sekretami dla każdego zespołu",
+      "description": "Dlaczego zespoły inżynierskie przechodzą na share.env oraz jak w praktyce wygląda onboarding, rotacja kluczy i offboarding.",
+      "keywords": ["zastosowania zarządzania sekretami", "rotacja kluczy API", "onboarding deweloperów", "offboarding dostępu zespołu"]
     },
     "cli": {
-      "title": "envshare CLI",
-      "description": "Sklonuj repozytorium i pobierz jego .env jedną komendą, prosto z terminala, z taką samą kontrolą dostępu jak w aplikacji webowej."
+      "title": "envshare CLI  Pobieraj pliki .env z terminala",
+      "description": "Sklonuj repozytorium i pobierz jego .env jedną komendą, prosto z terminala, z taką samą kontrolą dostępu jak w aplikacji webowej.",
+      "keywords": ["CLI do plików .env", "envshare CLI", "pobieranie .env z terminala", "narzędzie CLI do sekretów"]
     },
     "privacy": {
       "title": "Polityka prywatności",
-      "description": "Jak share.env zbiera, wykorzystuje i chroni Twoje dane oraz jakie masz prawa na mocy RODO i innych przepisów o ochronie prywatności."
+      "description": "Jak share.env zbiera, wykorzystuje i chroni Twoje dane oraz jakie masz prawa na mocy RODO i innych przepisów o ochronie prywatności.",
+      "keywords": ["polityka prywatności share.env", "ochrona danych RODO"]
     },
     "terms": {
       "title": "Regulamin",
-      "description": "Zasady korzystania z share.env, w tym konto, rozliczenia i Twoje obowiązki."
+      "description": "Zasady korzystania z share.env, w tym konto, rozliczenia i Twoje obowiązki.",
+      "keywords": ["regulamin share.env"]
     },
     "cookies": {
       "title": "Polityka cookies",
-      "description": "Ciasteczka, których używa share.env, aby utrzymać Twoje logowanie i zapamiętać aktywny workspace, i nic ponadto."
+      "description": "Ciasteczka, których używa share.env, aby utrzymać Twoje logowanie i zapamiętać aktywny workspace, i nic ponadto.",
+      "keywords": ["polityka cookies share.env"]
     },
     "security": {
-      "title": "Bezpieczeństwo",
-      "description": "Jak share.env chroni Twoje sekrety: Row Level Security na każdej tabeli, szyfrowanie w spoczynku i prosty sposób na zgłoszenie podatności."
+      "title": "Bezpieczeństwo  Jak share.env chroni pliki .env",
+      "description": "Jak share.env chroni Twoje sekrety: Row Level Security na każdej tabeli, szyfrowanie AES-256 w spoczynku i prosty sposób na zgłoszenie podatności.",
+      "keywords": ["bezpieczeństwo plików .env", "Row Level Security Postgres", "szyfrowanie AES-256 w spoczynku", "zgłaszanie podatności"]
     },
     "billing": {
       "title": "Płatności",
@@ -87,8 +96,8 @@
   },
   "featuresPage": {
     "eyebrow": "Produkt",
-    "title": "Wszystko, czego potrzebujesz do ochrony sekretów",
-    "description": "Szyfrowanie, kontrola dostępu i historia zmian wbudowane w każdy workspace, a nie dodane później.",
+    "title": "Bezpieczne udostępnianie plików .env: wszystko, czego potrzebujesz do ochrony sekretów",
+    "description": "Szyfrowanie AES-256, kontrola dostępu oparta na rolach i pełna historia zmian wbudowane w każdy workspace, a nie dodane później.",
     "tag": "AES-256 w spoczynku"
   },
   "securityDeepDive": {
@@ -685,7 +694,7 @@
     "headlineLine1": "Udostępniaj pliki .env",
     "headlineLine2": "zespołowi, nie",
     "headlineLine3": "całemu internetowi",
-    "subtext": "Bezpieczne przechowywanie sekretów zespołu: szyfrowanie, role dostępu i linki z wygaśnięciem zamiast wklejania kluczy API na czacie.",
+    "subtext": "Bezpieczne udostępnianie plików .env i przechowywanie sekretów zespołu: szyfrowanie AES-256, role dostępu i linki z wygaśnięciem zamiast wklejania kluczy API na czacie.",
     "ctaPrimary": "Zacznij za darmo",
     "ctaSecondary": "Zobacz jak to działa",
     "visualAlt": "Abstrakcyjny sejf ze szkła i metalu symbolizujący zaszyfrowane przechowywanie plików .env",
@@ -710,7 +719,7 @@
   },
   "howItWorks": {
     "eyebrow": "Jak to działa",
-    "title": "Od pliku .env do zespołu w cztery kroki",
+    "title": "Jak bezpiecznie udostępniać pliki .env: cztery kroki",
     "lead": "Koniec wklejania kluczy API i haseł do baz danych na Slacku. Wgraj plik raz, a share.env zajmie się szyfrowaniem, linkami i dostępem za Ciebie.",
     "steps": [
       {
@@ -764,7 +773,7 @@
     ]
   },
   "pricing": {
-    "heading": "Prosty cennik, płacisz za to, czego używasz",
+    "heading": "Cennik share.env: prosty, płacisz za to, czego używasz",
     "subheading": "Każdy zespół zaczyna za darmo. Płacisz dopiero, gdy dodasz środowiska powyżej pierwszych trzech.",
     "perEnvironment": "za środowisko / miesiąc",
     "free": {
@@ -1035,14 +1044,14 @@
   },
   "faq": {
     "eyebrow": "FAQ",
-    "heading": "Pytania o bezpieczeństwo i przechowywanie danych",
+    "heading": "FAQ share.env: bezpieczeństwo i przechowywanie danych",
     "contactTitle": "Masz inne pytanie?",
     "contactText": "Napisz do nas  odpowiadamy na pytania o bezpieczeństwo i wdrożenie zwykle tego samego dnia roboczego.",
     "contactCta": "Napisz e-mail",
     "items": [
       {
         "question": "Jak dokładnie szyfrowane są pliki .env?",
-        "answer": "Pliki trafiają do Supabase Storage, gdzie są szyfrowane w spoczynku (encryption at rest). Dodatkowo Row Level Security w Postgresie pilnuje, żeby dostęp do rekordów miały wyłącznie zapytania autoryzowane przez Twój workspace  nikt inny nie odczyta treści, nawet mając dostęp do bazy."
+        "answer": "Zawartość każdego pliku .env jest szyfrowana algorytmem AES-256-GCM jeszcze przed zapisem  do Supabase Storage trafia wyłącznie zaszyfrowana koperta (ciphertext, IV i tag uwierzytelniający), nigdy czysty tekst sekretów. GCM to szyfrowanie uwierzytelnione: każda próba modyfikacji zaszyfrowanych danych powoduje odrzucenie odczytu zamiast cichego zwrócenia uszkodzonej treści. Do tego dochodzi domyślne szyfrowanie w spoczynku po stronie Supabase Storage oraz Row Level Security w Postgresie, które pilnuje, żeby dostęp do rekordów miały wyłącznie zapytania autoryzowane przez Twój workspace. W efekcie nawet ktoś z bezpośrednim dostępem do bazy danych lub bucketa nie zobaczy treści Twoich sekretów bez klucza szyfrującego."
       },
       {
         "question": "Jak długo przechowujecie pliki i historię zmian?",
@@ -1050,11 +1059,11 @@
       },
       {
         "question": "Czy mogę zobaczyć, kto miał dostęp do danego sekretu?",
-        "answer": "Tak. Każda zmiana pliku .env jest zapisywana z informacją, kto i kiedy ją wprowadził, a wygenerowane linki udostępniające można w każdej chwili odwołać, co natychmiast blokuje dalszy dostęp z tego linku."
+        "answer": "Tak. Każda zmiana pliku .env jest zapisywana razem z informacją, kto i kiedy ją wprowadził, więc historia wersji działa jak dziennik audytowy dla całego workspace'a. Linki udostępniające z tokenem mają obowiązkową datę wygaśnięcia, a właściciel lub edytor workspace'a może odwołać (revoke) dowolny link w dowolnym momencie z poziomu panelu  odwołanie działa natychmiast i blokuje dalszy dostęp z tego linku, nawet jeśli ktoś zdążył go wcześniej otworzyć. To samo dotyczy dostępu przez rolę: usunięcie kogoś z workspace'a albo zmiana jego roli na viewer natychmiast ogranicza to, co może odczytać lub edytować, ponieważ uprawnienia są wymuszane politykami RLS, a nie tylko ukrywaniem przycisków w interfejsie."
       },
       {
         "question": "Czy da się to zainstalować lokalnie (self-hosting)?",
-        "answer": "Obecnie share.env działa wyłącznie jako usługa hostowana  self-hosting nie jest wspierany. Cała infrastruktura (baza, auth, storage) opiera się na Supabase i Vercel, co pozwala nam utrzymywać wysoki poziom bezpieczeństwa bez zarządzania własnymi serwerami przez klienta."
+        "answer": "Obecnie share.env działa wyłącznie jako usługa hostowana  self-hosting nie jest wspierany. Cała infrastruktura (baza danych, autoryzacja, storage) opiera się na Supabase, a warstwa aplikacji jest hostowana na Vercel, co pozwala nam utrzymywać wysoki, jednolity poziom bezpieczeństwa (RLS na każdej tabeli i buckecie, szyfrowanie AES-256-GCM zawartości plików, rate limiting na publicznych endpointach) bez przerzucania na klienta obowiązku łatania i zabezpieczania własnych serwerów. Świadomie zrezygnowaliśmy też z szyfrowania end-to-end typu zero-knowledge po stronie klienta na rzecz tego modelu  upraszcza to obsługę współdzielenia przez zespół (role owner/editor/viewer, linki z tokenem) przy zachowaniu opisanych wyżej warstw ochrony. Jeśli self-hosting jest dla Ciebie wymogiem, najlepiej napisać do nas bezpośrednio  traktujemy to jako sygnał do priorytetyzacji w roadmapie."
       },
       {
         "question": "Co się stanie z moimi sekretami, jeśli usunę konto?",

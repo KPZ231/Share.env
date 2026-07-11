@@ -35,6 +35,9 @@ const PUBLIC_PATHS = [
   "/security",
   "/auth/callback",
   "/cli",
+  "/features",
+  "/pricing",
+  "/use-cases",
 ];
 const VERIFY_2FA_PATH = "/verify-2fa";
 

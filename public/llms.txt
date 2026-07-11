@@ -1,0 +1,49 @@
+# share.env
+
+> share.env is a hosted SaaS for securely storing and sharing `.env` files
+> (API keys, database passwords, and other application secrets) between
+> teammates, without pasting them into Slack or email.
+
+Files are owned by a workspace (team), not an individual user. Access is
+granted three ways at once: email invite (role-based), an expiring token
+link (no login required), and workspace roles (`owner` / `editor` / `viewer`).
+
+## Security
+
+- File contents are encrypted with AES-256-GCM before being written to
+  storage — only the ciphertext envelope is ever persisted, never plaintext
+  secrets.
+- Supabase Storage applies its own default encryption at rest on top of that.
+- Row Level Security (RLS) is enabled on every table and storage bucket;
+  access is enforced by Postgres policies, not just hidden UI buttons.
+- Share links use cryptographically secure, high-entropy tokens, always carry
+  a mandatory expiration date, and can be revoked instantly.
+- Every change to a file is logged with who made it and when (full audit
+  trail).
+- share.env is a hosted-only service — self-hosting is not currently
+  supported. Client-side zero-knowledge encryption is a deliberate
+  non-goal, in favor of a single consistently-enforced server-side security
+  model (RLS + AES-256-GCM + audit trail).
+
+## Pricing
+
+Free for up to 3 environments (an environment = one distinct `.env` file per
+workspace, e.g. production/staging/preview). $2 per environment per month
+after that, billed monthly. Team members are unlimited on every plan.
+
+## Key pages
+
+- [Homepage](https://www.share-env.site/): product overview, security model,
+  FAQ.
+- [Features](https://www.share-env.site/en/features): encryption, access
+  control, audit history.
+- [Pricing](https://www.share-env.site/en/pricing): plans and billing FAQ.
+- [Use cases](https://www.share-env.site/en/use-cases): onboarding, key
+  rotation, offboarding workflows.
+- [Security](https://www.share-env.site/en/security): full breakdown of RLS,
+  encryption, and vulnerability reporting.
+- [CLI](https://www.share-env.site/en/cli): `envshare` CLI for pulling a
+  repo's `.env` from the terminal with the same access control as the web
+  app.
+
+Polish-language equivalents are available under the `/pl/` locale prefix.

@@ -16,8 +16,12 @@ export function CookieConsentBanner() {
   useEffect(() => {
     // Reads an external system (localStorage) after mount, matching server and
     // first client render (both `false`) to avoid a hydration mismatch.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (!window.localStorage.getItem(STORAGE_KEY)) setVisible(true);
+    if (window.localStorage.getItem(STORAGE_KEY)) return;
+    // ponytail: delayed so the first paint (where the hero CTA lives, on
+    // mobile within the same viewport as this fixed-bottom banner) isn't
+    // obstructed immediately; a real user has a moment to see the CTA first.
+    const timer = setTimeout(() => setVisible(true), 1200);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!visible) return null;

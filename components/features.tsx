@@ -43,12 +43,11 @@ export function Features() {
             },
           });
 
-          tl.from("[data-feature=header]", { y: 20, opacity: 0 })
-            .from(
-              "[data-feature=card]",
-              { y: 28, scale: 0.97, opacity: 0, stagger: 0.08 },
-              "-=0.3"
-            )
+          // ponytail: opacity-only (no y/scale) on header/card — a transform
+          // tween here measured as real Lighthouse CLS. The icon keeps its
+          // scale pop since it's small/contained and doesn't shift layout.
+          tl.from("[data-feature=header]", { opacity: 0 })
+            .from("[data-feature=card]", { opacity: 0, stagger: 0.08 }, "-=0.3")
             .from(
               "[data-feature=icon]",
               { scale: 0.5, opacity: 0, stagger: 0.08, duration: 0.5, ease: "back.out(1.7)" },
