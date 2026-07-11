@@ -35,21 +35,26 @@ function buildCspHeader(nonce: string): string {
 }
 
 /**
- * Forwards `headers` to the actual page render, replicating what
- * NextResponse.next({ request: { headers } }) does internally (see
- * handleMiddlewareField in next/dist/server/web/spec-extension/response.js)
- * but applied to a response next-intl already built, instead of a fresh one
- *  next-intl's own rewrite/redirect + Set-Cookie headers on `response` must
- * survive, only the *request* headers seen by the eventual page render need
- * the nonce added.
+ * Adds extra request headers (nonce, CSP) to the page render, on top of
+ * whatever `response` already forwards  next-intl's own rewrite already set
+ * x-middleware-override-headers/x-middleware-request-* to carry the resolved
+ * locale (x-next-intl-locale) plus a copy of every original request header
+ * forward. Rebuilding that list from scratch (as this used to) silently
+ * dropped the locale header: the URL would say /en but every Server/Client
+ * Component reading `useTranslations`/`getRequestConfig` fell back to the
+ * default locale (pl), since it never saw x-next-intl-locale=en.
  */
-function forwardRequestHeaders(response: NextResponse, headers: Headers) {
-  const keys: string[] = [];
-  headers.forEach((value, key) => {
+function forwardRequestHeaders(response: NextResponse, extra: Record<string, string>) {
+  const existingKeys = (response.headers.get("x-middleware-override-headers") ?? "")
+    .split(",")
+    .map((key) => key.trim())
+    .filter(Boolean);
+  const keys = new Set(existingKeys);
+  for (const [key, value] of Object.entries(extra)) {
     response.headers.set(`x-middleware-request-${key}`, value);
-    keys.push(key);
-  });
-  response.headers.set("x-middleware-override-headers", keys.join(","));
+    keys.add(key);
+  }
+  response.headers.set("x-middleware-override-headers", Array.from(keys).join(","));
 }
 
 // Next.js 16 renamed Middleware to Proxy  same runtime, new file/export name.
@@ -88,10 +93,7 @@ export async function proxy(request: NextRequest) {
 
   // Forward the nonce (and CSP, so `headers().get('Content-Security-Policy')`
   // works too) to the page render itself, not just this response.
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-nonce", nonce);
-  requestHeaders.set("Content-Security-Policy", csp);
-  forwardRequestHeaders(response, requestHeaders);
+  forwardRequestHeaders(response, { "x-nonce": nonce, "Content-Security-Policy": csp });
 
   const finalResponse = await updateSession(request, response);
   // updateSession may swap in a fresh redirect response (unauthenticated /
