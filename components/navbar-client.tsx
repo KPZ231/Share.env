@@ -118,7 +118,7 @@ export function NavbarClient({ account }: { account: Account | null }) {
     <header className="sticky top-0 z-50 border-b border-hairline bg-background/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center">
-          <Image src="/images/logo/4.png" alt="Share.env" width={140} height={32} priority className="h-8 w-auto" />
+          <Image src="/images/logo/4.png" alt="Share.env" width={1672} height={941} priority className="h-10 w-auto" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
