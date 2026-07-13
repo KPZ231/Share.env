@@ -4,8 +4,11 @@ import { useRef, useState, type DragEvent } from "react";
 import { toast } from "sonner";
 import { UploadSimple } from "@phosphor-icons/react";
 
-const ACCEPTED_TYPES = [".env", "text/plain", ""];
 const MAX_FILE_BYTES = 256 * 1024;
+const NULL_BYTE = String.fromCharCode(0);
+// Extension is the only trustworthy signal here — file.type is client-reported
+// and empty/spoofable, so it must never be allowed to override this check.
+const ALLOWED_EXTENSIONS = [".env", ".txt"];
 
 export function EnvFileDropzone({
   onFile,
@@ -23,14 +26,22 @@ export function EnvFileDropzone({
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function handleFile(file: File) {
-    const ext = file.name.slice(file.name.lastIndexOf("."));
-    if (ext !== ".env" && !ACCEPTED_TYPES.includes(file.type)) {
+  async function handleFile(file: File) {
+    const dotIdx = file.name.lastIndexOf(".");
+    const ext = dotIdx === -1 ? file.name : file.name.slice(dotIdx);
+    if (!ALLOWED_EXTENSIONS.includes(ext) && file.name !== ".env") {
       toast.error(fileTypeError);
       return;
     }
     if (file.size > MAX_FILE_BYTES) {
       toast.error(fileSizeError);
+      return;
+    }
+    // Binary content (null byte) can't be a real .env file — a renamed
+    // executable/image would otherwise sail through the extension check above.
+    const text = await file.text();
+    if (text.includes(NULL_BYTE)) {
+      toast.error(fileTypeError);
       return;
     }
     onFile(file);
@@ -40,7 +51,7 @@ export function EnvFileDropzone({
     e.preventDefault();
     setDragActive(false);
     const file = e.dataTransfer.files?.[0];
-    if (file) handleFile(file);
+    if (file) void handleFile(file);
   }
 
   return (
@@ -65,7 +76,7 @@ export function EnvFileDropzone({
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) handleFile(file);
+          if (file) void handleFile(file);
           e.target.value = "";
         }}
       />
