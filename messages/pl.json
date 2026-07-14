@@ -39,7 +39,8 @@
     },
     "signin": {
       "title": "Logowanie",
-      "description": "Zaloguj się do konta share.env, aby uzyskać dostęp do workspace'ów zespołu."
+      "description": "Zaloguj się do konta share.env, aby uzyskać dostęp do workspace'ów zespołu.",
+      "keywords": ["logowanie share.env", "logowanie do udostępniania plików .env"]
     },
     "verify2fa": {
       "title": "Potwierdź, że to Ty",

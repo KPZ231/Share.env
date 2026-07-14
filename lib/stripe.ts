@@ -144,15 +144,19 @@ export async function getUpcomingInvoice(customerId: string): Promise<UpcomingIn
 }
 
 export async function getInvoiceHistory(customerId: string): Promise<InvoiceHistoryItem[]> {
-  const invoices = await stripe.invoices.list({ customer: customerId, limit: 12 });
-  return invoices.data.map((invoice) => ({
-    id: invoice.id ?? invoice.number ?? "",
-    date: new Date(invoice.created * 1000),
-    amount: invoice.amount_paid / 100,
-    currency: invoice.currency.toUpperCase(),
-    status: invoice.status ?? "unknown",
-    pdfUrl: invoice.invoice_pdf ?? null,
-  }));
+  try {
+    const invoices = await stripe.invoices.list({ customer: customerId, limit: 12 });
+    return invoices.data.map((invoice) => ({
+      id: invoice.id ?? invoice.number ?? "",
+      date: new Date(invoice.created * 1000),
+      amount: invoice.amount_paid / 100,
+      currency: invoice.currency.toUpperCase(),
+      status: invoice.status ?? "unknown",
+      pdfUrl: invoice.invoice_pdf ?? null,
+    }));
+  } catch {
+    return []; // stale/missing customer (e.g. Stripe test-mode reset) -- don't crash the billing page
+  }
 }
 
 /** Stripe-hosted Customer Portal: card updates, cancellation, invoice history -- we build none of it ourselves. */

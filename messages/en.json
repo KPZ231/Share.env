@@ -31,7 +31,8 @@
     },
     "signin": {
       "title": "Log in",
-      "description": "Log in to your share.env account to access your team's workspaces."
+      "description": "Log in to your share.env account to access your team's workspaces.",
+      "keywords": ["share.env login", "env file sharing login"]
     },
     "forgotPassword": {
       "title": "Reset your password",

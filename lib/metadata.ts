@@ -21,12 +21,7 @@ export async function buildMetadata({
   const description = t("description");
   // Public marketing pages carry a "keywords" array in their meta.* namespace;
   // dashboard/auth namespaces don't, and noindex pages don't need one.
-  let keywords: string[] | undefined;
-  try {
-    keywords = t.raw("keywords") as string[];
-  } catch {
-    keywords = undefined;
-  }
+  const keywords = t.has("keywords") ? (t.raw("keywords") as string[]) : undefined;
 
   // localePrefix is "as-needed": the default locale (pl) is served unprefixed,
   // so its canonical/OG URL must omit the "/pl" segment other locales use.
